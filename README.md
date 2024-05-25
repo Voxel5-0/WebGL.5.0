@@ -9,6 +9,8 @@ Follow below practices before raising PR for adding your contibution to the proj
 3. For doing additions in scenes branch name should be scene/<scene_number>/<addition> , eg: scene/scene1/RearrangingTrees.
 4. Attach the screenshot for the changes done by you with PR.
 
+
+
 # Resources 
 
 ## Models 
@@ -30,7 +32,10 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
 4. Don't push anything directly on main.
 5. Make sure your PR is approved by GL before merging.
 
+
+
 # Gear up for the WebGL 5.0. How's the Josh?
+
 
 ## TODO List
 * Particles System
