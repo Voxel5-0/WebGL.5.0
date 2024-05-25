@@ -25,6 +25,9 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
 * https://developer.nvidia.com/gpugems/gpugems3/part-ii-light-and-shadows/chapter-13-volumetric-light-scattering-post-process
 * Books : https://drive.google.com/drive/folders/1ag5tispi9lVXAqBWXi99_RDZgyVj6cu3
 
+* https://webglfundamentals.org/
+* https://sites.google.com/site/webglbook/home
+
 ## Steps to follow 
 1. Clone the repository.
 2. Download the models folder from above location and place at location : src/resources
