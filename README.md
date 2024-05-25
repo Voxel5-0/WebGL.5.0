@@ -45,6 +45,13 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
 * Waterfall
 * Model Placing according to screenplay
 
+## Done 
+* OBJ model loading
+* Heightmap Terrain
+* Cubemap
+* Model loading with instancing
+* Basic camera - update and keypress
+  
 
 
 
