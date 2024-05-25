@@ -15,10 +15,12 @@ Follow below practices before raising PR for adding your contibution to the proj
 https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=drive_link
 
 ## Effect References
-* https://medium.com/community-play-3d/god-rays-whats-that-5a67f26aeac2
 * https://learnopengl.com/Introduction
 * https://www.youtube.com/channel/UCUkRj4qoT1bsWpE_C8lZYoQ
 * https://thebookofshaders.com/
+* https://medium.com/community-play-3d/god-rays-whats-that-5a67f26aeac2
+* https://fabiensanglard.net/lightScattering/
+* https://developer.nvidia.com/gpugems/gpugems3/part-ii-light-and-shadows/chapter-13-volumetric-light-scattering-post-process
 * Books : https://drive.google.com/drive/folders/1ag5tispi9lVXAqBWXi99_RDZgyVj6cu3
 
 ## Steps to follow 
