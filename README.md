@@ -33,7 +33,7 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
 # Gear up for the WebGL 5.0. How's the Josh?
 
 ## TODO List
-* Partical System
+* Particles System
 * Godrays
 * Atmospheric Scattering
 * Camera enhancments
