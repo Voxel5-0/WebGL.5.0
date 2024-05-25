@@ -1,0 +1,6 @@
+*.obj
+*.mtl
+*.glb
+*.gltf
+src/resources/models/
+src/resources/textures/backup
