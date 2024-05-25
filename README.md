@@ -6,7 +6,7 @@ Follow below practices before raising PR for adding your contibution to the proj
 
 1. Issue should be created and assigned to yourself for the task which you are working on.
 2. For adding effect crate a branch with name effect/<effect_name> , eg: effect/godrays.
-3. For doing additions in scenes branch name should be scene/<scene_number>/<addition> , eg: scene/scene1/rearrangingTrees.
+3. For doing additions in scenes branch name should be scene/<scene_number>/<addition> , eg: scene/scene1/RearrangingTrees.
 4. Attach the screenshot for the changes done by you with PR.
 
 # Resources 
@@ -37,6 +37,7 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
 * Godrays
 * Atmospheric Scattering
 * Camera enhancments
+* Blender : Collect and create required models
 * Fonts
 * Audio - Sound effects - L and J cut
 * Clouds
