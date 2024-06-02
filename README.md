@@ -59,6 +59,13 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
 * Cubemap
 * Model loading with instancing
 * Basic camera - update and keypress
+
+  ## Texture refernce
+  https://www.textures.com/browse/pbr-materials/114558
+  https://www.cgbookcase.com/textures
+
+  ## Models
+  https://sketchfab.com/3d-models/my-very-own-christmas-styled-disney-2006-model-3020495db43742ad93dc5f991952ce8d
   
 
 
