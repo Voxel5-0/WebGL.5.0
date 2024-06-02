@@ -43,6 +43,50 @@ var scene_camera_angles =  [
 						  ];
 
 
+
+
+//TODO keeping assmip model list and loading global , not right approch , we should change it later
+//This is done to solve the problem for synchronisity
+var modelList = [
+	//{ name: "Vampire", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
+	{ name: "Backpack", files:[ 'src\\resources\\models\\intro\\Palace_withColors.obj', 'src\\resources\\models\\intro\\Palace_withColors.mtl'], flipTex:false , isStatic : true },
+	//{ name: "Backpack", files:[ 'home.obj', 'home.mtl'], flipTex:false },
+	//{ name: "Vampire", files:[ 'vampire/dancing_vampire.dae'], flipTex:false },
+]
+
+var models = [];
+
+assimpjs().then (function (ajs) {
+	Promise.all(modelList.flatMap(o => o.files).map((fileToLoad) => fetch (fileToLoad))).then ((responses) => {
+		return Promise.all(responses.map ((res) => res.arrayBuffer()))
+	}).then((arrayBuffers) => {
+		var k = 0
+		for(var i = 0; i < modelList.length; i++) {
+			console.log("Loading Files for " + modelList[i].name + "....")
+			let fileList = new ajs.FileList()
+			for (let j = 0; j < modelList[i].files.length; j++) {
+				fileList.AddFile(modelList[i].files[j], new Uint8Array(arrayBuffers[k++]))
+			}
+			console.log("Loaded Files")
+			console.log("Converting Files to AssimpJSON....")
+			let result = ajs.ConvertFileList(fileList, 'assjson')
+			if (!result.IsSuccess() || result.FileCount() == 0) {
+				console.log(result.GetErrorCode())
+				return
+			}
+			console.log("Converted Files")
+			console.log("Parse JSON String....")
+			let resultFile = result.GetFile(0)
+			let jsonContent = new TextDecoder().decode(resultFile.GetContent())
+			let resultJson = JSON.parse(jsonContent)
+			console.log("Parsed JSON")
+			modelList[i].json = resultJson
+			modelList[i].directory = modelList[i].files[0].substring(0, modelList[i].files[0].lastIndexOf('/'))
+		}
+		main()
+	})
+})
+
 function main()
 {
 	canvas = document.getElementById("VoxelsCanvas");
@@ -161,6 +205,9 @@ function draw(now)
 
 function update(now)
 {
+
+	//UpdateCameraPosition(scene_camera_positions[scene]);
+	//UpdateCameraAngle(scene_camera_angles[scene]);
 
 	if (scene == 0)
     {

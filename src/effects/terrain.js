@@ -324,7 +324,7 @@ function RenderTerrain(terrain_data, scene) {
   /* Implement camera and supply it through view matrix */
   //mat4.lookAt(view_matrix, [450.0, -50.0, 100.0], [0.0, 0.0, 1.0], [0.0, 1.0, 0.0]);
   //mat4.translate(view_matrix, view_matrix, [-450.0, -40, -300]);
-  //mat4.translate(model_matrix, model_matrix, [-450.0, 50.0, -100]);
+  //mat4.translate(model_matrix, model_matrix, [0.0, -100.0, -10]);
   //mat4.translate(model_matrix, model_matrix, [0.0, 0.0, -0.1]);
 
   gl.uniformMatrix4fv(terrain_u_projection_matrix, false, perspectiveProjectionMatrix);
