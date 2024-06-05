@@ -16,6 +16,9 @@ Follow below practices before raising PR for adding your contibution to the proj
 ## Models 
 https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=drive_link
 
+## Screenplay
+https://docs.google.com/document/d/1Y-r2Cf_VyUVh8jqMy2sQQbZFiWdJ_ot7/edit?usp=sharing&ouid=112223265961373748686&rtpof=true&sd=true
+
 ## Effect References
 * https://learnopengl.com/Introduction
 * https://www.youtube.com/channel/UCUkRj4qoT1bsWpE_C8lZYoQ
