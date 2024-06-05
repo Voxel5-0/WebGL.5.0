@@ -43,6 +43,7 @@ function InitializeSceneOne() {
   initAssimpModelShader();  
 
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
+  pTrail_initialize();
 
   // scene_one_tree_model_one_texture = gl.createTexture();
   // scene_one_tree_model_one_texture.image = new Image();
@@ -168,12 +169,12 @@ function RenderSceneOne() {
   // }
 
   DrawSkybox(SCENE_ONE);
+  pTrail_display();
 
 }
 
 function UpdateSceneOne() {
-
- 
+    pTrail_update();
 }
 
 function UninitializeSceneOne() {
@@ -188,6 +189,7 @@ function UninitializeSceneOne() {
     gl.deleteTexture(scene_one_tree_model_two_texture);
   }
 
+  pTrail_uninitialize();
   UninitializeTerrainData(SCENE_ONE);
   UninitializeModelRenderer(scene_one_tree_one_model);
   UninitializeModelRenderer(scene_one_tree_two_model);

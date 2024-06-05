@@ -136,8 +136,8 @@ function init()
     InitializeTerrainRenderer();
     InitializeSkybox();
 
-	fadeInOutEffect = new FadeInOutEffect();
-	fadeInOutEffect.allocate();
+	// fadeInOutEffect = new FadeInOutEffect();
+	// fadeInOutEffect.allocate();
 
 	/*Scene Specific Initialization */
 	InitializeSceneOne();
