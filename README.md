@@ -66,6 +66,7 @@ https://docs.google.com/document/d/1Y-r2Cf_VyUVh8jqMy2sQQbZFiWdJ_ot7/edit?usp=sh
   ## Texture refernce
   https://www.textures.com/browse/pbr-materials/114558
   https://www.cgbookcase.com/textures
+  https://jaxry.github.io/panorama-to-cubemap/
 
   ## Models
   https://sketchfab.com/3d-models/my-very-own-christmas-styled-disney-2006-model-3020495db43742ad93dc5f991952ce8d
