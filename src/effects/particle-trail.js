@@ -19,7 +19,7 @@ var pTrail_texture_particle = null;
 
 //var particle;
 var pTrail_arch;
-var pTrail_radius = 8.0;
+var pTrail_radius = 75.0;
 
 function pTrail_initialize() {
     // Code
@@ -127,7 +127,7 @@ function pTrail_initialize() {
     for (let i = 0; i <= 360; i++) {
         let pos = new Array(3);
         pos[0] = pTrail_radius * Math.cos(degToRad(angle));
-        pos[1] = pTrail_radius * Math.sin(degToRad(angle));
+        pos[1] = -(pTrail_radius * Math.sin(degToRad(angle)));
         pos[2] = 0.0;
 
         archPos[i] = new Array(4);
@@ -328,33 +328,39 @@ function pTrail_display() {
     // Transformation
     pTrail_viewMatrix = mat4.create();
     pTrail_modelMatrix = mat4.create();
-    mat4.identity(pTrail_viewMatrix);
-    mat4.identity(pTrail_modelMatrix);
+    //mat4.identity(pTrail_viewMatrix);
+    //mat4.identity(pTrail_modelMatrix);
 
-    let eye = vec3.create();
-    let center = vec3.create();
-    let up = vec3.create();
+    // let eye = vec3.create();
+    // let center = vec3.create();
+    // let up = vec3.create();
 
-    eye[0] = 0.0;
-    eye[1] = 0.0;
-    eye[2] = 10.0;
+    // eye[0] = 0.0;
+    // eye[1] = 0.0;
+    // eye[2] = -10.0;
 
-    center[0] = 0.0;
-    center[1] = 0.0;
-    center[2] = 0.0;
+    // center[0] = 100.0;
+    // center[1] = 0.0;
+    // center[2] = 0.0;
 
-    up[0] = 0.0;
-    up[1] = 1.0;
-    up[2] = 0.0;
+    // up[0] = 0.0;
+    // up[1] = 1.0;
+    // up[2] = 0.0;
 
-    mat4.lookAt(pTrail_viewMatrix, eye, center, up);
+    // mat4.lookAt(pTrail_viewMatrix, eye, center, up);
+    pTrail_viewMatrix = GetCameraViewMatrix();
 
-    gl.uniformMatrix4fv(pTrail_projectionMatrixUniform, false, pTrail_perspectiveProjectionMatrix);
+    // gl.uniformMatrix4fv(pTrail_projectionMatrixUniform, false, pTrail_perspectiveProjectionMatrix);
+    gl.uniformMatrix4fv(pTrail_projectionMatrixUniform, false, perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(pTrail_viewMatrixUniform, false, pTrail_viewMatrix);
 
     // Draw
+    mat4.translate(pTrail_modelMatrix, pTrail_modelMatrix, [0.0, -90.0, -5.0]);
+    mat4.rotateY(pTrail_modelMatrix, pTrail_modelMatrix, degToRad(90.0));
     //drawParticle(particle, pTrail_modelMatrix);
     drawArch(pTrail_arch, pTrail_modelMatrix);
+    //mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0]);
+    //drawArch(pTrail_arch, modelMatrix);
 
     gl.useProgram(null);
 
@@ -377,8 +383,12 @@ function updateArch(pTrail_arch) {
         //console.log(pTrail_arch[i]);
         if(archPos[i][3] > 0.0)
         {
-            archPos[i][3] -= 0.5;
+            archPos[i][3] -= 0.125;
         }
+        // if(archPos[i][3] > 0.0)
+        // {
+        //     archPos[i][3] -= 0.5;
+        // }
         updateParticle(pTrail_arch[i], i);
     }
 }
@@ -393,13 +403,13 @@ function updateParticle(p, count) {
 
         // Update a vertex coordinate
         p[i].position[0] += p[i].velocity[0];
-        p[i].position[1] -= p[i].velocity[1] / 2;
+        p[i].position[1] += p[i].velocity[1] / 2;
         p[i].position[2] += p[i].velocity[2];
 
         // Decreate Y translation
         p[i].velocity[1] -= 0.003;
         // Fading out
-        p[i].alpha -= 0.05;
+        p[i].alpha -= 0.03;
 
         if (p[i].alpha <= 0) {
             initParticle(p[i], false, archPos[count]);
@@ -412,7 +422,8 @@ function drawArch(pTrail_arch, pTrail_modelMatrix) {
         if (archPos[i][3] <= 0.0 && archPos[i][4] >= 0.0)
         {
             drawParticle(pTrail_arch[i], pTrail_modelMatrix);
-            archPos[i][4] -= 0.5;
+            archPos[i][4] -= 0.125;
+            // archPos[i][4] -= 0.5;
         }
     }
 }

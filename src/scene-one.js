@@ -42,7 +42,7 @@ function InitializeSceneOne() {
 
   initAssimpModelShader();  
 
-  LoadSkyboxTextures(skyboxTexturesForScene1, 1);
+  //LoadSkyboxTextures(skyboxTexturesForScene1, 1);
   pTrail_initialize();
 
   // scene_one_tree_model_one_texture = gl.createTexture();
@@ -168,9 +168,8 @@ function RenderSceneOne() {
   //   RenderTerrain(terrain_data[SCENE_ONE], SCENE_ONE);
   // }
 
-  DrawSkybox(SCENE_ONE);
-  pTrail_display();
-
+  //DrawSkybox(SCENE_ONE);
+  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
 }
 
 function UpdateSceneOne() {
