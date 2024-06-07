@@ -31,13 +31,13 @@ var scene = 1;
 var scene_camera_positions;
 scene_camera_positions = [
 							[492.45003920809063,-45,77.96151170852721],     //scene zero camera initial position,
-							[492.45003920809063,-45,77.96151170852721], 	//scene one camera initial position
+							[137.6753758977956,-90,-4.494494329941868], 	//scene one camera initial position
 							[0.0, 0.0, 0.0], 	//scene two camera initial position
 							[0.0, 0.0, 0.0]     //scene three camera initial position
 						 ];
 var scene_camera_angles =  [
 								0.0, //scene zero
-								-180.0,	//scene one
+								90.0,	//scene one
 								0.0,	//scene two
 								0.0	//scene three
 						  ];
@@ -136,8 +136,8 @@ function init()
     InitializeTerrainRenderer();
     InitializeSkybox();
 
-	fadeInOutEffect = new FadeInOutEffect();
-	fadeInOutEffect.allocate();
+	// fadeInOutEffect = new FadeInOutEffect();
+	// fadeInOutEffect.allocate();
 
 	/*Scene Specific Initialization */
 	InitializeSceneOne();
