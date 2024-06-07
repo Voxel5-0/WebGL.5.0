@@ -1,9 +1,6 @@
 var pTrail_shaderProgramObject = null;
 
 var pTrail_vao = null;
-var pTrail_vbo_position = null;
-var pTrail_vbo_texcoord = null;
-var pTrail_vbo_indices = null;
 
 var pTrail_projectionMatrixUniform;
 var pTrail_viewMatrixUniform;
@@ -11,7 +8,6 @@ var pTrail_modelMatrixUniform;
 var pTrail_alphaUniform;
 var pTrail_textureSamplerUniform;
 
-var pTrail_perspectiveProjectionMatrix;
 var pTrail_viewMatrix;
 var pTrail_modelMatrix;
 
@@ -19,7 +15,7 @@ var pTrail_texture_particle = null;
 
 //var particle;
 var pTrail_arch;
-var pTrail_radius = 75.0;
+var pTrail_radius = 80.0;
 
 function pTrail_initialize() {
     // Code
@@ -28,17 +24,14 @@ function pTrail_initialize() {
     let vertexShaderSourceCode =
         "#version 300 es" +
         "\n" +
-        "in vec3 aPosition;\n" +
-        "in vec2 aTexCoord;\n" +
         "uniform mat4 uProjectionMatrix;\n" +
         "uniform mat4 uViewMatrix;\n" +
         "uniform mat4 uModelMatrix;\n" +
-        "out vec2 oTexCoord;\n" +
         "void main(void)\n" +
         "{\n" +
         "mat4 modelViewMatrix = uViewMatrix * uModelMatrix;" +
-        "gl_Position = uProjectionMatrix * modelViewMatrix * vec4(aPosition, 1.0);\n" +
-        "oTexCoord = aTexCoord;\n" +
+        "gl_PointSize = 20.0;" +
+        "gl_Position = uProjectionMatrix * modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);\n" +
         "}\n";
 
     let vertexShaderObject = gl.createShader(gl.VERTEX_SHADER);
@@ -61,13 +54,12 @@ function pTrail_initialize() {
         "#version 300 es" +
         "\n" +
         "precision highp float;\n" +
-        "in vec2 oTexCoord;\n" +
         "uniform sampler2D uTextureSampler;\n" +
         "uniform float uAlpha;\n" +
         "out vec4 FragColor;\n" +
         "void main(void)\n" +
         "{\n" +
-        "FragColor.rgb = texture(uTextureSampler, oTexCoord).rgb;\n" +
+        "FragColor.rgb = texture(uTextureSampler, gl_PointCoord).rgb;\n" +
         "FragColor.a = uAlpha;\n" +
         "}\n";
 
@@ -91,9 +83,6 @@ function pTrail_initialize() {
     gl.attachShader(pTrail_shaderProgramObject, vertexShaderObject);
     gl.attachShader(pTrail_shaderProgramObject, fragmentShaderObject);
 
-    gl.bindAttribLocation(pTrail_shaderProgramObject, WebGLMacros.AMC_ATTRIBUTE_VERTEX, "aPosition");
-    gl.bindAttribLocation(pTrail_shaderProgramObject, WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, "aTexCoord");
-
     gl.linkProgram(pTrail_shaderProgramObject);
     if (gl.getProgramParameter(pTrail_shaderProgramObject, gl.LINK_STATUS) == false) {
         var error = gl.getProgramInfoLog(pTrail_shaderProgramObject);
@@ -113,8 +102,10 @@ function pTrail_initialize() {
     pTrail_alphaUniform = gl.getUniformLocation(pTrail_shaderProgramObject, "uAlpha");
     pTrail_textureSamplerUniform = gl.getUniformLocation(pTrail_shaderProgramObject, "uTextureSampler");
 
-    //init_gl();
-    sendQuadVertexBuffers();
+    // VAO
+    pTrail_vao = gl.createVertexArray();
+    gl.bindVertexArray(pTrail_vao);
+    gl.bindVertexArray(null);
 
     // Create texture
     pTrail_loadGLTexture();
@@ -139,20 +130,9 @@ function pTrail_initialize() {
 
         angle = angle + 0.5;
 
-        pTrail_arch[i] = new Array(5);
+        pTrail_arch[i] = new Array(2);
         initFountain(pTrail_arch[i], pos);
     }
-
-    // Initialize projection matrix
-    pTrail_perspectiveProjectionMatrix = mat4.create();
-    // Set perspective projection
-    mat4.perspective(
-        pTrail_perspectiveProjectionMatrix,
-        30.0,
-        parseFloat(canvas.width) / parseFloat(canvas.height),
-        0.1,
-        10000.0
-    );
 
     console.log("Particles initialized");
 }
@@ -165,91 +145,9 @@ function initFountain(f, pos) {
     }
 }
 
-// function init_gl() {
-//     //  Depth initialization
-//     //gl.clearDepth(1.0);
-//     //gl.enable(gl.DEPTH_TEST);
-//     //gl.depthFunc(gl.LEQUAL);
-
-//     gl.depthMask(false);
-
-//     // Set clear color
-//     //gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-//     gl.enable(gl.BLEND);
-//     gl.blendEquation(gl.FUNC_ADD);
-//     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-// }
-
-function sendQuadVertexBuffers() {
-    // Geometry attribute declarations
-    let rectangle_position = new Float32Array([
-        -0.5, -0.5, 0.0,
-        0.5, -0.5, 0.0,
-        0.5, 0.5, 0.0,
-        -0.5, 0.5, 0.0
-    ]);
-
-    let rectangle_texcoord = new Float32Array([
-        0.0, 0.0,
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0
-    ]);
-
-    let rectangle_indices = new Uint8Array([
-        0, 1, 2,
-        2, 3, 0
-    ]);
-
-    // VAO
-    pTrail_vao = gl.createVertexArray();
-    gl.bindVertexArray(pTrail_vao);
-
-    // VBO - position
-    pTrail_vbo_position = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, pTrail_vbo_position);
-    gl.bufferData(gl.ARRAY_BUFFER, rectangle_position, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(
-        WebGLMacros.AMC_ATTRIBUTE_VERTEX,
-        3,
-        gl.FLOAT,
-        false,
-        0,
-        0
-    );
-    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_VERTEX);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-    // VBO - texcoord
-    pTrail_vbo_texcoord = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, pTrail_vbo_texcoord);
-    gl.bufferData(gl.ARRAY_BUFFER, rectangle_texcoord, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(
-        WebGLMacros.AMC_ATTRIBUTE_TEXTURE0,
-        2,
-        gl.FLOAT,
-        false,
-        0,
-        0
-    );
-    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-    // VBO - indices
-    pTrail_vbo_indices = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, pTrail_vbo_indices);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, rectangle_indices, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-
-    gl.bindVertexArray(null);
-}
-
 function Particle() {
     this.velocity = new Array(3);
     this.position = new Array(3);
-    this.angle = 0;
-    this.scale = 0;
     this.alpha = 0;
     this.wait = 0;
 }
@@ -263,20 +161,13 @@ function initParticle(p, wait, pos) {
     p.velocity[1] = height;
     p.velocity[2] = Math.sin(angle) * speed;
 
-    //p.position[0] = Math.random() * 0.2;
-    //p.position[1] = Math.random() * 0.2;
-    //p.position[2] = Math.random() * 0.2;
-
     p.position[0] = pos[0];
     p.position[1] = pos[1];
     p.position[2] = pos[2];
 
-    // Rotation angle
-    p.angle = Math.random() * 360;
-    // Size
-    p.scale = Math.random() * 0.5 + 0.5;
     // Transparency
-    p.alpha = 3;
+    p.alpha = 4;
+
     // In initial stage, vary a time for creation
     if (wait == true) {
         // Time to wait
@@ -302,11 +193,12 @@ function pTrail_loadGLTexture() {
         console.log(pTrail_texture_particle.image)
 
         gl.bindTexture(gl.TEXTURE_2D, pTrail_texture_particle);
+        
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, pTrail_texture_particle.image);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        // gl.generateMipmap(gl.TEXTURE_2D);
+        
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
     pTrail_texture_particle.image.src = "src\\resources\\textures\\particle.png";
@@ -323,50 +215,32 @@ function pTrail_display() {
     gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
+    gl.enable(gl.PROGRAM_POINT_SIZE);
+    gl.enable(gl.POINT_SPRITE);
+
     gl.useProgram(pTrail_shaderProgramObject);
 
     // Transformation
     pTrail_viewMatrix = mat4.create();
     pTrail_modelMatrix = mat4.create();
-    //mat4.identity(pTrail_viewMatrix);
-    //mat4.identity(pTrail_modelMatrix);
 
-    // let eye = vec3.create();
-    // let center = vec3.create();
-    // let up = vec3.create();
-
-    // eye[0] = 0.0;
-    // eye[1] = 0.0;
-    // eye[2] = -10.0;
-
-    // center[0] = 100.0;
-    // center[1] = 0.0;
-    // center[2] = 0.0;
-
-    // up[0] = 0.0;
-    // up[1] = 1.0;
-    // up[2] = 0.0;
-
-    // mat4.lookAt(pTrail_viewMatrix, eye, center, up);
     pTrail_viewMatrix = GetCameraViewMatrix();
 
-    // gl.uniformMatrix4fv(pTrail_projectionMatrixUniform, false, pTrail_perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(pTrail_projectionMatrixUniform, false, perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(pTrail_viewMatrixUniform, false, pTrail_viewMatrix);
 
     // Draw
     mat4.translate(pTrail_modelMatrix, pTrail_modelMatrix, [0.0, -90.0, -5.0]);
     mat4.rotateY(pTrail_modelMatrix, pTrail_modelMatrix, degToRad(90.0));
-    //drawParticle(particle, pTrail_modelMatrix);
     drawArch(pTrail_arch, pTrail_modelMatrix);
-    //mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0]);
-    //drawArch(pTrail_arch, modelMatrix);
 
     gl.useProgram(null);
 
     // Restore the states of OpenGL
     gl.depthMask(true);
     gl.disable(gl.BLEND);
+    gl.disable(gl.PROGRAM_POINT_SIZE);
+    gl.disable(gl.POINT_SPRITE);
 
     // Double buffering
     requestAnimationFrame(pTrail_display, canvas);
@@ -435,26 +309,20 @@ function drawParticle(p, pTrail_modelMatrix) {
     gl.uniform1i(pTrail_textureSamplerUniform, 0);
 
     gl.bindVertexArray(pTrail_vao);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, pTrail_vbo_indices);
 
     let destModelMatrix = mat4.create();
     for (let i = 0; i < p.length; ++i) {
         mat4.identity(destModelMatrix);
         if (p[i].wait <= 0) {
             mat4.translate(destModelMatrix, pTrail_modelMatrix, [p[i].position[0], p[i].position[1], p[i].position[2]]);
-            // Rotate around z-axis to show the front face
-            //mat4.rotateZ(pTrail_modelMatrix, pTrail_modelMatrix, degToRad(p[i].angle));
-            mat4.rotateZ(destModelMatrix, destModelMatrix, p[i].angle);
-            let scale = 0.5 * p[i].scale;
-            mat4.scale(destModelMatrix, destModelMatrix, [scale, scale, scale]);
 
             gl.uniformMatrix4fv(pTrail_modelMatrixUniform, false, destModelMatrix);
             gl.uniform1f(pTrail_alphaUniform, p[i].alpha);
-            gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_BYTE, 0);
+            
+            gl.drawArrays(gl.POINTS, 0, 1);
         }
     }
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
 
     // Unbind texture
@@ -488,21 +356,6 @@ function pTrail_uninitialize() {
     if (pTrail_texture_particle) {
         gl.deleteTexture(pTrail_texture_particle);
         pTrail_texture_particle = null;
-    }
-
-    if (pTrail_vbo_indices) {
-        gl.deleteBuffer(pTrail_vbo_indices);
-        pTrail_vbo_indices = null;
-    }
-
-    if (pTrail_vbo_texcoord) {
-        gl.deleteBuffer(pTrail_vbo_texcoord);
-        pTrail_vbo_texcoord = null;
-    }
-
-    if (pTrail_vbo_position) {
-        gl.deleteBuffer(pTrail_vbo_position);
-        pTrail_vbo_position = null;
     }
 
     if (pTrail_vao) {
