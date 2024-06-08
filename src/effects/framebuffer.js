@@ -1,3 +1,7 @@
+var fbo = [];
+var dbo = [];
+var cbo = [];
+
 function GenerateFramebuffer(width, height)
 {
 	var fbo_obj;

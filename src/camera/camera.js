@@ -114,8 +114,8 @@ function MoveCameraBack(move_sensitivity)
 
 function GetCameraViewMatrix()
 {
-    if (reflected)
-        return GetCameraReflectionMatrix();
+    // if (reflected)
+    //     return GetCameraReflectionMatrix();
     
 	mat4.identity(camera_view_matrix);
 	var translation_matrix = mat4.create();
@@ -158,7 +158,7 @@ function GetCameraReflectionMatrix()
     {
     var position = new Float32Array(camera_position);
 
-    var distance = 2 * position[1] - SCENE_THREE_WATER_HEIGHT;
+    var distance = 2 * position[1] - WATER_HEIGHT;
     position[1] = position[1] - distance;
 
     var camera_pos_inv = vec3.create();
