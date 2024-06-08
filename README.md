@@ -16,6 +16,9 @@ Follow below practices before raising PR for adding your contibution to the proj
 ## Models 
 https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=drive_link
 
+## Screenplay
+https://docs.google.com/document/d/1Y-r2Cf_VyUVh8jqMy2sQQbZFiWdJ_ot7/edit?usp=sharing&ouid=112223265961373748686&rtpof=true&sd=true
+
 ## Effect References
 * https://learnopengl.com/Introduction
 * https://www.youtube.com/channel/UCUkRj4qoT1bsWpE_C8lZYoQ
@@ -63,6 +66,7 @@ https://drive.google.com/drive/folders/1PSOvQxftMvON5D_8hc9IXy4L8NqzKXQe?usp=dri
   ## Texture refernce
   https://www.textures.com/browse/pbr-materials/114558
   https://www.cgbookcase.com/textures
+  https://jaxry.github.io/panorama-to-cubemap/
 
   ## Models
   https://sketchfab.com/3d-models/my-very-own-christmas-styled-disney-2006-model-3020495db43742ad93dc5f991952ce8d
