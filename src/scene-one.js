@@ -57,14 +57,11 @@ function InitializeSceneOne() {
 ];
 
   initAssimpModelShader(); 
-  pTrail_initialize();
-  // createReflectionFBO();
-  // createRefractionFBO(); 
+  pTrail_initialize(); 
   reflection_fbo = GenerateFramebuffer(1920, 1920);
 	refraction_fbo = GenerateFramebuffer(1920, 1920);
   initializeWater();
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
-
 }
 
 

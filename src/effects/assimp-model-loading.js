@@ -1,3 +1,5 @@
+// TODO : Point lights and Normal mapping
+
 const TextureMacros = {
 	Diffuse: 1,
 	Specular: 2
