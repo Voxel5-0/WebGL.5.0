@@ -49,7 +49,7 @@ var scene_camera_angles =  [
 //This is done to solve the problem for synchronisity
 var modelList = [
 	//{ name: "Vampire", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
-	{ name: "Backpack", files:[ 'src\\resources\\models\\intro\\Palace_withColors.obj', 'src\\resources\\models\\intro\\Palace_withColors.mtl'], flipTex:false , isStatic : true },
+	{ name: "Palace", files:[ 'src\\resources\\models\\intro\\palace_without_Water.obj', 'src\\resources\\models\\intro\\palace_without_Water.mtl'], flipTex:false , isStatic : true },
 	//{ name: "Backpack", files:[ 'home.obj', 'home.mtl'], flipTex:false },
 	//{ name: "Vampire", files:[ 'vampire/dancing_vampire.dae'], flipTex:false },
 ]

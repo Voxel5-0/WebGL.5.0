@@ -4,3 +4,9 @@
 *.gltf
 src/resources/models/
 src/resources/textures/backup
+src/resources/textures/skybox/Scene6/nx.png
+src/resources/textures/skybox/Scene6/pz.png
+src/resources/textures/skybox/Scene6/py.png
+src/resources/textures/skybox/Scene6/px.png
+src/resources/textures/skybox/Scene6/nz.png
+src/resources/textures/skybox/Scene6/ny.png

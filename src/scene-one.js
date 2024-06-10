@@ -47,19 +47,21 @@ function InitializeSceneOne() {
   var scene_one_tree_one_model_texture_image = "src\\resources\\models\\intro\\TCom_Metal_BrassPolished_header.jpg";
   //var scene_one_tree_two_model_texture_image = "src\\resources\\models\\scene_one_tree_two_texture.png";
 
-  var skyboxTexturesForScene1 = [
-                "src/resources/textures/skybox/Scene6/night.png",
-                "src/resources/textures/skybox/Scene6/night.png",
-                "src/resources/textures/skybox/Scene6/night.png",
-                "src/resources/textures/skybox/Scene6/night.png",
-                "src/resources/textures/skybox/Scene6/night.png",
-                "src/resources/textures/skybox/Scene6/night.png"
-                ];
+  const skyboxTexturesForScene1 = [ 
+    "src/resources/textures/skybox/Scene1/right.jpg", 
+    "src/resources/textures/skybox/Scene1/left.jpg", 
+    "src/resources/textures/skybox/Scene1/top.jpg",
+    "src/resources/textures/skybox/Scene1/bottom.jpg",
+    "src/resources/textures/skybox/Scene1/front.jpg", 
+    "src/resources/textures/skybox/Scene1/back.jpg"
+];
 
   initAssimpModelShader(); 
   pTrail_initialize();
-  createReflectionFBO();
-  createRefractionFBO(); 
+  // createReflectionFBO();
+  // createRefractionFBO(); 
+  reflection_fbo = GenerateFramebuffer(1920, 1920);
+	refraction_fbo = GenerateFramebuffer(1920, 1920);
   initializeWater();
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
 
@@ -75,7 +77,8 @@ function RenderSceneOne() {
   
   animateWater();
   //Render in Reflection FBO
-  bindReflectionFBO();
+  //bindReflectionFBO();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   CameraReflect();
   //render disney castle model for reflection FBO 
@@ -89,8 +92,8 @@ function RenderSceneOne() {
   unbindFBO();
 
   //Render in Refraction FBO
-  bindRefractionFBO();
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   CameraReflect();
   //render skybox for refraction FBO 
   DrawSkybox(SCENE_ONE);
@@ -108,9 +111,9 @@ function RenderSceneOne() {
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix);
   //Render skybox for actual scene
-  //DrawSkybox(SCENE_ONE);
+  DrawSkybox(SCENE_ONE);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
-  RenderWater();
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo);
 
 }
 

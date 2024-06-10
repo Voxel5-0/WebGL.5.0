@@ -5,16 +5,23 @@ var cbo = [];
 function GenerateFramebuffer(width, height)
 {
 	var fbo_obj;
-	var depth_buffer;
+	var texture_depth_buffer;
 	var texture_color_buffer;
 
 	fbo_obj = gl.createFramebuffer();
 	gl.bindFramebuffer(gl.FRAMEBUFFER, fbo_obj);
 
-	depth_buffer = gl.createRenderbuffer();
-	gl.bindRenderbuffer(gl.RENDERBUFFER, depth_buffer);
-	gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT32F, width, height);
-	gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depth_buffer);
+	texture_depth_buffer = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture_depth_buffer);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT32F, width, height, 0, gl.DEPTH_COMPONENT, gl.FLOAT, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, texture_depth_buffer, null);
+
+	// depth_buffer = gl.createRenderbuffer();
+	// gl.bindRenderbuffer(gl.RENDERBUFFER, depth_buffer);
+	// gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT32F, width, height);
+	// gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depth_buffer);
 
 	texture_color_buffer = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, texture_color_buffer);
@@ -42,7 +49,7 @@ function GenerateFramebuffer(width, height)
 
 	return framebuffer = {
 		fbo: fbo_obj,
-		dbo: depth_buffer,
+		dbo: texture_depth_buffer,
 		cbo: texture_color_buffer
 	}
 

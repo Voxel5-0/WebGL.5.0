@@ -172,6 +172,7 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 {
 	//loading skybox texture code
 	skybox_texture[sceneNumber] = gl.createTexture();
+	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 
 	//right
@@ -180,6 +181,7 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 	right_texture.image.src = skyboxTextures[0];
 	right_texture.image.onload = function()
 	{
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, right_texture.image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -191,6 +193,7 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 	left_texture.image.src = skyboxTextures[1];
 	left_texture.image.onload = function()
 	{
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, left_texture.image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -202,6 +205,7 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 	top_texture.image.src = skyboxTextures[2];
 	top_texture.image.onload = function()
 	{
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, top_texture.image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -213,6 +217,7 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 	bottom_texture.image.src = skyboxTextures[3];
 	bottom_texture.image.onload = function()
 	{
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, bottom_texture.image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -224,6 +229,7 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 	back_texture.image.src = skyboxTextures[4];
 	back_texture.image.onload = function()
 	{
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, back_texture.image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -235,12 +241,13 @@ function LoadSkyboxTextures(skyboxTextures, sceneNumber)
 	front_texture.image.src = skyboxTextures[5];
 	front_texture.image.onload = function()
 	{
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 		gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, front_texture.image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
 	};
 	
-	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+	//gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 	gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 

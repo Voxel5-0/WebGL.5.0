@@ -15,13 +15,15 @@ const REFRACTION_FBO_HEIGHT = 512;
 
 // Reflection
 var reflection_fbo;
-var reflection_depth_buffer;
-var reflection_texture;
+var refraction_fbo;
+// var reflection_fbo;
+// var reflection_depth_buffer;
+// var reflection_texture;
 
 // Refraction
-var refraction_fbo;
-var refraction_depth_texture;
-var refraction_texture;
+// var refraction_fbo;
+// var refraction_depth_texture;
+// var refraction_texture;
 
 // ---------------------------
 
@@ -31,8 +33,8 @@ var refraction_texture;
 const WATER_HEIGHT = -50.0;               // Y value for the water_vertices
 const WATER_MESH_SIZE = 1024;           // Should be same as terrain size value
 const WATER_TEXTURE_TILING = 4;
-const WATER_DISTORTION_STRENGTH = 0.5;
-const WATER_MOVE_SPEED = 0.0001;
+const WATER_DISTORTION_STRENGTH = 0.02;
+const WATER_MOVE_SPEED = 0.00001;
 
 // Mesh data
 var water_vertices;
@@ -86,90 +88,6 @@ var delta_time = 0.0;
 var fps = 0.0;
 
 var move = 0;
-
-// ---------------------------
-
-
-// ********************************************************
-// FRAMEBUFFER
-// ********************************************************
-
-function createReflectionFBO()
-{
-    reflection_fbo = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo);
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
-    
-    // Texture attachment
-    reflection_texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, reflection_texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, REFLECTION_FBO_WIDTH, REFLECTION_FBO_HEIGHT, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,  reflection_texture, null);
-
-    // Depth buffer attachment
-    reflection_depth_buffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, reflection_depth_buffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT24, REFLECTION_FBO_WIDTH, REFLECTION_FBO_HEIGHT);
-
-    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)
-        console.log("ERROR: Reflection FBO is not complete.");
-    else
-        console.log("Reflection FBO is complete.");
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-}
-
-
-
-function createRefractionFBO()
-{
-    refraction_fbo = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo);
-    gl.drawBuffers([gl.COLOR_ATTACHMENT0]);
-    
-    // Texture attachment
-    refraction_texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, refraction_texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, REFRACTION_FBO_WIDTH, REFRACTION_FBO_HEIGHT, 0, gl.RGB, gl.UNSIGNED_BYTE, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,  refraction_texture, null);
-
-    // Depth texture attachment
-    refraction_depth_texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, refraction_depth_texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT32F, REFRACTION_FBO_WIDTH, REFRACTION_FBO_HEIGHT, 0, gl.DEPTH_COMPONENT, gl.FLOAT, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, refraction_depth_texture, null);
-    
-    if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) != gl.FRAMEBUFFER_COMPLETE)
-        console.log("ERROR: Refraction FBO is not complete.");
-    else
-        console.log("Refraction FBO is complete.");
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-}
-
-
-
-function bindReflectionFBO()
-{
-    gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo);
-    gl.viewport(0, 0, REFLECTION_FBO_WIDTH, REFLECTION_FBO_HEIGHT);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-}
-
-
-function bindRefractionFBO()
-{
-    gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo);
-    gl.viewport(0, 0, REFRACTION_FBO_WIDTH, REFRACTION_FBO_HEIGHT);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-}
-
 
 function unbindFBO()
 {
@@ -532,7 +450,7 @@ function loadWaterTextures()
 
     water_dudv_texture.image = new Image();
     water_dudv_texture.crossOrigin = "anonymous";
-    water_dudv_texture.image.src = "src/resources/textures/waterDUDV.png";
+    water_dudv_texture.image.src = "src/resources/textures/DuDv-Map_1.jpg";
 
     water_dudv_texture.image.addEventListener('load', function()
     {
@@ -587,7 +505,7 @@ function loadWaterTextures()
 
 
 // Render water
-function RenderWater()
+function RenderWater(reflection_texture, refraction_texture, refraction_depth_texture)
 {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -644,7 +562,6 @@ function RenderWater()
 function updateTime(time)
 {
     frames++;
-
     delta_time = time - last_update;
     last_update = time;
 
@@ -660,10 +577,8 @@ function updateTime(time)
 function animateWater()
 {
     updateTime(new Date().getTime());
-
     water_move_factor += delta_time * WATER_MOVE_SPEED;
     water_move_factor = water_move_factor % 1.0;
-
 }
 
 
