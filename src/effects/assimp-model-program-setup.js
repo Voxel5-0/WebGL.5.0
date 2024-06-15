@@ -35,7 +35,7 @@ function renderAssimpModel(modelMatrix,modelNumber){
     //renderModel(vampire)
     renderModel(models[modelNumber])
     // }
-	console.log("rendered model "+modelNumber);
+	//console.log("rendered model "+modelNumber);
 
     gl.useProgram(null)
 }
