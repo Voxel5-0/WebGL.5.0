@@ -49,7 +49,8 @@ var scene_camera_angles =  [
 //This is done to solve the problem for synchronisity
 var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
-	{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
+	{ name: "Palace", files:[ 'src\\resources\\models\\intro\\palace_without_Water.obj', 'src\\resources\\models\\intro\\palace_without_Water.mtl'], flipTex:false , isStatic : true },
+	//{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Room", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "GirlPose1", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "GirlPose2", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
@@ -141,8 +142,8 @@ function init()
     InitializeTerrainRenderer();
     InitializeSkybox();
 
-	fadeInOutEffect = new FadeInOutEffect();
-	fadeInOutEffect.allocate();
+	// fadeInOutEffect = new FadeInOutEffect();
+	// fadeInOutEffect.allocate();
 
 	/*Scene Specific Initialization */
 	InitializeSceneOne();
