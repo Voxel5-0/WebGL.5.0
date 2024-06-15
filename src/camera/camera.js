@@ -180,3 +180,54 @@ function GetCameraReflectionMatrix()
     
     return reflectionMatrix;
 }
+
+//B-spline curve evaluation function
+function evaluateBSplineCurve(t, controlPoints) {
+    // Example: assume controlPoints is an array of Vector3 objects
+    const n = controlPoints.length;
+    const index = Math.floor(t * (n - 1));
+    const t0 = index / (n - 1);
+    const t1 = (index + 1) / (n - 1);
+    const p0 = controlPoints[index];
+    const p1 = controlPoints[index + 1];
+    const pointOnCurve = p0.clone().lerp(p1, (t - t0) / (t1 - t0));
+    return pointOnCurve;
+}
+
+// calculate camera position and orientation to follow a B-spline curve
+function cameraFollowBSplineCurve(t, controlPoints, deltaT) {
+    const pointOnCurve = evaluateBSplineCurve(t, controlPoints);
+
+    // Calculate next point on the curve to determine lookAt direction
+    const nextPoint = (t + deltaT <= 1) ? evaluateBSplineCurve(t + deltaT, controlPoints) : evaluateBSplineCurve(1, controlPoints);
+
+    const cameraPosition = pointOnCurve;
+
+ 	// Calculate the lookAtDirection vector
+ 	var lookAtDirection = [
+ 	    nextPoint[0] - cameraPosition[0],
+ 	    nextPoint[1] - cameraPosition[1],
+ 	    nextPoint[2] - cameraPosition[2]
+ 	];
+ 	
+ 	// Normalize the lookAtDirection vector
+ 	var length = Math.sqrt(
+ 	    lookAtDirection[0] * lookAtDirection[0] +
+ 	    lookAtDirection[1] * lookAtDirection[1] +
+ 	    lookAtDirection[2] * lookAtDirection[2]
+ 	);
+ 	
+ 	lookAtDirection = [
+ 	    lookAtDirection[0] / length,
+ 	    lookAtDirection[1] / length,
+ 	    lookAtDirection[2] / length
+ 	];
+ 	
+ 	// TODO : need to change UP vector according to need, RN assuming a fixed up vector
+	var upVector = [0, 1, 0];
+
+    mat4.lookAt(viewMatrix , cameraPosition, nextPoint, upVector);
+
+    return viewMatrix;
+}
+

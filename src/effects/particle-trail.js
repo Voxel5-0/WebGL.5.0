@@ -264,6 +264,11 @@ function updateArch(pTrail_arch) {
         //     archPos[i][3] -= 0.5;
         // }
         updateParticle(pTrail_arch[i], i);
+
+        if(i == pTrail_arch.length -1){
+            bool_start_ptrail_update = false;
+            //initParticle();
+        }
     }
 }
 

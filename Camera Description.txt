@@ -1,9 +1,9 @@
 Scene 1 : 
 1 .
 Camera looking up towards  a Star in the sky
-Camera position: -194.52075886629595,-47.40492629979871,492.47252665197897
-main.js:369 X rotation: -66.24292036732052
-main.js:370 Y rotation: -135.59999999999997
+Camera position: -121.21575326876994,-21.74453546121698,18.465957045573738
+main.js:374 X rotation: -118.84292036732053
+main.js:375 Y rotation: -135.8000000000002
 
 2.
 Camera angle will change to look down

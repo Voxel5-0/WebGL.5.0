@@ -6,8 +6,13 @@ var viewPosUnifromForDeepCube;
 var diffuseUnifromForDeepCube;
 var isStaticUniformForDeepCube;
 
-function initAssimpModelShader() {
-    setupProgram();
+var ptL_modelMatrixUniform, ptL_viewMatrixUniform, ptL_projectionMatrixUniform;
+var ptL_viewPosUniform;
+var ptL_materialDiffuseUniform,ptL_materialSpecularUniform,ptL_materialShininessUniform;
+var pointLightUniforms = [];
+
+function initAssimpModelShader(pointLightsCount) {
+    setupProgram(pointLightsCount);
 	gl.enable(gl.DEPTH_TEST);
     for(i = 0; i<modelList.length;i++){
         models[i] = initalizeModel(modelList[i].name,modelList);
@@ -15,7 +20,7 @@ function initAssimpModelShader() {
 
 }
 
-function renderAssimpModel(modelMatrix,modelNumber){
+function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors  ){
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForDeepCube, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForDeepCube, false, GetCameraViewMatrix())
@@ -36,11 +41,26 @@ function renderAssimpModel(modelMatrix,modelNumber){
     renderModel(models[modelNumber])
     // }
 	//console.log("rendered model "+modelNumber);
+	for (let i = 0; i < pointLightsCount; i++) {
+		gl.uniform3fv(pointLightUniforms[i].position, lightPositions[i]);
+		gl.uniform3fv(pointLightUniforms[i].ambient, [0.2, 0.2, 0.2]);
+		gl.uniform3fv(pointLightUniforms[i].diffuse, lightColors);
+		gl.uniform3fv(pointLightUniforms[i].specular, [2.0, 2.0, 2.0]);
+		gl.uniform1f(pointLightUniforms[i].constant, 0.5);
+		gl.uniform1f(pointLightUniforms[i].linear, 0.02);
+		gl.uniform1f(pointLightUniforms[i].quadratic, 0.005);
+	}
+
+	gl.uniform1f(ptL_materialDiffuseUniform, 0.0);
+	gl.uniform1f(ptL_materialSpecularUniform, 1.0);
+	gl.uniform1f(ptL_materialShininessUniform, 32.0);
+	
+	gl.uniform3fv(ptL_viewPosUniform, [0.0, 0.0, 5.0]);
 
     gl.useProgram(null)
 }
 
-function setupProgram() {
+function setupProgram(pointLightsCount) {
     var vertexShaderSourceCode = "";
     var fragmentShaderSourceCode = "";
 
@@ -60,10 +80,38 @@ function setupProgram() {
 	viewPosUnifromForDeepCube = gl.getUniformLocation(program, "viewPos")
 	diffuseUnifromForDeepCube = gl.getUniformLocation(program, "diffuse")
 	isStaticUniformForDeepCube = gl.getUniformLocation(program, "isStatic")
+
+	//Uniform Locations For Point Light
+	ptL_modelMatrixUniform = gl.getUniformLocation(program, "mMat");
+	ptL_viewMatrixUniform = gl.getUniformLocation(program, "vMat");
+	ptL_projectionMatrixUniform = gl.getUniformLocation(program, "pMat");
+	//ptL_viewPosUniform = gl.getUniformLocation(program, "viewPos");
+
+	ptL_materialDiffuseUniform = gl.getUniformLocation(
+	  program,
+	  "material.diffuse"
+	);
+	ptL_materialSpecularUniform = gl.getUniformLocation(
+	  program,
+	  "material.specular"
+	);
+	ptL_materialShininessUniform = gl.getUniformLocation(
+	  program,
+	  "material.shininess"
+	);
+
+	for (let i = 0; i < pointLightsCount; i++) {
+	  pointLightUniforms.push({
+	 position: gl.getUniformLocation(program, `pointLights[${i}].position`),
+	 ambient: gl.getUniformLocation(program, `pointLights[${i}].ambient`),
+	 diffuse: gl.getUniformLocation(program, `pointLights[${i}].diffuse`),
+	 specular: gl.getUniformLocation(program, `pointLights[${i}].specular`),
+	 constant: gl.getUniformLocation(program, `pointLights[${i}].constant`),
+	 linear: gl.getUniformLocation(program, `pointLights[${i}].linear`),
+	 quadratic: gl.getUniformLocation(program, `pointLights[${i}].quadratic`),
+	  });
+	}
 }
-
-
-
 
 function createShader(filename, shaderType) {
 	var shader = gl.createShader(shaderType)

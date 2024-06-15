@@ -29,14 +29,14 @@ void main(void) {
 			vec3 localNormal = mat3(bMat[vBoneIds[i]]) * vNor;
 			totalNormal += localNormal;
 		}
-		gl_Position = pMat * vMat * mMat * totalPosition;
-		Tex = vTex;
-		N = mat3(mMat) * totalNormal;
 		P = vec3(mMat * totalPosition);
-	} else {
-		gl_Position = pMat * vMat * mMat * vPos;
-		Tex = vTex;
-		N = mat3(mMat) * vNor;
-		P = vec3(mMat * vPos);	
-	}
+        N = mat3(mMat) * totalNormal;
+        Tex = vTex;
+        gl_Position = pMat * vMat * vec4(P, 1.0);
+    } else {
+        P = vec3(mMat * vPos);
+        N = mat3(mMat) * vNor;
+        Tex = vTex;
+        gl_Position = pMat * vMat * vec4(P, 1.0);
+    }
 }

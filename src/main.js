@@ -3,7 +3,7 @@ var gl = null;
 var bFullScreen = false;
 var canvas_original_width;
 var canvas_original_height;
-var move_sensitivity = 0.5;
+var move_sensitivity = 1.1;
 var fadeInOutEffect = null;
 
 var requestAnimationFrame = window.requestAnimationFrame ||
@@ -32,14 +32,21 @@ var scene_camera_positions;
 scene_camera_positions = [
 							[492.45003920809063,-45,77.96151170852721],     //scene zero camera initial position,
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
-							[0.0, 0.0, 0.0], 	//scene two camera initial position
-							[0.0, 0.0, 0.0]     //scene three camera initial position
-						 ];
+							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
+							[287.0499275829001,779.0489134224825,2020.4465969962635],     //scene three camera initial position
+						 	[383.0154593030182,-24.121019666324308,537.7536416311242]
+						];
+
+// Camera position: 1869.1399715022253,1182.981200138941,3539.959281976318
+// main.js:407 X rotation: -10.042920367320503
+// main.js:408 Y rotation: -97.39999999999996
+
 var scene_camera_angles =  [
 								0.0, //scene zero
 								-278.0,	//scene one
-								0.0,	//scene two
-								0.0	//scene three
+								-170.0,	//scene two
+								-170.0,	//scene three
+								-97.0 //scene four
 						  ];
 
 
@@ -50,8 +57,8 @@ var scene_camera_angles =  [
 var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
 	{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	// { name: "Room", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	// { name: "GirlPose1", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
+	{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
+	{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\scene.gltf', 'src\\resources\\models\\scene4\\bridge\\scene.bin'], flipTex:true , isStatic : true },
 	// { name: "GirlPose2", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "GirlPose3", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "GirlPose4", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
@@ -148,12 +155,13 @@ function init()
 	InitializeSceneOne();
 	InitializeSceneTwo();
 	InitializeSceneThree();
-
+	InitializeSceneFour();
 
 	/* Other initializers */
 	InitializeCamera();
 	UpdateCameraPosition(scene_camera_positions[scene]);
 	UpdateCameraAngle(scene_camera_angles[scene]);
+	cameraInitialPositionForScene[scene] = 1;
 	/*--------------------- Project Initialization ---------------------*/
 
 
@@ -169,41 +177,64 @@ function init()
     perspectiveProjectionMatrix = mat4.create();
 }
 
-
+var cameraInitialPositionForScene = [];
 
 function draw(now)
 {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    /* Prepare Model Matrix */
-    /*var model_matrix = mat4.create();
-    mat4.identity(model_matrix);
-    mat4.translate(model_matrix, model_matrix, [450.0, -50.0, 100.0-5]);*/
-
-    /* Prepare View Matrix */
-    /*var view_matrix = mat4.create();
-    mat4.identity(view_matrix);
-    view_matrix = GetCameraViewMatrix();*/
-
-    if (scene == 0)
-    {
-    	//RenderSceneZeroOpeningScene();
-    }
-    else if (scene == 1)
-    {
-    	RenderSceneOne();
+	if(cameraInitialPositionForScene[scene] != 1){
+		console.log("Setting initial camera position for scene "+scene);
+		UpdateCameraPosition(scene_camera_positions[scene]);
+		UpdateCameraAngle(scene_camera_angles[scene]);
+		cameraInitialPositionForScene[scene] = 1;
+	}
+	switch(scene){
+		case 0 :
+			RenderSceneZeroOpeningScene();
+			break;
+		case 1 :
+			RenderSceneOne();
+			break;
+		case 2 :
+			UninitializeSceneOne();
+    		RenderSceneTwo();
+			break;
+		case 3 :
+			UninitializeSceneTwo();
+			RenderSceneThree();
+			break;
+		case 4 : 
+			UninitializeSceneThree();
+    		RenderSceneFour();
+			break;
+	}
+    // if (scene == 0)
+    // {
+    // 	//RenderSceneZeroOpeningScene();
+    // }
+    // else if (scene == 1)
+    // {
+    // 	RenderSceneOne();
+    // }
+    // else if (scene == 2)
+    // {
+	// 	UninitializeSceneOne();
+    // 	RenderSceneTwo();
+    // }
+    // else if (scene == 3)
+    // {
+	// 	if(cameraInitialPositionForScene[scene] != 1){
+	// 		console.log("Setting initial camera position for scene "+scene);
+	// 		UpdateCameraPosition(scene_camera_positions[scene]);
+	// 		UpdateCameraAngle(scene_camera_angles[scene]);
+	// 		cameraInitialPositionForScene[scene] = 1;
+	// 	}
+    // 	RenderSceneThree();
+    // }
+	// else if(scene == 4){
 		
-    }
-    else if (scene == 2)
-    {
-		UninitializeSceneOne();
-    	RenderSceneTwo();
-    }
-    else if (scene == 3)
-    {
-    	RenderSceneThree();
-    }
-   
+	// }
     requestAnimationFrame(draw, canvas);
     update(now);
 }
@@ -342,6 +373,19 @@ function UpdateMoveSensitivity(sensitivity)
 
 function keyDown(event)
 {
+
+	switch(event.code){
+		case 'KeyN':
+			scene = scene + 1;
+			console.log("Moving to scene :"+scene);
+			break;	
+		break;
+		case 'KeyT':
+			//start - trail
+			bool_start_ptrail_update = true;
+			break;
+	}
+
 	switch(event.keyCode)
 	{
 		case 68: //D
@@ -356,11 +400,7 @@ function keyDown(event)
 		case 83: //s
 			MoveCameraBack(move_sensitivity);
 		break;
-		case 'N':
-		case 'n':
-			scene = scene + 1;
-			break;	
-		break;
+		
 		case 27:
 			uninitialize();
 			window.close();

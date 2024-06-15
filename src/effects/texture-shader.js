@@ -23,7 +23,7 @@ function InitializeTextureShader()
 
 		"void main(void)" 							+
 		"{" +
-		//	"gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;" +
+			"gl_Position = v_position;" +
 			"out_texcoord = v_texcoord;" +
 		"}" ;
 
@@ -44,7 +44,6 @@ function InitializeTextureShader()
 		}
 	}
 
-
 	var textureFragmentShaderSource = 
 		"#version 300 es" 													+
 		"\n" 																+
@@ -55,16 +54,13 @@ function InitializeTextureShader()
 		
 		"void main(void)" 													+
 		"{" 																+
-			"FragColor =  vec4(1.0,1.0,0.5,1.0);" 	+
+		// "	vec4 color = texture(u_texture_0_sampler,out_texcoord);"+
+		// "	float grayScaleFactor = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11 )); "+
+		// "   vec4 grayScaleColor = vec4(grayScaleFactor,grayScaleFactor,grayScaleFactor,1);"+
+		// "	FragColor = grayScaleColor;"+
+		"   FragColor = texture(u_texture_0_sampler, out_texcoord);" 	+
 		"}";
 
-
-		// "if (FragColor.a == 0.0)"										+
-		// 	"{"																+
-		// 		"discard;"													+
-		// 	"}"																+
-
-		//texture(u_texture_0_sampler, out_texcoord) *
 	texture_fragment_shader = gl.createShader(gl.FRAGMENT_SHADER);
 	gl.shaderSource(texture_fragment_shader, textureFragmentShaderSource);
 	gl.compileShader(texture_fragment_shader);
@@ -108,17 +104,36 @@ function InitializeTextureShader()
 
 }
 
-function RenderWithTextureShader(model_matrix, view_matrix, projection_matrix, texture_obj, texture_0_sampler)
+function RenderWithTextureShaderMVP(model_matrix, view_matrix, projection_matrix, texture_obj, texture_0_sampler)
 {
 	gl.useProgram(texture_shader_program);
 
-    gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
-    gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
-    gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
+    // gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
+    // gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
+    // gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
     gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+
+	QuadRendererXY();
+
+	gl.useProgram(null);
+
+}
+
+function RenderWithTextureShader(texture_obj, texture_0_sampler)
+{
+	gl.useProgram(texture_shader_program);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture_obj);
+    gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+
+	QuadRendererXY();
+
+	gl.useProgram(null);
+
 }
 
 
