@@ -1,8 +1,8 @@
-const SHREEMIT_PI = 3.14159265358979323846;
+const I = 3.14159265358979323846;
 function makeSphere(sphereMesh, fRadius, iSlices, iStacks)
 {
-    drho = parseFloat(SHREEMIT_PI) / parseFloat(iStacks);
-    dtheta = 2.0 * parseFloat(SHREEMIT_PI) / parseFloat(iSlices);
+    drho = parseFloat(PI) / parseFloat(iStacks);
+    dtheta = 2.0 * parseFloat(PI) / parseFloat(iSlices);
     ds = 1.0 / parseFloat(iSlices);
     dt = 1.0 / parseFloat(iStacks);
     t = 1.0;

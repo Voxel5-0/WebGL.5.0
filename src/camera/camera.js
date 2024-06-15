@@ -32,19 +32,21 @@ function InitializeCamera()
 
 function UpdateCameraXY(x, y)
 {
-	x_rotation += (y - last_y) / 50;
+	x_rotation += (y - last_y) / 5;
 	y_rotation -= (x - last_x) / 5;
 
-	x_rotation = Math.min(x_rotation, Math.PI/2.5);
-	x_rotation = Math.max(x_rotation, 0.1);
+	// x_rotation = Math.min(x_rotation, Math.PI/2.5);
+	// x_rotation = Math.max(x_rotation, 0.1);
 
 	//console.log("x = " + x + "last_x = " + last_x + "y_rotation=" + y_rotation);
 	last_x = x;
 	last_y = y;
 
 	var y_rotation_radian = glMatrix.toRadian(y_rotation);
+	var x_rotation_radian = glMatrix.toRadian(x_rotation);
+
 	camera_right_vector = [Math.cos(y_rotation_radian), 0, -Math.sin(y_rotation_radian)];
-	camera_direction_vector = [Math.sin(y_rotation_radian), 0, Math.cos(y_rotation_radian)];
+	camera_direction_vector = [Math.sin(y_rotation_radian), Math.sin(x_rotation_radian), Math.cos(y_rotation_radian)];
 	vec3.cross(camera_up_vector, camera_direction_vector, camera_right_vector);
 
 	y_rotation_matrix = [
@@ -114,8 +116,8 @@ function MoveCameraBack(move_sensitivity)
 
 function GetCameraViewMatrix()
 {
-    // if (reflected)
-    //     return GetCameraReflectionMatrix();
+    if (reflected)
+      return GetCameraReflectionMatrix();
     
 	mat4.identity(camera_view_matrix);
 	var translation_matrix = mat4.create();
@@ -158,8 +160,8 @@ function GetCameraReflectionMatrix()
     {
     var position = new Float32Array(camera_position);
 
-    var distance = 2 * position[1] - WATER_HEIGHT;
-    position[1] = position[1] - distance;
+    //var distance = 2 * position[1] - WATER_HEIGHT;
+    position[1] = -position[1];
 
     var camera_pos_inv = vec3.create();
     vec3.negate(camera_pos_inv, position);

@@ -1,0 +1,78 @@
+Scene 1 : 
+1 .
+Camera looking up towards  a Star in the sky
+Camera position: -194.52075886629595,-47.40492629979871,492.47252665197897
+main.js:369 X rotation: -66.24292036732052
+main.js:370 Y rotation: -135.59999999999997
+
+2.
+Camera angle will change to look down
+Camera position: -201.35560149472445,-51.28685474047536,483.7972062310509
+main.js:369 X rotation: -6.242920367320533
+main.js:370 Y rotation: -131
+
+3. Moving towards castle 
+from 
+Camera position: -330.32294943986045,-69.49915846574974,368.48708887790093
+main.js:369 X rotation: -6.042920367320533
+main.js:370 Y rotation: -131.8
+
+from
+
+Identify two more points
+i
+ii
+
+* From here we will start fireworks around castle
+
+flag above the castle
+Camera position: 47.44716182156614,-41.67942004893992,-8.207544351758276
+main.js:369 X rotation: -2.6429203673205337
+main.js:370 Y rotation: -268.00000000000045
+
+4. move backwards towards
+
+Final position
+Camera position: 188.54773835466648,-105,4.046151170852721
+main.js:369 X rotation: 0.15707963267948966
+main.js:370 Y rotation: -278
+
+5.
+Once came is sent on final position 
+start trail and stop the fireworks
+and end the scene on trail ending - 
+
+
+Fade Out
+
+Titles -
+Introduction - Astromedicomp - Voxel Group presents 
+
+Scene 2 :
+
+Fade In Camera on the girl looking out from the window
+
+Starts from the painting of the wall 
+
+come behind and will look towards the girl looking out from window 
+
+we can see stars and mounts from the window - (for mountains we can use textures, and stars are very few particles moving up slowly)
+
+camera will move towards the particles in sky and we will start 3rd scene with same visuals(Scene to scene transition)
+
+Scene 3 :
+
+starts where scene two ended
+
+camera will turn behind and we will see the girl is now left her home and standing on a broken bridge
+
+
+
+
+
+
+
+
+
+
+

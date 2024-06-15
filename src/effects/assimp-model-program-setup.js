@@ -15,28 +15,28 @@ function initAssimpModelShader() {
 
 }
 
-function renderAssimpModel(modelMatrix){
+function renderAssimpModel(modelMatrix,modelNumber){
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForDeepCube, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForDeepCube, false, GetCameraViewMatrix())
 	gl.uniformMatrix4fv(mMatUnifromForDeepCube, false, modelMatrix)
 	gl.uniform3fv(viewPosUnifromForDeepCube, GetCameraPosition())
-    for(i=0 ; i < models.length ; i++){
-        //TODO : commented code is for dynamic model
-        // if(!modelList[i].isStatic) {
-        //     updateModel(models[i], 0, 0.01)
-        //     var boneMat = getBoneMatrixArray(models[i], 0)
-        //     for(var i = 0; i < boneMat.length; i++) {
-        //         gl.uniformMatrix4fv(bMatUnifromForDeepCube[i], false, boneMat[i])
-        //     }
-        //     gl.uniform1i(isStaticUniformForDeepCube, 1)
-        //     renderModel(models[i])
-        // } else {
-            gl.uniform1i(isStaticUniformForDeepCube, 0)
-            //renderModel(vampire)
-            renderModel(models[i])
-        // }
-    }
+    //TODO : commented code is for dynamic model
+    // if(!modelList[i].isStatic) {
+    //   updateModel(models[i], 0, 0.01)
+    //     var boneMat = getBoneMatrixArray(models[i], 0)
+    //     for(var i = 0; i < boneMat.length; i++) {
+    //         gl.uniformMatrix4fv(bMatUnifromForDeepCube[i], false, boneMat[i])
+    //     }
+    //     gl.uniform1i(isStaticUniformForDeepCube, 1)
+    //     renderModel(models[i])
+    // } else {
+    gl.uniform1i(isStaticUniformForDeepCube, 0)
+    //renderModel(vampire)
+    renderModel(models[modelNumber])
+    // }
+	console.log("rendered model "+modelNumber);
+
     gl.useProgram(null)
 }
 

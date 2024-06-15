@@ -14,7 +14,7 @@ out vec4 color;
 
 void main(void) {
 	vec3 normal = normalize(N);
-	vec3 lightDir = normalize(vec3(0.0, 0.0, 10.0) - P);
+	vec3 lightDir = normalize(vec3(0.0, 0.0, 100.0) - P);
 	vec3 viewDir = normalize(viewPos - P);
 	vec3 reflectVec = reflect(-lightDir, normal);
 	vec3 matcolor = vec3(texture(diffuse, Tex));

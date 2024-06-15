@@ -3,30 +3,6 @@
 // ********************************************************
 // ---------------------------
 
-// ---------------------------
-
-// FRAMEBUFFERS
-
-// Constants
-const REFLECTION_FBO_WIDTH = 512 ;
-const REFLECTION_FBO_HEIGHT = 512;
-const REFRACTION_FBO_WIDTH = 512;
-const REFRACTION_FBO_HEIGHT = 512;
-
-// Reflection
-var reflection_fbo;
-var refraction_fbo;
-// var reflection_fbo;
-// var reflection_depth_buffer;
-// var reflection_texture;
-
-// Refraction
-// var refraction_fbo;
-// var refraction_depth_texture;
-// var refraction_texture;
-
-// ---------------------------
-
 // WATER
 
 // Constants
@@ -88,53 +64,6 @@ var delta_time = 0.0;
 var fps = 0.0;
 
 var move = 0;
-
-function unbindFBO()
-{
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.viewport(0, 0, canvas.width, canvas.height);
-}
-
-
-function deleteFBO()
-{
-    if (refraction_depth_texture)
-    {
-        gl.deleteTexture(gl.TEXTURE_2D, refraction_depth_texture);
-        refraction_depth_texture = null;
-    }
-    
-    if (refraction_texture)
-    {
-        gl.deleteTexture(gl.TEXTURE_2D, refraction_texture);
-        refraction_texture = null;
-    }
-    
-    if (refraction_fbo)
-    {
-        gl.deleteFramebuffer(gl.FRAMEBUFFER, refraction_fbo);
-        refraction_fbo = null;
-    }
-
-    if (reflection_depth_buffer)
-    {
-        gl.deleteRenderbuffer(gl.RENDERBUFFER, reflection_depth_buffer);
-        reflection_depth_buffer = null;
-    }
-    
-    
-    if (reflection_texture)
-    {
-        gl.deleteTexture(gl.TEXTURE_2D, reflection_texture);
-        reflection_texture = null;
-    }
-    
-    if (reflection_fbo)
-    {
-        gl.deleteFramebuffer(gl.FRAMEBUFFER, reflection_fbo);
-        reflection_fbo = null;
-    }
-}
 
 
 // ********************************************************
@@ -251,7 +180,7 @@ function initializeWaterShaders()
         float terrainDistance = 2.0 * near * far / (far + near - (2.0 * terrainDepth - 1.0) * (far - near));
 
         vec2 distortedTexcoord = texture(u_dudvTextureSampler, vec2(out_texcoord.x + u_moveFactor, out_texcoord.y)).rg * 0.1;
-        distortedTexcoord = out_texcoord + vec2(distortedTexcoord.x, distortedTexcoord.y + u_moveFactor);
+        distortedTexcoord= out_texcoord + vec2(distortedTexcoord.x, distortedTexcoord.y + u_moveFactor);
         vec2 totalDistortion = (texture(u_dudvTextureSampler, distortedTexcoord).rg * 2.0 - 1.0) * u_distortionStrength ;
 
         
@@ -278,6 +207,7 @@ function initializeWaterShaders()
         float specular = max(dot(reflectedLight, viewVector), 0.0);
         specular = pow(specular, SHINE_DAMPER);
         vec3 specularHighlights = u_lightColor * specular * REFLECTIVITY;
+        //FragColor = reflectColor;
         FragColor = mix(refractColor,reflectColor,refractiveFactor);
         FragColor = mix(FragColor, vec4(0.0, 0.0, 1.0, 1.0), 0.2) + vec4(specularHighlights, 0.0);
     }

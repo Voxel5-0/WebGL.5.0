@@ -58,9 +58,17 @@ function InitializeSceneOne() {
 
   initAssimpModelShader(); 
   pTrail_initialize(); 
+  InitializeTerrainRenderer();
+  //terrain_height_map_image, blend_map_imaage, rock_1_image, rock_2_image, path_image, grass_image, scene
+  InitializeHeightMapTerrain(scene_one_height_map_image,scene_one_blend_map,scene_one_rock_1_image,scene_one_rock_2_image,scene_one_path_image,scene_one_snow_image);
   reflection_fbo = GenerateFramebuffer(1920, 1920);
 	refraction_fbo = GenerateFramebuffer(1920, 1920);
+
+  finalScene_fbo = GenerateFramebuffer(1920, 1920);
+
   initializeWater();
+  InitializeTextureShader();
+  InitializeQuadRenderer();
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
 }
 
@@ -72,6 +80,10 @@ function RenderSceneOne() {
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, null);
   
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, finalScene_fbo.fbo);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
   animateWater();
   //Render in Reflection FBO
   //bindReflectionFBO();
@@ -82,11 +94,11 @@ function RenderSceneOne() {
 	var modelMatrix = mat4.create()
 	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix);
+  renderAssimpModel(modelMatrix,0);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   //render skybox for reflection FBO 
   DrawSkybox(SCENE_ONE);  
-  unbindFBO();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   //Render in Refraction FBO
   gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
@@ -98,19 +110,31 @@ function RenderSceneOne() {
   var modelMatrix = mat4.create()
 	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix);
+  renderAssimpModel(modelMatrix,0);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
-  unbindFBO();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   //Render castle for actual scene
   var modelMatrix = mat4.create()
 	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix);
+  renderAssimpModel(modelMatrix,0);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo);
+
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  var model_matrix = mat4.create();
+  mat4.translate(model_matrix, model_matrix, [0.0, 0.0, -10.0])
+
+  var view_matrix = mat4.create();
+  var projection_matrix = mat4.create();
+
+  RenderWithTextureShader(model_matrix, view_matrix, projection_matrix, finalScene_fbo.cbo, 0);
+  QuadRenderer();
 
 }
 

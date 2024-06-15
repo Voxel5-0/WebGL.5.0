@@ -4,10 +4,10 @@ var vbo_quad_texcoord;
 
 function InitializeQuadRenderer()
 {
-	var quad_vertices = new Float32Array([1.0, 0.0, 1.0,
-										  0.0, 0.0, 1.0,
+	var quad_vertices = new Float32Array([10.0, 0.0, 10.0,
+										  0.0, 0.0, 10.0,
 										  0.0, 0.0, 0.0,
-										  1.0, 0.0, 0.0]);
+										  10.0, 0.0, 0.0]);
 	var quad_tex_coord = new Float32Array([0.0, 0.0,
 										   1.0, 0.0,
 										   1.0, 1.0,

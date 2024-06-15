@@ -23,7 +23,7 @@ function InitializeTextureShader()
 
 		"void main(void)" 							+
 		"{" +
-			"gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;" +
+		//	"gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;" +
 			"out_texcoord = v_texcoord;" +
 		"}" ;
 
@@ -55,13 +55,16 @@ function InitializeTextureShader()
 		
 		"void main(void)" 													+
 		"{" 																+
-			"FragColor = texture(u_texture_0_sampler, out_texcoord);" 	+
-			"if (FragColor.a == 0.0)"										+
-			"{"																+
-				"discard;"													+
-			"}"																+
+			"FragColor =  vec4(1.0,1.0,0.5,1.0);" 	+
 		"}";
 
+
+		// "if (FragColor.a == 0.0)"										+
+		// 	"{"																+
+		// 		"discard;"													+
+		// 	"}"																+
+
+		//texture(u_texture_0_sampler, out_texcoord) *
 	texture_fragment_shader = gl.createShader(gl.FRAGMENT_SHADER);
 	gl.shaderSource(texture_fragment_shader, textureFragmentShaderSource);
 	gl.compileShader(texture_fragment_shader);
