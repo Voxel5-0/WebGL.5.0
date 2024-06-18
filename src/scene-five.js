@@ -16,24 +16,25 @@
 */
 
 var SCENE_FIVE = 5;
+var trial_data;
 
 // ---------------------------
-function InitializeSceneFive()
+function InitializeSceneFive() 
 {
-  
+    initializeGodrays();
 }
 
-function RenderSceneFive()
+function RenderSceneFive() 
 {
-   
+    godrays_display_final();
 }
 
 function UpdateSceneFive()
 {
-   
+
 }
 
 function UninitializeSceneFive()
 {
-    
+
 }

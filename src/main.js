@@ -160,7 +160,7 @@ function init()
 	/* Other initializers */
 	InitializeCamera();
 	UpdateCameraPosition(scene_camera_positions[scene]);
-	UpdateCameraAngle(scene_camera_angles[scene]);
+	UpdateCameraAngleY(scene_camera_angles[scene]);
 	cameraInitialPositionForScene[scene] = 1;
 	/*--------------------- Project Initialization ---------------------*/
 
@@ -207,6 +207,10 @@ function draw(now)
 		case 4 : 
 			UninitializeSceneThree();
     		RenderSceneFour();
+			break;
+		case 5 : 
+			UninitializeSceneFour();
+    		RenderSceneFive();
 			break;
 	}
     // if (scene == 0)

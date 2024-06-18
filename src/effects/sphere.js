@@ -1,4 +1,4 @@
-const I = 3.14159265358979323846;
+const PI = 3.14159265358979323846;
 function makeSphere(sphereMesh, fRadius, iSlices, iStacks)
 {
     drho = parseFloat(PI) / parseFloat(iStacks);
@@ -20,6 +20,7 @@ function makeSphere(sphereMesh, fRadius, iSlices, iStacks)
         var srhodrho = parseFloat(Math.sin(rho + drho));
         var crhodrho = parseFloat(Math.cos(rho + drho));
         s = 0.0;
+        
         var vertex=new Array(4);
         for(var a=0;a<4;a++)
             vertex[a]=new Array(3);

@@ -17,6 +17,11 @@
 */
 
 var SCENE_ONE = 1;
+const controlPoints = [
+  [-121.21575326876994, -21.74453546121698, 18.465957045573738,-118.84292036732053,-135.8000000000002],
+  [-201.35560149472445, -51.28685474047536, 483.7972062310509,-6.242920367320533,-131],
+  [-330.32294943986045, -69.49915846574974, 368.48708887790093,-6.042920367320533,-131.8]
+];
 
 var scene_one_tree_one_model;
 var scene_one_tree_two_model;
@@ -37,23 +42,27 @@ var bool_start_ptrail_update = false;
 
 var light_count = 8;
 
+var timeBSpline = 0.0;
+
+var startTime = 0;
+
 function InitializeSceneOne() {
-  
-  const skyboxTexturesForScene1 = [ 
-    "src/resources/textures/skybox/Scene1/right.jpg", 
-    "src/resources/textures/skybox/Scene1/left.jpg", 
+
+  const skyboxTexturesForScene1 = [
+    "src/resources/textures/skybox/Scene1/right.jpg",
+    "src/resources/textures/skybox/Scene1/left.jpg",
     "src/resources/textures/skybox/Scene1/top.jpg",
     "src/resources/textures/skybox/Scene1/bottom.jpg",
-    "src/resources/textures/skybox/Scene1/front.jpg", 
+    "src/resources/textures/skybox/Scene1/front.jpg",
     "src/resources/textures/skybox/Scene1/back.jpg"
-];
+  ];
 
-  initAssimpModelShader(light_count); 
-  pTrail_initialize(); 
-  
+  initAssimpModelShader(light_count);
+  pTrail_initialize();
+
   finalScene_fbo = GenerateFramebuffer(1920, 1080);
   reflection_fbo = GenerateFramebuffer(1920, 1080);
-	refraction_fbo = GenerateFramebuffer(1920, 1080);
+  refraction_fbo = GenerateFramebuffer(1920, 1080);
 
 
   initializeWater();
@@ -64,12 +73,17 @@ function InitializeSceneOne() {
 
 
 function RenderSceneOne() {
+  if (startTime == 0) {
+    startTime = performance.now()/1000;
+  }
+  console.log(startTime)
+  bezierCurve(controlPoints, performance.now() / 1000, startTime, 12);
   var view_matrix = GetCameraViewMatrix();
 
   gl.useProgram(null);
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, null);
-  
+
   //Uniforms for point lights
   var lightPositions = [
     [13.21327183125484, -67.44632010003868, -4.840837788952009], //middle
@@ -84,7 +98,7 @@ function RenderSceneOne() {
 
   var lightColors = [1, 0.776, 0.559];
 
-  
+
   animateWater();
   //Render in Reflection FBO
   //bindReflectionFBO();
@@ -92,25 +106,25 @@ function RenderSceneOne() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   CameraReflect();
   //render disney castle model for reflection FBO 
-	var modelMatrix = mat4.create()
-	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
-	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
+  var modelMatrix = mat4.create()
+  mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
+  mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   //render skybox for reflection FBO 
-  DrawSkybox(SCENE_ONE);  
+  DrawSkybox(SCENE_ONE);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   //Render in Refraction FBO
   gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   CameraReflect();
   //render skybox for refraction FBO 
   DrawSkybox(SCENE_ONE);
   //render disney castle model for refraction FBO 
   var modelMatrix = mat4.create()
-	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
-	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
+  mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
+  mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -121,8 +135,8 @@ function RenderSceneOne() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render castle for actual scene
   var modelMatrix = mat4.create()
-	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
-	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
+  mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
+  mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
@@ -143,7 +157,7 @@ function UpdateSceneOne() {
 }
 
 function UninitializeSceneOne() {
- 
+
   if (scene_one_tree_model_one_texture)
   {
     gl.deleteTexture(scene_one_tree_model_one_texture);
