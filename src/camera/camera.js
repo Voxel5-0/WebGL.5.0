@@ -5,6 +5,7 @@
 
 
 var camera_position = [490.0, -45.0, 0.0];
+var camera_position_vector = [490.0, -45.0, 0.0];
 var camera_right_vector = [1.0, 0.0, 0.0];
 var camera_direction_vector = [0.0, 0.0, 1.0];
 var camera_up_vector = [0.0, 1.0, 0.0];
@@ -16,22 +17,19 @@ var last_x;
 var last_y;
 var reflected = false;
 
-
-function InitializeCamera()
-{
+function InitializeCamera() {
 	camera_view_matrix = mat4.create();
 	y_rotation_matrix = mat4.create();
 
 	mat4.identity(camera_view_matrix);
 	mat4.identity(y_rotation_matrix);
 
-	x_rotation = Math.PI/20;
+	x_rotation = Math.PI / 20;
 	y_rotation = 0;
 	UpdateCamera();
 }
 
-function UpdateCameraXY(x, y)
-{
+function UpdateCameraXY(x, y) {
 	x_rotation += (y - last_y) / 5;
 	y_rotation -= (x - last_x) / 5;
 
@@ -57,11 +55,11 @@ function UpdateCameraXY(x, y)
 	];
 }
 
-function UpdateCamera()
-{
+function UpdateCamera() {
 	var y_rotation_radian = glMatrix.toRadian(y_rotation);
+	var x_rotation_radian = glMatrix.toRadian(x_rotation);
 	camera_right_vector = [Math.cos(y_rotation_radian), 0, -Math.sin(y_rotation_radian)];
-	camera_direction_vector = [Math.sin(y_rotation_radian), 0, Math.cos(y_rotation_radian)];
+	camera_direction_vector = [Math.sin(y_rotation_radian), Math.sin(x_rotation_radian), Math.cos(y_rotation_radian)];
 	vec3.cross(camera_up_vector, camera_direction_vector, camera_right_vector);
 
 	y_rotation_matrix = [
@@ -72,50 +70,43 @@ function UpdateCamera()
 	];
 }
 
-function MoveCameraRight(multiplier)
-{
+function MoveCameraRight(multiplier) {
 	camera_position[0] += camera_right_vector[0] * multiplier;
 	camera_position[1] += camera_right_vector[1] * multiplier;
 	camera_position[2] += camera_right_vector[2] * multiplier;
 }
 
-function MoveCameraLeft(multiplier)
-{
+function MoveCameraLeft(multiplier) {
 	camera_position[0] -= camera_right_vector[0] * multiplier;
 	camera_position[1] -= camera_right_vector[1] * multiplier;
 	camera_position[2] -= camera_right_vector[2] * multiplier;
 }
 
-function MoveCameraUp(move_sensitivity)
-{
+function MoveCameraUp(move_sensitivity) {
 	camera_position[0] += camera_up_vector[0] * move_sensitivity;
 	camera_position[1] += camera_up_vector[1] * move_sensitivity;
 	camera_position[2] += camera_up_vector[2] * move_sensitivity;
 }
 
-function MoveCameraDown(move_sensitivity)
-{
+function MoveCameraDown(move_sensitivity) {
 	camera_position[0] -= camera_up_vector[0] * move_sensitivity;
 	camera_position[1] -= camera_up_vector[1] * move_sensitivity;
 	camera_position[2] -= camera_up_vector[2] * move_sensitivity;
 }
 
-function MoveCameraFront(move_sensitivity)
-{
+function MoveCameraFront(move_sensitivity) {
 	camera_position[0] -= camera_direction_vector[0] * move_sensitivity;
 	camera_position[1] -= camera_direction_vector[1] * move_sensitivity;
 	camera_position[2] -= camera_direction_vector[2] * move_sensitivity;
 }
 
-function MoveCameraBack(move_sensitivity)
-{
+function MoveCameraBack(move_sensitivity) {
 	camera_position[0] += camera_direction_vector[0] * move_sensitivity;
 	camera_position[1] += camera_direction_vector[1] * move_sensitivity;
 	camera_position[2] += camera_direction_vector[2] * move_sensitivity;
 }
 
-function GetCameraViewMatrix()
-{
+function GetCameraViewMatrix() {
 	if (reflected)
 		return GetCameraReflectionMatrix();
 
@@ -129,39 +120,33 @@ function GetCameraViewMatrix()
 	return camera_view_matrix;
 }
 
-function GetCameraPosition()
-{
+function GetCameraPosition() {
 	return camera_position;
 }
 
-function UpdateCameraPosition(position)
-{
+function UpdateCameraPosition(position) {
 	camera_position = position;
 }
 
-function UpdateCameraAngle(angle)
-{
+function UpdateCameraAngleY(angle) {
 	y_rotation = angle;
 	UpdateCamera();
 }
 function UpdateCameraAngleX(angle) {
- 	x_rotation = angle;
+	x_rotation = angle;
 	UpdateCamera();
 }
 
 // Reflection matrix functions
-function CameraReflect()
-{
+function CameraReflect() {
 	reflected = !reflected;
 }
 
-function GetCameraReflectionMatrix()
-{
+function GetCameraReflectionMatrix() {
 	var reflectionMatrix = mat4.create();
 	mat4.identity(reflectionMatrix);
 
-    if (reflected)
-    {
+	if (reflected) {
 		var position = new Float32Array(camera_position);
 
 		//var distance = 2 * position[1] - WATER_HEIGHT;
@@ -194,7 +179,7 @@ function evaluateBSplineCurve(t, controlPoints) {
 	const t1 = (index + 1) / (n - 1);
 	const p0 = controlPoints[index];
 	const p1 = controlPoints[index + 1];
-    const pointOnCurve = p0.clone().lerp(p1, (t - t0) / (t1 - t0));
+	const pointOnCurve = p0.clone().lerp(p1, (t - t0) / (t1 - t0));
 	return pointOnCurve;
 }
 
@@ -207,32 +192,32 @@ function cameraFollowBSplineCurve(t, controlPoints, deltaT) {
 
 	const cameraPosition = pointOnCurve;
 
- 	// Calculate the lookAtDirection vector
- 	var lookAtDirection = [
- 	    nextPoint[0] - cameraPosition[0],
- 	    nextPoint[1] - cameraPosition[1],
- 	    nextPoint[2] - cameraPosition[2]
- 	];
- 	
- 	// Normalize the lookAtDirection vector
- 	var length = Math.sqrt(
- 	    lookAtDirection[0] * lookAtDirection[0] +
- 	    lookAtDirection[1] * lookAtDirection[1] +
- 	    lookAtDirection[2] * lookAtDirection[2]
- 	);
+	// Calculate the lookAtDirection vector
+	var lookAtDirection = [
+		nextPoint[0] - cameraPosition[0],
+		nextPoint[1] - cameraPosition[1],
+		nextPoint[2] - cameraPosition[2]
+	];
 
- 	lookAtDirection = [
- 	    lookAtDirection[0] / length,
- 	    lookAtDirection[1] / length,
- 	    lookAtDirection[2] / length
- 	];
+	// Normalize the lookAtDirection vector
+	var length = Math.sqrt(
+		lookAtDirection[0] * lookAtDirection[0] +
+		lookAtDirection[1] * lookAtDirection[1] +
+		lookAtDirection[2] * lookAtDirection[2]
+	);
 
- 	// TODO : need to change UP vector according to need, RN assuming a fixed up vector
+	lookAtDirection = [
+		lookAtDirection[0] / length,
+		lookAtDirection[1] / length,
+		lookAtDirection[2] / length
+	];
+
+	// TODO : need to change UP vector according to need, RN assuming a fixed up vector
 	var upVector = [0, 1, 0];
 
-    mat4.lookAt(viewMatrix , cameraPosition, nextPoint, upVector);
+	mat4.lookAt(viewMatrix, cameraPosition, nextPoint, upVector);
 
-    return viewMatrix;
+	return viewMatrix;
 }
 
 function bernstein(i, n, t) {
@@ -247,24 +232,22 @@ function bezierCurve(controlPoints, currentTime, startTime, Duration) {
 	let n = controlPoints.length - 1;
 	let currentTimeInterval = currentTime - startTime;
 	let t = currentTimeInterval / Duration;
-	if(t>1)
-		t=1;
-	let x = 0.0, y = 0.0,z=0.0,xAngle=0.0,yAngle=0.0;
-
-	for (let i = 0; i <= n; ++i) {
+	if (t > 1)
+		t = 1;
+	let x = 0.0, y = 0.0, z = 0.0, xAngle = 0.0, yAngle = 0.0;
+	let i = 0
+	for (i; i <= n; ++i) {
 		let b = bernstein(i, n, t);
 		x += b * controlPoints[i][0];
 		y += b * controlPoints[i][1];
 		z += b * controlPoints[i][2];
-		yAngle = b * controlPoints[i][3];
-		xAngle = b * controlPoints[i][4];
+		xAngle += b * controlPoints[i][3];
+		yAngle += b * controlPoints[i][4];
 	}
-	console.log(x, y, z);
+	// console.log(x, y, z);
+	console.log(xAngle, yAngle);
+	camera_position_vector = [x, y, z]
 	UpdateCameraPosition([x, y, z]);
-	UpdateCameraAngleY(yAngle);
-	UpdateCameraAngleX(xAngle);
-
+	UpdateCameraAngleY(yAngle % 360);
+	UpdateCameraAngleX(xAngle % 360);
 }
-
-
-

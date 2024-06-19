@@ -17,10 +17,15 @@
 */
 
 var SCENE_ONE = 1;
+// for control points [x,y,z,xrotation,yrotation]
+// for control points array 0th index is camera initial position and last in end position 
 const controlPoints = [
-  [-121.21575326876994, -21.74453546121698, 18.465957045573738,-118.84292036732053,-135.8000000000002],
-  [-201.35560149472445, -51.28685474047536, 483.7972062310509,-6.242920367320533,-131],
-  [-330.32294943986045, -69.49915846574974, 368.48708887790093,-6.042920367320533,-131.8]
+  [-5.99579627507126, -0.983638457861292, 35.95826514464386, -62.4429236732048, -570.19999999998],
+  [-5.243557997172071, -3.4811357751406176, 21.678070445282525, -23.042920367320533, -544.7999999995],
+  [-2.9448600533500287, -19.595267421016295, -24.700377140328975, -10.24292036, -576.2],
+  [60.6748741583053, -47.665544074232514, -9.0377138685706, -21.642920367320475, -633.3999999999999],
+  [137.52516631157724, -81.33711919060856, -5.38612557063494, -13.042920367320477, -630.9999999999997],
+  [179.3081591306077, -97.33037030294784, -3.89842326914559, -5.242920367320477, -630.9999999999995]
 ];
 
 var scene_one_tree_one_model;
@@ -64,7 +69,6 @@ function InitializeSceneOne() {
   reflection_fbo = GenerateFramebuffer(1920, 1080);
   refraction_fbo = GenerateFramebuffer(1920, 1080);
 
-
   initializeWater();
   InitializeGrayScaleTextureShader();
   InitializeQuadRendererXY();
@@ -74,11 +78,12 @@ function InitializeSceneOne() {
 
 function RenderSceneOne() {
   if (startTime == 0) {
-    startTime = performance.now()/1000;
+    startTime = performance.now() / 1000;
   }
-  console.log(startTime)
-  bezierCurve(controlPoints, performance.now() / 1000, startTime, 12);
-  var view_matrix = GetCameraViewMatrix();
+  if (startTime + 30 > performance.now() / 1000) {
+    bezierCurve(controlPoints, performance.now() / 1000, startTime, 30);
+  }
+  view_matrix = GetCameraViewMatrix();
 
   gl.useProgram(null);
   gl.activeTexture(gl.TEXTURE0);
@@ -109,8 +114,8 @@ function RenderSceneOne() {
   var modelMatrix = mat4.create()
   mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
   mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+  renderAssimpModel(modelMatrix, 0, light_count, lightPositions, lightColors);
+  //pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   //render skybox for reflection FBO 
   DrawSkybox(SCENE_ONE);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -125,8 +130,8 @@ function RenderSceneOne() {
   var modelMatrix = mat4.create()
   mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
   mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+  renderAssimpModel(modelMatrix, 0, light_count, lightPositions, lightColors);
+  //pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -135,15 +140,15 @@ function RenderSceneOne() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render castle for actual scene
   var modelMatrix = mat4.create()
+
   mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
   mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
+  renderAssimpModel(modelMatrix, 0, light_count, lightPositions, lightColors);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
-  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo);
+  // pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+  RenderWater(reflection_fbo.cbo, refraction_fbo.cbo, refraction_fbo.dbo);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
 
   //Render final scene with grayscale
   var model_matrix = mat4.create();
@@ -151,20 +156,18 @@ function RenderSceneOne() {
 }
 
 function UpdateSceneOne() {
-  if(bool_start_ptrail_update == true){
+  if (bool_start_ptrail_update == true) {
     pTrail_update();
   }
 }
 
 function UninitializeSceneOne() {
 
-  if (scene_one_tree_model_one_texture)
-  {
+  if (scene_one_tree_model_one_texture) {
     gl.deleteTexture(scene_one_tree_model_one_texture);
   }
 
-  if (scene_one_tree_model_two_texture)
-  {
+  if (scene_one_tree_model_two_texture) {
     gl.deleteTexture(scene_one_tree_model_two_texture);
   }
 

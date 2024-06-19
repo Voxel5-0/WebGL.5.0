@@ -57,8 +57,8 @@ var scene_camera_angles =  [
 var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
 	{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
-	{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\scene.gltf', 'src\\resources\\models\\scene4\\bridge\\scene.bin'], flipTex:true , isStatic : true },
+	//{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
+	//{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\scene.gltf', 'src\\resources\\models\\scene4\\bridge\\scene.bin'], flipTex:true , isStatic : true },
 	// { name: "GirlPose2", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "GirlPose3", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "GirlPose4", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
@@ -152,16 +152,17 @@ function init()
 	fadeInOutEffect.allocate();
 
 	/*Scene Specific Initialization */
-	InitializeSceneOne();
-	InitializeSceneTwo();
-	InitializeSceneThree();
-	InitializeSceneFour();
+	// InitializeSceneTwo();
+	// InitializeSceneThree();
+	// InitializeSceneFour();
+	// InitializeSceneFive();
 
 	/* Other initializers */
 	InitializeCamera();
 	UpdateCameraPosition(scene_camera_positions[scene]);
 	UpdateCameraAngleY(scene_camera_angles[scene]);
 	cameraInitialPositionForScene[scene] = 1;
+	InitializeSceneOne();
 	/*--------------------- Project Initialization ---------------------*/
 
 

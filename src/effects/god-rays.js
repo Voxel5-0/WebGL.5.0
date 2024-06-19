@@ -820,15 +820,18 @@ function trial_init() {
 function gd_display() {
     //code
     godrays_resize(canvas.width, canvas.height);
-
+	gl.clearColor(1.0,0.0,0.0,1.0)
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(gd_shaderProgramObject);
 
-    var gd_viewmatrix = GetCameraViewMatrix();
-    mat4.multiply(gd_perspectiveProjectionMatrix, gd_perspectiveProjectionMatrix, gd_viewmatrix);
+    var gd_viewmatrix = mat4.create();
+    var gd_modelmatrix = mat4.create();
+	mat4.translate(gd_modelmatrix,gd_modelmatrix,0.0,0.0,-6.0);
+    mat4.multiply(gd_perspectiveProjectionMatrix, gd_perspectiveProjectionMatrix, gd_modelmatrix);
 
     gl.uniformMatrix4fv(gd_mvpMatrixUniform, false, gd_perspectiveProjectionMatrix);
 
-    ModelRenderer(trial_data);
+    sphere.draw();
 
     gl.useProgram(null);
 
