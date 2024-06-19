@@ -264,11 +264,6 @@ function updateArch(pTrail_arch) {
         //     archPos[i][3] -= 0.5;
         // }
         updateParticle(pTrail_arch[i], i);
-
-        if(i == pTrail_arch.length -1){
-            bool_start_ptrail_update = false;
-            //initParticle();
-        }
     }
 }
 
@@ -299,7 +294,7 @@ function updateParticle(p, count) {
 function drawArch(pTrail_arch, pTrail_modelMatrix) {
     for (let i = 0; i < pTrail_arch.length; i++) {
         if (archPos[i][3] <= 0.0 && archPos[i][4] >= 0.0)
-        {
+            {
             drawParticle(pTrail_arch[i], pTrail_modelMatrix);
             archPos[i][4] -= 0.125;
             // archPos[i][4] -= 0.5;

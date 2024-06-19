@@ -1,6 +1,6 @@
-var texture_vertex_shader;
-var texture_fragment_shader;
-var texture_shader_program;
+var gs_texture_vertex_shader;
+var gs_texture_fragment_shader;
+var gs_texture_shader_program;
 
 var u_model_matrix;
 var u_view_matrix;
@@ -27,13 +27,13 @@ function InitializeGrayScaleTextureShader()
 			"out_texcoord = v_texcoord;" +
 		"}" ;
 
-	texture_vertex_shader = gl.createShader(gl.VERTEX_SHADER);
-	gl.shaderSource(texture_vertex_shader, textureVertexShaderSource);
-	gl.compileShader(texture_vertex_shader);
+	gs_texture_vertex_shader = gl.createShader(gl.VERTEX_SHADER);
+	gl.shaderSource(gs_texture_vertex_shader, textureVertexShaderSource);
+	gl.compileShader(gs_texture_vertex_shader);
 
-	if (gl.getShaderParameter(texture_vertex_shader, gl.COMPILE_STATUS) == false)
+	if (gl.getShaderParameter(gs_texture_vertex_shader, gl.COMPILE_STATUS) == false)
 	{
-		var error = gl.getShaderInfoLog(texture_vertex_shader);
+		var error = gl.getShaderInfoLog(gs_texture_vertex_shader);
 
 		if (error.length > 0)
 		{
@@ -62,13 +62,13 @@ function InitializeGrayScaleTextureShader()
 		//"   FragColor = texture(u_texture_0_sampler, out_texcoord) * vec4(1.5,0.5,0.5,0.5);" 	+
 		"}";
 
-	texture_fragment_shader = gl.createShader(gl.FRAGMENT_SHADER);
-	gl.shaderSource(texture_fragment_shader, textureFragmentShaderSource);
-	gl.compileShader(texture_fragment_shader);
+	gs_texture_fragment_shader = gl.createShader(gl.FRAGMENT_SHADER);
+	gl.shaderSource(gs_texture_fragment_shader, textureFragmentShaderSource);
+	gl.compileShader(gs_texture_fragment_shader);
 
-	if (gl.getShaderParameter(texture_fragment_shader, gl.COMPILE_STATUS) == false)
+	if (gl.getShaderParameter(gs_texture_fragment_shader, gl.COMPILE_STATUS) == false)
 	{
-		var error = gl.getShaderInfoLog(texture_fragment_shader);
+		var error = gl.getShaderInfoLog(gs_texture_fragment_shader);
 
 		if (error.length > 0)
 		{
@@ -79,16 +79,16 @@ function InitializeGrayScaleTextureShader()
 		}
 	}
 
-	texture_shader_program = gl.createProgram();
-	gl.attachShader(texture_shader_program, texture_vertex_shader);
-	gl.attachShader(texture_shader_program, texture_fragment_shader);
-	gl.bindAttribLocation(texture_shader_program, WebGLMacros.AMC_ATTRIBUTE_VERTEX, "v_position");
-	gl.bindAttribLocation(texture_shader_program, WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, "v_texcoord");
-	gl.linkProgram(texture_shader_program);
+	gs_texture_shader_program = gl.createProgram();
+	gl.attachShader(gs_texture_shader_program, gs_texture_vertex_shader);
+	gl.attachShader(gs_texture_shader_program, gs_texture_fragment_shader);
+	gl.bindAttribLocation(gs_texture_shader_program, WebGLMacros.AMC_ATTRIBUTE_VERTEX, "v_position");
+	gl.bindAttribLocation(gs_texture_shader_program, WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, "v_texcoord");
+	gl.linkProgram(gs_texture_shader_program);
 
-	if (!gl.getProgramParameter(texture_shader_program, gl.LINK_STATUS))
+	if (!gl.getProgramParameter(gs_texture_shader_program, gl.LINK_STATUS))
 	{
-		var error = gl.getProgramInfoLog(texture_shader_program);
+		var error = gl.getProgramInfoLog(gs_texture_shader_program);
 
 		if(error.length > 0)
 		{
@@ -98,16 +98,16 @@ function InitializeGrayScaleTextureShader()
         }
 	}	
 
-	u_model_matrix = gl.getUniformLocation(texture_shader_program, "u_model_matrix");
-	u_view_matrix = gl.getUniformLocation(texture_shader_program, "u_view_matrix");
-	u_projection_matrix = gl.getUniformLocation(texture_shader_program, "u_projection_matrix");
-    u_texture_0_sampler = gl.getUniformLocation(texture_shader_program, "u_texture_0_sampler");
+	u_model_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_model_matrix");
+	u_view_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_view_matrix");
+	u_projection_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_projection_matrix");
+    u_texture_0_sampler = gl.getUniformLocation(gs_texture_shader_program, "u_texture_0_sampler");
 
 }
 
 function RenderWithGrayScaleTextureShaderMVP(model_matrix, view_matrix, projection_matrix, texture_obj, texture_0_sampler)
 {
-	gl.useProgram(texture_shader_program);
+	gl.useProgram(gs_texture_shader_program);
 
     // gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
     // gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
@@ -125,7 +125,7 @@ function RenderWithGrayScaleTextureShaderMVP(model_matrix, view_matrix, projecti
 
 function RenderWithGrayScaleTextureShader(texture_obj, texture_0_sampler)
 {
-	gl.useProgram(texture_shader_program);
+	gl.useProgram(gs_texture_shader_program);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
@@ -140,23 +140,23 @@ function RenderWithGrayScaleTextureShader(texture_obj, texture_0_sampler)
 
 function UninitializeGrayScaleTextureShader()
 {
-	if(texture_shader_program)
+	if(gs_texture_shader_program)
     {
-        if(texture_fragment_shader)
+        if(gs_texture_fragment_shader)
         {
-            gl.detachShader(texture_shader_program, texture_fragment_shader);
-            gl.deleteShader(texture_fragment_shader);
-            texture_fragment_shader = null;
+            gl.detachShader(gs_texture_shader_program, gs_texture_fragment_shader);
+            gl.deleteShader(gs_texture_fragment_shader);
+            gs_texture_fragment_shader = null;
         }
 
-        if(texture_vertex_shader)
+        if(gs_texture_vertex_shader)
         {
-            gl.detachShader(texture_shader_program, texture_vertex_shader);
-            gl.deleteShader(texture_vertex_shader);
-            texture_vertex_shader = null;
+            gl.detachShader(gs_texture_shader_program, gs_texture_vertex_shader);
+            gl.deleteShader(gs_texture_vertex_shader);
+            gs_texture_vertex_shader = null;
         }
 
-        gl.deleteProgram(texture_shader_program);
-        texture_shader_program = null;
+        gl.deleteProgram(gs_texture_shader_program);
+        gs_texture_shader_program = null;
     }
 }

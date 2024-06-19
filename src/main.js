@@ -40,8 +40,8 @@ scene_camera_positions = [
 							[492.45003920809063,-45,77.96151170852721],     //scene zero camera initial position,
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
 							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
-							[287.0499275829001,779.0489134224825,2020.4465969962635],     //scene three camera initial position
-						 	[313.8060977313394,-14.586146289716707,349.4001499645148],
+							[298.5107073089176,785.1349368758114,2085.443908695071],     //scene three camera initial position
+						 	[582.603042074097,259.96511411123737,630.7985127382476],
 							[313.8060977313394,-14.586146289716707,349.4001499645148]
 						];
 
@@ -54,8 +54,8 @@ var scene_camera_angles =  [
 								0.0, //scene zero
 								-278.0,	//scene one
 								-170.0,	//scene two
-								-170.0,	//scene three
-								-139.0, //scene four
+								-88.39999999999996,	//scene three
+								-136.60000000000002, //scene four
 								-139.0 //scene four
 						  ];
 
@@ -74,6 +74,7 @@ var modelList = [
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
 ]
 
+var grayscale = 1;
 var models = [];
 
 assimpjs().then (function (ajs) {
@@ -169,7 +170,7 @@ function init()
 	/* Other initializers */
 	InitializeCamera();
 	UpdateCameraPosition(scene_camera_positions[scene]);
-	UpdateCameraAngle(scene_camera_angles[scene]);
+	UpdateCameraAngleY(scene_camera_angles[scene]);
 	cameraInitialPositionForScene[scene] = 1;
 	/*--------------------- Project Initialization ---------------------*/
 
@@ -195,7 +196,7 @@ function draw(now)
 	if(cameraInitialPositionForScene[scene] != 1){
 		console.log("Setting initial camera position for scene "+scene);
 		UpdateCameraPosition(scene_camera_positions[scene]);
-		UpdateCameraAngle(scene_camera_angles[scene]);
+		UpdateCameraAngleY(scene_camera_angles[scene]);
 		cameraInitialPositionForScene[scene] = 1;
 	}
 	switch(scene){
@@ -222,32 +223,6 @@ function draw(now)
     		RenderSceneFive();
 			break;	
 	}
-    // if (scene == 0)
-    // {
-    // 	//RenderSceneZeroOpeningScene();
-    // }
-    // else if (scene == 1)
-    // {
-    // 	RenderSceneOne();
-    // }
-    // else if (scene == 2)
-    // {
-	// 	UninitializeSceneOne();
-    // 	RenderSceneTwo();
-    // }
-    // else if (scene == 3)
-    // {
-	// 	if(cameraInitialPositionForScene[scene] != 1){
-	// 		console.log("Setting initial camera position for scene "+scene);
-	// 		UpdateCameraPosition(scene_camera_positions[scene]);
-	// 		UpdateCameraAngle(scene_camera_angles[scene]);
-	// 		cameraInitialPositionForScene[scene] = 1;
-	// 	}
-    // 	RenderSceneThree();
-    // }
-	// else if(scene == 4){
-		
-	// }
     requestAnimationFrame(draw, canvas);
     update(now);
 }
@@ -255,21 +230,23 @@ function draw(now)
 function update(now)
 {
 
-	//UpdateCameraPosition(scene_camera_positions[scene]);
-	//UpdateCameraAngle(scene_camera_angles[scene]);
-
-	if (scene == 0)
-    {
-    	//UpdateCameraXY();
+	switch(scene){
+		case 0:
+			break;
+		case 1 :
+			UpdateSceneOne();
+			break;
+		case 2:
+			break;
+		case 3 :
+			UpdateSceneThree();
+			break;
+		case 4:
+			UpdateSceneFour();
+			break;
+		case 5:
+			break;				
 	}
-    else if (scene == 1)
-    {
-    	
-	}
-    else if (scene == 2)
-    {
-    	
-    }
 }
 
 function resize()
@@ -288,7 +265,6 @@ function resize()
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
 	mat4.perspective(perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 20000.0);
-
 }
 
 function toggleFullScreen()
@@ -393,30 +369,31 @@ function keyDown(event)
 			console.log("Moving to scene :"+scene);
 			break;	
 		break;
-		case 'KeyT':
-			//start - trail
-			bool_start_ptrail_update = true;
-			break;
+		
 		case 'KeyB':
 			scene = scene - 1;
 			console.log("Moving to scene :"+scene);
-			break;	
+			break;
+		case 'KeyG':
+			grayscale = 0;
+			console.log("Converting to grayscale");
+			break;		
 				
 	}
 
 	switch(event.keyCode)
 	{
 		case 68: //D
-			MoveCameraRight(move_sensitivity);
+			MoveCameraRight(move_sensitivity*2);
 		break;
 		case 65: //A
-			MoveCameraLeft(move_sensitivity);
+			MoveCameraLeft(move_sensitivity*2);
 		break;
 		case 87: //w
-			MoveCameraFront(move_sensitivity);
+			MoveCameraFront(move_sensitivity*2);
 		break;
 		case 83: //s
-			MoveCameraBack(move_sensitivity);
+			MoveCameraBack(move_sensitivity*2);
 		break;
 
 		case 88:
@@ -448,7 +425,12 @@ function keyDown(event)
 		case 51:
 				test_scale_Z += move_sensitivity;
 			break;		
-
+		case 32:
+			//start - trail
+			console.log("Start particle trail "+bool_start_ptrail_update);
+			bool_start_ptrail_update = true;
+			console.log("Start particle trail "+bool_start_ptrail_update);
+			break;
 		case 27:
 			uninitialize();
 			window.close();
