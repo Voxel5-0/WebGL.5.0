@@ -209,7 +209,7 @@ function initializeWaterShaders()
         vec3 specularHighlights = u_lightColor * specular * REFLECTIVITY;
         //FragColor = reflectColor;
         FragColor = mix(refractColor,reflectColor,refractiveFactor);
-        FragColor = mix(FragColor, vec4(0.0, 0.0, 1.0, 1.0), 0.2) + vec4(specularHighlights, 0.0);
+        FragColor = mix(FragColor, vec4(0.5, 0.5, 1.5f, 1.0), 0.2) + vec4(specularHighlights, 0.0);
     }
     `;
 
@@ -435,7 +435,7 @@ function loadWaterTextures()
 
 
 // Render water
-function RenderWater(reflection_texture, refraction_texture, refraction_depth_texture)
+function RenderWater(reflection_texture, refraction_texture, refraction_depth_texture,xAdjustment,yAdjustment,zAdjustment)
 {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -445,7 +445,7 @@ function RenderWater(reflection_texture, refraction_texture, refraction_depth_te
     var modelMatrix = mat4.create();
     var viewMatrix = mat4.create();
 
-    mat4.translate(modelMatrix, modelMatrix, [-700.0, -60.0, -100.0]);
+    mat4.translate(modelMatrix, modelMatrix, [-700.0 + xAdjustment, -60.0 + yAdjustment, -100.0+zAdjustment]);
     gl.uniformMatrix4fv(water_model_matrix_uniform, false, modelMatrix);
     gl.uniformMatrix4fv(water_view_matrix_uniform, false, GetCameraViewMatrix());
     gl.uniformMatrix4fv(water_projection_matrix_uniform, false, perspectiveProjectionMatrix);

@@ -5,6 +5,13 @@ var canvas_original_width;
 var canvas_original_height;
 var move_sensitivity = 1.1;
 var fadeInOutEffect = null;
+var test_translate_X = 0.0;
+var test_translate_Y = 0.0 ;
+var test_translate_Z = 0.0;
+
+var test_scale_X = 1.0;
+var test_scale_Y = 1.0 ;
+var test_scale_Z = 1.0;
 
 var requestAnimationFrame = window.requestAnimationFrame ||
 							window.webkitRequestAnimationFrame ||
@@ -34,23 +41,23 @@ scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
 							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
 							[287.0499275829001,779.0489134224825,2020.4465969962635],     //scene three camera initial position
-						 	[383.0154593030182,-24.121019666324308,537.7536416311242]
+						 	[313.8060977313394,-14.586146289716707,349.4001499645148],
+							[313.8060977313394,-14.586146289716707,349.4001499645148]
 						];
 
 // Camera position: 1869.1399715022253,1182.981200138941,3539.959281976318
 // main.js:407 X rotation: -10.042920367320503
 // main.js:408 Y rotation: -97.39999999999996
 
+//TODO : conly camera andle y is used , Need to add Camera angle X as well for starting position
 var scene_camera_angles =  [
 								0.0, //scene zero
 								-278.0,	//scene one
 								-170.0,	//scene two
 								-170.0,	//scene three
-								-97.0 //scene four
+								-139.0, //scene four
+								-139.0 //scene four
 						  ];
-
-
-
 
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
 //This is done to solve the problem for synchronisity
@@ -58,10 +65,11 @@ var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
 	{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
-	{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\scene.gltf', 'src\\resources\\models\\scene4\\bridge\\scene.bin'], flipTex:true , isStatic : true },
-	// { name: "GirlPose2", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	// { name: "GirlPose3", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	// { name: "GirlPose4", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
+	{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], flipTex:true , isStatic : true },
+	{ name: "BridgePart", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], flipTex:false , isStatic : true },
+	{ name: "GirlPose1", files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], flipTex:true , isStatic : true },
+	{ name: "GirlPose2", files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], flipTex:true , isStatic : true },
+	{ name: "GirlPose3", files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], flipTex:false , isStatic : true },
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
 ]
@@ -156,6 +164,7 @@ function init()
 	InitializeSceneTwo();
 	InitializeSceneThree();
 	InitializeSceneFour();
+	InitializeSceneFive();
 
 	/* Other initializers */
 	InitializeCamera();
@@ -208,6 +217,10 @@ function draw(now)
 			UninitializeSceneThree();
     		RenderSceneFour();
 			break;
+		case 5 : 
+			UninitializeSceneFour();
+    		RenderSceneFive();
+			break;	
 	}
     // if (scene == 0)
     // {
@@ -384,6 +397,11 @@ function keyDown(event)
 			//start - trail
 			bool_start_ptrail_update = true;
 			break;
+		case 'KeyB':
+			scene = scene - 1;
+			console.log("Moving to scene :"+scene);
+			break;	
+				
 	}
 
 	switch(event.keyCode)
@@ -400,7 +418,37 @@ function keyDown(event)
 		case 83: //s
 			MoveCameraBack(move_sensitivity);
 		break;
+
+		case 88:
+				test_translate_X += move_sensitivity;
+			break;	
+		case 89:
+				test_translate_Y += move_sensitivity;
+			break;
+		case 90:
+				test_translate_Z += move_sensitivity;
+			break;		
+
+		case 120:
+				test_translate_X -= move_sensitivity;
+			break;	
+		case 121:
+				test_translate_Y -= move_sensitivity;
+			break;
+		case 122:
+				test_translate_Z -= move_sensitivity;
+			break;			
 		
+		case 49:
+				test_scale_X += move_sensitivity;
+			break;	
+		case 50:
+				test_scale_Y += move_sensitivity;
+			break;
+		case 51:
+				test_scale_Z += move_sensitivity;
+			break;		
+
 		case 27:
 			uninitialize();
 			window.close();
@@ -413,6 +461,7 @@ function keyDown(event)
             console.log("Camera position: " + camera_position);
             console.log("X rotation: " + x_rotation);
             console.log("Y rotation: " + y_rotation);
+			console.log("X , Y ,Z  adjustments:" + test_translate_X +" , "+ test_translate_Y +" , "+test_translate_Z);
             break;
 	}
 }

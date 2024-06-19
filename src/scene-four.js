@@ -20,10 +20,10 @@ function InitializeSceneFour()
 {
   var scene_four_height_map_image = "src/resources/textures/terrain.png";
   var scene_four_blend_map = "src/resources/textures/BlendMap.png";
-  var scene_four_rock_1_image = "src/resources/textures/rock.png";
-  var scene_four_rock_2_image = "src/resources/textures/snow.jpg";
+  var scene_four_rock_1_image = "src/resources/textures/soil.jpg";
+  var scene_four_rock_2_image = "src/resources/textures/soil.jpg";
   var scene_four_path_image = "src/resources/textures/ground.jpg";
-  var scene_four_snow_image = "src/resources/textures/snow.jpg";
+  var scene_four_snow_image = "src/resources/textures/soil.jpg";
 
   var scene_four_tree_one_model_obj_file = "src\\resources\\models\\intro\\Palace_withColors.obj";
   var scene_four_tree_two_model_obj_file = "src\\resources\\intro\\scene_one_tree_two_model.obj";
@@ -63,15 +63,53 @@ function RenderSceneFour()
 
   //Render castle for actual scene
   var modelMatrix = mat4.create()
+  mat4.translate(modelMatrix, modelMatrix, [481.0,-120, 595.0])
+  mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
+  mat4.rotateY(modelMatrix, modelMatrix, [90])
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors);
+  //mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
+  //renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors);
+  //Render skybox for actual scene
+  DrawSkybox(SCENE_ONE);
+  //gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  animateWater();
+  //Render in Reflection FBO
+  //bindReflectionFBO();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  CameraReflect();
+  //render disney castle model for reflection FBO 
+	var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
   renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors);
-  //Render skybox for actual scene
+  //render skybox for reflection FBO 
+  DrawSkybox(SCENE_ONE);  
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+  //Render in Refraction FBO
+  gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  CameraReflect();
+  //render skybox for refraction FBO 
   DrawSkybox(SCENE_ONE);
-//   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  //render disney castle model for refraction FBO 
+  var modelMatrix = mat4.create()
+  mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
+  mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+  modelMatrix = mat4.create()
+  mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 + test_translate_X , -90.0 +  87.99 + test_translate_Y , -1.0 +  567.60 + 42.0 + test_translate_Z])
+  mat4.scale(modelMatrix,modelMatrix,[8.0 + test_scale_X , 8.0+test_scale_X , 8.0+test_scale_X]);
+  //mat4.rotateY(modelMatrix, modelMatrix, [90])
+  renderAssimpModel(modelMatrix,5,0,point_lightPositions,point_lightColors);
 
-  //Render final scene with grayscale
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
+
+  //bbbbbbRender final scene with grayscale
 //   var model_matrix = mat4.create();
 //   RenderWithTextureShader(finalScene_fbo.cbo, 0);
 }

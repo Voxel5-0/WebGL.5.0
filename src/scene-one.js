@@ -127,7 +127,7 @@ function RenderSceneOne() {
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo);
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
