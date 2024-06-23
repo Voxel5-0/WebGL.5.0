@@ -56,6 +56,8 @@ var modelList = [
 
 var models = [];
 
+var bDraw = false;
+
 assimpjs().then (function (ajs) {
 	Promise.all(modelList.flatMap(o => o.files).map((fileToLoad) => fetch (fileToLoad))).then ((responses) => {
 		return Promise.all(responses.map ((res) => res.arrayBuffer()))
@@ -369,6 +371,10 @@ function keyDown(event)
             console.log("X rotation: " + x_rotation);
             console.log("Y rotation: " + y_rotation);
             break;
+
+		case 32:
+			bDraw = true;
+			break;
 	}
 }
 

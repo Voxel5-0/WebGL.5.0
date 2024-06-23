@@ -169,11 +169,17 @@ function RenderSceneOne() {
   // }
 
   //DrawSkybox(SCENE_ONE);
-  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+  if(bDraw)
+  {
+    pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+  }
 }
 
 function UpdateSceneOne() {
-    pTrail_update();
+    if(bDraw)
+    {
+      pTrail_update();
+    }
 }
 
 function UninitializeSceneOne() {
