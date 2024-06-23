@@ -241,9 +241,6 @@ function pTrail_display() {
     gl.disable(gl.BLEND);
     gl.disable(gl.PROGRAM_POINT_SIZE);
     gl.disable(gl.POINT_SPRITE);
-
-    // Double buffering
-    requestAnimationFrame(pTrail_display, canvas);
 }
 
 function pTrail_update() {
@@ -257,7 +254,7 @@ function updateArch(pTrail_arch) {
         //console.log(pTrail_arch[i]);
         if(archPos[i][3] > 0.0)
         {
-            archPos[i][3] -= 0.125;
+            archPos[i][3] -= 0.5;
         }
         // if(archPos[i][3] > 0.0)
         // {
