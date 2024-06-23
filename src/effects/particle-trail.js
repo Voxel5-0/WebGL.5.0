@@ -232,7 +232,10 @@ function pTrail_display() {
     // Draw
     mat4.translate(pTrail_modelMatrix, pTrail_modelMatrix, [0.0, -90.0, -5.0]);
     mat4.rotateY(pTrail_modelMatrix, pTrail_modelMatrix, degToRad(90.0));
-    drawArch(pTrail_arch, pTrail_modelMatrix);
+    if(bool_start_ptrail_update)
+    {
+        drawArch(pTrail_arch, pTrail_modelMatrix);
+    }
 
     gl.useProgram(null);
 
@@ -246,7 +249,10 @@ function pTrail_display() {
 function pTrail_update() {
     // Code
     //updateParticle(particle);
-    updateArch(pTrail_arch);
+    if(bool_start_ptrail_update)
+    {
+        updateArch(pTrail_arch);
+    }
 }
 
 function updateArch(pTrail_arch) {
