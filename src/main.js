@@ -3,7 +3,8 @@ var gl = null;
 var bFullScreen = false;
 var canvas_original_width;
 var canvas_original_height;
-var move_sensitivity = 1.1;
+// var move_sensitivity = 1.1;  // change this DJ
+var move_sensitivity = 10.0;
 var fadeInOutEffect = null;
 var test_translate_X = 0.0;
 var test_translate_Y = 0.0 ;
@@ -39,6 +40,7 @@ var scene_camera_positions;
 scene_camera_positions = [
 							[492.45003920809063,-45,77.96151170852721],     //scene zero camera initial position,
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
+							[287.0499275829001,100.0489134224825,2020.4465969962635], // scene seven camera initial position
 							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
 							[298.5107073089176,785.1349368758114,2085.443908695071],     //scene three camera initial position
 						 	[582.603042074097,259.96511411123737,630.7985127382476],
@@ -53,25 +55,35 @@ scene_camera_positions = [
 var scene_camera_angles =  [
 								0.0, //scene zero
 								-278.0,	//scene one
+								-505.0 // scene seven
 								-170.0,	//scene two
 								-88.39999999999996,	//scene three
 								-136.60000000000002, //scene four
 								-139.0 //scene four
 						  ];
 
+var scene_camera_anglesX =  [
+								0.0, //scene zero
+								0.0,	//scene one
+							    -7.0 // scene seven
+						];
+
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
 //This is done to solve the problem for synchronisity
 var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
-	{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
-	{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], flipTex:true , isStatic : true },
-	{ name: "BridgePart", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], flipTex:false , isStatic : true },
+	//{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
+	//{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
+	//{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], flipTex:true , isStatic : true },
+	//{ name: "BridgePart", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], flipTex:false , isStatic : true },
 	{ name: "GirlPose1", files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], flipTex:true , isStatic : true },
-	{ name: "GirlPose2", files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], flipTex:true , isStatic : true },
-	{ name: "GirlPose3", files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], flipTex:false , isStatic : true },
+	//{ name: "GirlPose2", files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], flipTex:true , isStatic : true },
+	//{ name: "GirlPose3", files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], flipTex:false , isStatic : true },
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
+	{ name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] ,flipTex:false , isStatic : true },
+	{ name: "Bushes_1", files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] ,flipTex:false , isStatic : true },
+	{ name: "Flowers_1", files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] ,flipTex:false , isStatic : true },
 ]
 
 var grayscale = 1;
@@ -162,15 +174,17 @@ function init()
 
 	/*Scene Specific Initialization */
 	InitializeSceneOne();
-	InitializeSceneTwo();
-	InitializeSceneThree();
-	InitializeSceneFour();
-	InitializeSceneFive();
+	//InitializeSceneTwo();
+	//InitializeSceneThree();
+	//InitializeSceneFour();
+	//InitializeSceneFive();
+	InitializeSceneSeven();
 
 	/* Other initializers */
 	InitializeCamera();
 	UpdateCameraPosition(scene_camera_positions[scene]);
 	UpdateCameraAngleY(scene_camera_angles[scene]);
+	UpdateCameraAngleX(scene_camera_anglesX[scene]);
 	cameraInitialPositionForScene[scene] = 1;
 	/*--------------------- Project Initialization ---------------------*/
 
@@ -208,20 +222,28 @@ function draw(now)
 			break;
 		case 2 :
 			UninitializeSceneOne();
-    		RenderSceneTwo();
+			RenderSceneSeven();  // change it later DJ
+    		//RenderSceneTwo();
 			break;
 		case 3 :
-			UninitializeSceneTwo();
-			RenderSceneThree();
+			//UninitializeSceneTwo();
+			//RenderSceneThree();
 			break;
 		case 4 : 
-			UninitializeSceneThree();
-    		RenderSceneFour();
+			//UninitializeSceneThree();
+    		//RenderSceneFour();
 			break;
 		case 5 : 
-			UninitializeSceneFour();
-    		RenderSceneFive();
-			break;	
+			//UninitializeSceneFour();
+    		//RenderSceneFive();
+			break;
+		case 6 : 
+			break;
+		case 7 : 
+			//UninitializeSceneFive(); // change it later to scene six DJ
+    		//RenderSceneSeven();
+			break;
+			
 	}
     requestAnimationFrame(draw, canvas);
     update(now);
@@ -234,18 +256,25 @@ function update(now)
 		case 0:
 			break;
 		case 1 :
-			UpdateSceneOne();
+			//UpdateSceneOne();
 			break;
 		case 2:
+			UpdateSceneSeven();  // change it later DJ
 			break;
 		case 3 :
-			UpdateSceneThree();
+			//UpdateSceneThree();
 			break;
 		case 4:
-			UpdateSceneFour();
+			//UpdateSceneFour();
 			break;
 		case 5:
-			break;				
+			break;	
+		case 6:
+			break;
+		case 7:
+			// UpdateSceneSeven(); // change it later DJ
+			break;
+
 	}
 }
 
@@ -471,5 +500,7 @@ function onMouseMove(e)
 	if (is_mouse_pressed) {
 
 		UpdateCameraXY(e.pageX, e.pageY);
+		//console.log("camera mouse X: " + e.pageX);
+		//console.log("camera mouse Y: " + e.pageY);
 	}
 }
