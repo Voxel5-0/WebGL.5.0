@@ -50,6 +50,7 @@ function InitializeSceneOne() {
 
   initAssimpModelShader(light_count); 
   pTrail_initialize(); 
+  pl_initialize();
   
   finalScene_fbo = GenerateFramebuffer(1920, 1080);
   reflection_fbo = GenerateFramebuffer(1920, 1080);
@@ -127,6 +128,9 @@ function RenderSceneOne() {
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+
+  pl_display();
+  
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -137,9 +141,7 @@ function RenderSceneOne() {
 }
 
 function UpdateSceneOne() {
-  if(bool_start_ptrail_update == true){
-    pTrail_update();
-  }
+  
 }
 
 function UninitializeSceneOne() {

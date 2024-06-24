@@ -241,9 +241,6 @@ function pTrail_display() {
     gl.disable(gl.BLEND);
     gl.disable(gl.PROGRAM_POINT_SIZE);
     gl.disable(gl.POINT_SPRITE);
-
-    // Double buffering
-    requestAnimationFrame(pTrail_display, canvas);
 }
 
 function pTrail_update() {

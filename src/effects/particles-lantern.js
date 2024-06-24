@@ -8,7 +8,6 @@ var pl_modelMatrixUniform;
 var pl_alphaUniform;
 var pl_textureSamplerUniform;
 
-var pl_perspectiveProjectionMatrix;
 var pl_viewMatrix;
 var pl_modelMatrix;
 
@@ -119,8 +118,9 @@ function pl_initialize() {
         pl_initParticle(pl_particle[i], true);
     }
 
+    console.log("Particles for lanterns initialized...\n");
     // Initialize projection matrix
-    pl_perspectiveProjectionMatrix = mat4.create();
+    // pl_perspectiveProjectionMatrix = mat4.create();
 }
 
 function pl_Particle() {
@@ -183,35 +183,8 @@ function pl_loadGLTexture() {
         // gl.generateMipmap(gl.TEXTURE_2D);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
-    pl_texture_particle.image.src = "pl_particle.png";
+    pl_texture_particle.image.src = "src\\resources\\textures\\particle-lantern.png";
 }
-
-// function resize() {
-//     // Code
-//     if (canvas.height <= 0)
-//         canvas.height = 1;
-
-//     if (bFullscreen == true) {
-//         canvas.width = window.innerWidth;
-//         canvas.height = window.innerHeight;
-//     }
-//     else {
-//         canvas.width = canvas_original_width;
-//         canvas.height = canvas_original_height;
-//     }
-
-//     // Set viewport
-//     gl.viewport(0, 0, canvas.width, canvas.height);
-
-//     // Set perspective projection
-//     mat4.perspective(
-//         pl_perspectiveProjectionMatrix,
-//         30.0,
-//         parseFloat(canvas.width) / parseFloat(canvas.height),
-//         0.1,
-//         10000.0
-//     );
-// }
 
 function pl_display() {
     // Code
@@ -227,54 +200,46 @@ function pl_display() {
     gl.enable(gl.PROGRAM_POINT_SIZE);
     gl.enable(gl.POINT_SPRITE);
 
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
     gl.useProgram(pl_shaderProgramObject);
 
     // Transformation
     pl_viewMatrix = mat4.create();
     pl_modelMatrix = mat4.create();
-    mat4.identity(pl_viewMatrix);
-    mat4.identity(pl_modelMatrix);
+    
+    pl_viewMatrix = GetCameraViewMatrix();
 
-    var eye = vec3.create();
-    var center = vec3.create();
-    var up = vec3.create();
+    // var eye = vec3.create();
+    // var center = vec3.create();
+    // var up = vec3.create();
 
-    eye[0] = 0.0;
-    eye[1] = 0.0;
-    eye[2] = 50.0;
+    // eye[0] = 0.0;
+    // eye[1] = 0.0;
+    // eye[2] = 50.0;
 
-    center[0] = 0.0;
-    center[1] = 0.0;
-    center[2] = 0.0;
+    // center[0] = 0.0;
+    // center[1] = 0.0;
+    // center[2] = 0.0;
 
-    up[0] = 0.0;
-    up[1] = 1.0;
-    up[2] = 0.0;
+    // up[0] = 0.0;
+    // up[1] = 1.0;
+    // up[2] = 0.0;
 
-    mat4.lookAt(pl_viewMatrix, eye, center, up);
+    // mat4.lookAt(pl_viewMatrix, eye, center, up);
 
-    gl.uniformMatrix4fv(pl_projectionMatrixUniform, false, pl_perspectiveProjectionMatrix);
+    gl.uniformMatrix4fv(pl_projectionMatrixUniform, false, perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(pl_viewMatrixUniform, false, pl_viewMatrix);
 
+    mat4.translate(pl_modelMatrix, pl_modelMatrix, [0.0, -70.0, 0.0]);
+    
     // Draw
     pl_drawParticle(pl_particle, pl_modelMatrix);
 
     gl.useProgram(null);
 
     gl.depthMask(true);
-
     gl.disable(gl.BLEND);
-    gl.blendEquation(gl.FUNC_ADD);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-
-    //gl.pointSize(50.0);
     gl.disable(gl.PROGRAM_POINT_SIZE);
     gl.disable(gl.POINT_SPRITE);
-
-    // Double buffering
-    requestAnimationFrame(pl_display, canvas);
 }
 
 function pl_update() {
@@ -292,7 +257,7 @@ function pl_updateParticle(p) {
 
         // Update a vertex coordinate
         p[i].position[0] += p[i].velocity[0];
-        p[i].position[1] += p[i].velocity[1];
+        p[i].position[1] -= p[i].velocity[1];
         p[i].position[2] += p[i].velocity[2];
 
         // Decreate Y translation
