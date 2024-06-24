@@ -58,6 +58,7 @@ function InitializeSceneOne() {
   InitializeQuadRendererXY();
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
   initializeGrass();
+  InitializeVignnetTextureShader();
 
   var scene_one_AMC_title_texture_path = "src\\resources\\textures\\Titles\\Astromedicomp.png";
   scene_one_AMC_title_texture = loadTexture(scene_one_AMC_title_texture_path, false) 
@@ -139,7 +140,7 @@ function RenderSceneOne() {
 
   //Render final scene with grayscale
   var model_matrix = mat4.create();
-  RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
+  RenderWithVignnetTextureShader(finalScene_fbo.cbo, 0);
 }
 
 function UpdateSceneOne() {

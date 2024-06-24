@@ -249,3 +249,10 @@ function bezierCurve(controlPoints, currentTime, startTime, Duration) {
 	UpdateCameraAngleY(yAngle % 360);
 	UpdateCameraAngleX(xAngle % 360);
 }
+
+function cameraShake()
+{
+	let x = (Math.random() *2 -1)*5;
+	let y = (Math.random() *2 -1)*5;
+    UpdateCameraPosition([camera_position[0]+x,camera_position[1]+y,0]);
+}
