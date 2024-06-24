@@ -128,8 +128,9 @@ function RenderSceneOne() {
   if(bool_start_ptrail_update){
     pTrail_display(modelMatrix, perspectiveProjectionMatrix);
     mat4.identity(modelMatrix);
-	  mat4.translate(modelMatrix, modelMatrix, [0.0, -10.0, -10.0])
-    RenderWithTextureShaderMVP(modelMatrix,GetCameraViewMatrix,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
+	  mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
+    var view = GetCameraViewMatrix();
+    RenderWithTextureShaderMVP(modelMatrix,view,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
   }
   //displayGrass();
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);

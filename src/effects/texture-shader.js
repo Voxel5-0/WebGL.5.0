@@ -2,10 +2,10 @@ var texture_vertex_shader;
 var texture_fragment_shader;
 var texture_shader_program;
 
-var u_model_matrix;
-var u_view_matrix;
-var u_projection_matrix;
-var u_texture_0_sampler;
+var u_texture_model_matrix;
+var u_texture_view_matrix;
+var u_texture_projection_matrix;
+var u_texture_texture_0_sampler;
 
 function InitializeTextureShader()
 {
@@ -96,10 +96,10 @@ function InitializeTextureShader()
         }
 	}	
 
-	u_model_matrix = gl.getUniformLocation(texture_shader_program, "u_model_matrix");
-	u_view_matrix = gl.getUniformLocation(texture_shader_program, "u_view_matrix");
-	u_projection_matrix = gl.getUniformLocation(texture_shader_program, "u_projection_matrix");
-    u_texture_0_sampler = gl.getUniformLocation(texture_shader_program, "u_texture_0_sampler");
+	u_texture_model_matrix = gl.getUniformLocation(texture_shader_program, "u_model_matrix");
+	u_texture_view_matrix = gl.getUniformLocation(texture_shader_program, "u_view_matrix");
+	u_texture_projection_matrix = gl.getUniformLocation(texture_shader_program, "u_projection_matrix");
+    u_texture_texture_0_sampler = gl.getUniformLocation(texture_shader_program, "u_texture_0_sampler");
 
 }
 
@@ -107,13 +107,13 @@ function RenderWithTextureShaderMVP(model_matrix, view_matrix, projection_matrix
 {
 	gl.useProgram(texture_shader_program);
 
-    gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
-    gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
-    gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
+    gl.uniformMatrix4fv(u_texture_model_matrix, false, model_matrix);
+    gl.uniformMatrix4fv(u_texture_view_matrix, false, view_matrix);
+    gl.uniformMatrix4fv(u_texture_projection_matrix, false, projection_matrix);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
-    gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+    gl.uniform1i(u_texture_texture_0_sampler, texture_0_sampler);
 
 	QuadRendererXY();
 
@@ -127,7 +127,7 @@ function RenderWithTextureShader(texture_obj, texture_0_sampler)
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
-    gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+    gl.uniform1i(u_texture_texture_0_sampler, texture_0_sampler);
 
 	QuadRendererXY();
 
