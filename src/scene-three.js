@@ -56,9 +56,9 @@ function RenderSceneThree()
   // X , Y ,Z  adjustments:2.2 , 0 , -5.5
   
   //Father
-  mat4.identity(modelMatrix);
-  mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2 + 30.0 + 90 + 7.699999999999999 + test_translate_X , 0.0 -90.0 + 130 + 1.1 + test_translate_Y , 0.0 - 5.5 -1.0 + 352 - 1.1 + test_translate_Z])
-  mat4.scale(modelMatrix,modelMatrix,[8.5 + 5.0 + test_scale_X, 8.5  +5.0 + test_scale_X , 8.5 +5.0 + test_scale_X]);
+  //mat4.identity(modelMatrix);
+  mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2 + test_translate_X , 0.0 + test_translate_Y , 0.0 - 5.5 + test_translate_Z])
+  mat4.scale(modelMatrix,modelMatrix,[ 5.0 , 5.0  , 5.0 ]);
   mat4.rotateY(modelMatrix, modelMatrix, [90 + (4.3 + 6.5 + 6.5 + 25.2 + 5.4 + test_scale_X)])
   renderAssimpModel(modelMatrix,8,0,point_lightPositions,point_lightColors);
 
