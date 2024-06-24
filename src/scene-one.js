@@ -17,6 +17,7 @@
 */
 
 var SCENE_ONE = 1;
+var scene_one_AMC_title_texture;
 
 const controlPoints = [
   [-5.99579627507126, -0.983638457861292, 35.95826514464386, -62.4429236732048, -570.19999999998],
@@ -56,6 +57,10 @@ function InitializeSceneOne() {
   InitializeGrayScaleTextureShader();
   InitializeQuadRendererXY();
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
+  initializeGrass();
+
+  var scene_one_AMC_title_texture_path = "src\\resources\\textures\\Titles\\Astromedicomp.png";
+  scene_one_AMC_title_texture = loadTexture(scene_one_AMC_title_texture_path, false) 
 }
 
 
@@ -80,7 +85,6 @@ function RenderSceneOne() {
 
   var lightColors = [1, 0.776, 0.559];
 
-  
   animateWater();
   //Render in Reflection FBO
   //bindReflectionFBO();
@@ -92,7 +96,6 @@ function RenderSceneOne() {
 	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   //render skybox for reflection FBO 
   DrawSkybox(SCENE_ONE);  
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -108,7 +111,6 @@ function RenderSceneOne() {
 	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  pTrail_display(modelMatrix, perspectiveProjectionMatrix);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -120,13 +122,16 @@ function RenderSceneOne() {
 	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
 	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
   renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  //Render skybox for actual scene
+  // Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
-  
+
   if(bool_start_ptrail_update){
     pTrail_display(modelMatrix, perspectiveProjectionMatrix);
+    mat4.identity(modelMatrix);
+	  mat4.translate(modelMatrix, modelMatrix, [0.0, -10.0, -10.0])
+    RenderWithTextureShaderMVP(modelMatrix,GetCameraViewMatrix,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
   }
-  
+  //displayGrass();
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -142,8 +147,7 @@ function UpdateSceneOne() {
   }
   if (startTime + 30 > performance.now() / 1000) {
     bezierCurve(controlPoints, performance.now() / 1000, startTime, 30);
-  }
-  
+  }  
   if(bool_start_ptrail_update){
     pTrail_update();
   }
@@ -151,15 +155,15 @@ function UpdateSceneOne() {
 
 function UninitializeSceneOne() {
  
-  if (scene_one_tree_model_one_texture)
-  {
-    gl.deleteTexture(scene_one_tree_model_one_texture);
-  }
+  // if (scene_one_tree_model_one_texture)
+  // {
+  //   gl.deleteTexture(scene_one_tree_model_one_texture);
+  // }
 
-  if (scene_one_tree_model_two_texture)
-  {
-    gl.deleteTexture(scene_one_tree_model_two_texture);
-  }
+  // if (scene_one_tree_model_two_texture)
+  // {
+  //   gl.deleteTexture(scene_one_tree_model_two_texture);
+  // }
 
   // UninitializeTerrainData(SCENE_ONE);
   // UninitializeModelRenderer(scene_one_tree_one_model);

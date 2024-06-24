@@ -70,6 +70,17 @@ https://docs.google.com/document/d/1Y-r2Cf_VyUVh8jqMy2sQQbZFiWdJ_ot7/edit?usp=sh
 
   ## Models
   https://sketchfab.com/3d-models/my-very-own-christmas-styled-disney-2006-model-3020495db43742ad93dc5f991952ce8d
+
+
+  ## TODO List for 24-March
+  1. Place all the models - terrain - water - skybox according to the scene
+  2. Apply Grayscale to color transition on bridge scene
+  3. set camera for all and record one version
+  4. render - painting and lanterns outside the window in color 
+  ## TODO List for 25-March
+  5. Not working as expected - Water - Instancing - Grass
+  6. Add bloom effect
+  7. Add Vignnet effect
   
 
 

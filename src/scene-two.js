@@ -10,7 +10,7 @@ var scene_two_title_texture;
 // ---------------------------
 function InitializeSceneTwo()
 {
-    var scene_two_title_texture_path = "src\\resources\\models\\intro\\TCom_Metal_BrassPolished_header.jpg";
+    var scene_two_title_texture_path = "src\\resources\\textures\\Titles\\MainTitle.png";
     scene_two_title_texture = loadTexture(scene_two_title_texture_path, false) 
 }
 

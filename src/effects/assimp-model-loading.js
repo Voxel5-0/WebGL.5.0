@@ -102,7 +102,7 @@ function loadMaterial(material, directory, type, flipTexture) {
 	return texturesArray
 }
 
-function recursiveTree(model, directory, json, node, isFlipTexture) {
+function recursiveTree(model, directory, json, node, isFlipTexture,modelIndex) {
 	//Process All Meshes for Current Node
 	for(var i = 0; node.meshes != undefined && i < node.meshes.length; i++) {
 		var actualmesh = json.meshes[node.meshes[i]];
@@ -187,21 +187,74 @@ function recursiveTree(model, directory, json, node, isFlipTexture) {
 		gl.enableVertexAttribArray(4)
 		gl.vertexAttribPointer(4, 4, gl.FLOAT, gl.FALSE, 0, 0)
 
+
+		if(modelList[modelIndex].isInstanced){
+			InitializeInstanceData(modelIndex);
+		}
+
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, EBO)
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, faceArray, gl.STATIC_DRAW)
-
+		gl.bindVertexArray(null)
 		var diffuseTextures = loadMaterial(json.materials[actualmesh.materialindex].properties, directory, TextureMacros.Diffuse, isFlipTexture)
 
 		model.meshArray.push(new dmesh(VAO, faceArray.length, diffuseTextures))
 	}
 	//Add Childern To NodeList
 	for(var i = 0; node.children != undefined && i < node.children.length; i++) {
-		recursiveTree(model, directory, json, node.children[i], isFlipTexture)
+		recursiveTree(model, directory, json, node.children[i], isFlipTexture,modelIndex)
 	}
 }
 
-function setupMesh(modelObj, json, directory, isFlipTexture) {
-	recursiveTree(modelObj, directory, json, json.rootnode, isFlipTexture)
+function InitializeInstanceData(modelIndex)
+{
+  /* --------------------- Initialize Instance Data ---------------------*/
+    var model_matrices = [];
+    var size_of_float = 4;
+    var num_floats_in_matrix = 16;
+    var bytes_per_matrix = num_floats_in_matrix * size_of_float;
+    var matrix_data = new Float32Array(modelList[modelIndex].instanceCount * num_floats_in_matrix);
+
+    for (var index = 0; index < modelList[modelIndex].instanceCount; index++)
+    {
+      const byte_offset_to_matrix = index * bytes_per_matrix;
+      model_matrices.push(new Float32Array(matrix_data.buffer, byte_offset_to_matrix, num_floats_in_matrix));
+      mat4.identity(model_matrices[index]);
+      mat4.translate(model_matrices[index], model_matrices[index], [modelList[modelIndex].XTranslationArray[index], modelList[modelIndex].YTranslationArray[index], 95.0*(index+1)*0.2+modelList[modelIndex].ZTranslationArray[index]]); //510.0+Math.sin(index%2==0? index : -index)
+      //mat4.scale(model_matrices[index], model_matrices[index], [1.2, 1.5, 1.0]);
+    }
+
+	var instance_model_matrices_vbo = gl.createBuffer()
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, instance_model_matrices_vbo);
+    gl.bufferData(gl.ARRAY_BUFFER, matrix_data, gl.STATIC_DRAW);
+
+    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC0, 4, gl.FLOAT, false, bytes_per_matrix, 0 * 16); //vec4 - 0th in 4 vec4s
+    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC0);
+
+    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC1, 4, gl.FLOAT, false, bytes_per_matrix, 1* 16); //stride 1*vec4 - 1st in 4 vec4s
+    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC1);
+
+    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC2, 4, gl.FLOAT, false, bytes_per_matrix, 2* 16); //stride 2*vec4 - 2nd in 4 vec4s
+    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC2);
+
+    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC3, 4, gl.FLOAT, false, bytes_per_matrix, 3* 16); //stride 3*vec4 - 3rd in 4 vec4s
+    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC3);
+
+    gl.vertexAttribDivisor(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC0, 1);
+    gl.vertexAttribDivisor(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC1, 1);
+    gl.vertexAttribDivisor(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC2, 1);
+    gl.vertexAttribDivisor(WebGLMacros.AMC_ATTRIBUTE_INSTANCE_VEC3, 1);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+
+    //gl.deleteBuffer(instance_model_matrices_vbo);
+
+    /* --------------------- Initialize Instance Data for Tree ---------------------*/
+}
+
+function setupMesh(modelObj, json, directory, isFlipTexture,modelIndex) {
+	recursiveTree(modelObj, directory, json, json.rootnode, isFlipTexture,modelIndex)
 }
 
 function readHeirarchyData(dest, src) {
@@ -257,13 +310,13 @@ function setupAnimation(modelObj, json) {
 	}
 }
 
-function initalizeModel(modelName,modelList) {
+function initalizeModel(modelName,modelList,modelIndex) {
 	var model = modelList.find(o => o.name === modelName)
 	if(model === undefined) {
 		return undefined
 	}
 	var modelObj = new dmodel()
-	setupMesh(modelObj, model.json, model.directory, model.flipTex)
+	setupMesh(modelObj, model.json, model.directory, model.flipTex,modelIndex)
 	setupAnimation(modelObj, model.json)
 	return modelObj
 }
@@ -404,6 +457,20 @@ function renderModel(model) {
 		gl.bindTexture(gl.TEXTURE_2D, model.meshArray[i].diffuseTextures[0])
 		gl.bindVertexArray(model.meshArray[i].vao)
 		gl.drawElements(gl.TRIANGLES, model.meshArray[i].count, gl.UNSIGNED_SHORT, 0)
+	}
+	
+}
+
+
+function renderModelWithInstancing(model, num_instances) {
+	if(model === undefined) {
+		return
+	}
+	for(var i = 0; model.meshArray != undefined && i < model.meshArray.length; i++) {
+		gl.activeTexture(gl.TEXTURE0)
+		gl.bindTexture(gl.TEXTURE_2D, model.meshArray[i].diffuseTextures[0])
+		gl.bindVertexArray(model.meshArray[i].vao)
+		gl.drawElementsInstanced(gl.TRIANGLES, model.meshArray[i].count, gl.UNSIGNED_INT, 0, num_instances);
 	}
 	
 }

@@ -155,9 +155,7 @@ function UpdateSceneFour()
   if (startTime == 0) {
     startTime = performance.now() / 1000;
   }
-  console.log("scene 3 update with start time "+startTime +" " +  performance.now()/1000);
   if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
-    console.log("bazier curve " + startTime);
     bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
   }
 }

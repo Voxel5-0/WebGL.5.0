@@ -56,6 +56,8 @@ function InitializeGrayScaleTextureShader()
 		"void main(void)" 													+
 		"{" 																+
 		"	vec4 color = texture(u_texture_0_sampler,out_texcoord);"+
+		"	if(color.a == 0.0)"+
+		"		discard;"+
 		"	float grayScaleFactor = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11 )); "+
 		"   vec4 grayScaleColor = vec4(grayScaleFactor,grayScaleFactor,grayScaleFactor,1);"+
 		"	FragColor = grayScaleColor;"+

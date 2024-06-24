@@ -1,10 +1,11 @@
-var pMatUnifromForDeepCube;
-var vMatUnifromForDeepCube;
-var mMatUnifromForDeepCube;
-var bMatUnifromForDeepCube;
-var viewPosUnifromForDeepCube;
-var diffuseUnifromForDeepCube;
-var isStaticUniformForDeepCube;
+var pMatUnifromForAssimpModel;
+var vMatUnifromForAssimpModel;
+var mMatUnifromForAssimpModel;
+var bMatUnifromForAssimpModel;
+var viewPosUnifromForAssimpModel;
+var diffuseUnifromForAssimpModel;
+var isStaticUniformForAssimpModel;
+var isInstancedUniformForAssimpModel;
 
 var ptL_modelMatrixUniform, ptL_viewMatrixUniform, ptL_projectionMatrixUniform;
 var ptL_viewPosUniform;
@@ -15,30 +16,36 @@ function initAssimpModelShader(pointLightsCount) {
     setupProgram(pointLightsCount);
 	gl.enable(gl.DEPTH_TEST);
     for(i = 0; i<modelList.length;i++){
-        models[i] = initalizeModel(modelList[i].name,modelList);
+        models[i] = initalizeModel(modelList[i].name,modelList,i);
     }
 
 }
 
-function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors  ){
+function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors){
     gl.useProgram(program)
-	gl.uniformMatrix4fv(pMatUnifromForDeepCube, false, perspectiveProjectionMatrix)
-	gl.uniformMatrix4fv(vMatUnifromForDeepCube, false, GetCameraViewMatrix())
-	gl.uniformMatrix4fv(mMatUnifromForDeepCube, false, modelMatrix)
-	gl.uniform3fv(viewPosUnifromForDeepCube, GetCameraPosition())
+	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
+	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
+	gl.uniformMatrix4fv(mMatUnifromForAssimpModel, false, modelMatrix)
+	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
     //TODO : commented code is for dynamic model
     // if(!modelList[i].isStatic) {
     //   updateModel(models[i], 0, 0.01)
     //     var boneMat = getBoneMatrixArray(models[i], 0)
     //     for(var i = 0; i < boneMat.length; i++) {
-    //         gl.uniformMatrix4fv(bMatUnifromForDeepCube[i], false, boneMat[i])
+    //         gl.uniformMatrix4fv(bMatUnifromForAssimpModel[i], false, boneMat[i])
     //     }
-    //     gl.uniform1i(isStaticUniformForDeepCube, 1)
+    //     gl.uniform1i(isStaticUniformForAssimpModel, 1)
     //     renderModel(models[i])
     // } else {
-    gl.uniform1i(isStaticUniformForDeepCube, 0)
+	// Above code is commented and unifrom value is passes 0 by default to use Static Model
+    gl.uniform1i(isStaticUniformForAssimpModel, 0)
+	gl.uniform1i(isInstancedUniformForAssimpModel,modelList[modelNumber].isInstanced);
     //renderModel(vampire)
-    renderModel(models[modelNumber])
+	if(modelList[modelNumber].isInstanced){
+		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
+	}else{
+		renderModel(models[modelNumber])
+	}
     // }
 	//console.log("rendered model "+modelNumber);
 	for (let i = 0; i < pointLightsCount; i++) {
@@ -70,16 +77,17 @@ function setupProgram(pointLightsCount) {
 	deleteShader(vertShader);
 	deleteShader(fragShader);
 
-	pMatUnifromForDeepCube = gl.getUniformLocation(program, "pMat")
-	vMatUnifromForDeepCube = gl.getUniformLocation(program, "vMat")
-	mMatUnifromForDeepCube = gl.getUniformLocation(program, "mMat")
-	bMatUnifromForDeepCube = []
+	pMatUnifromForAssimpModel = gl.getUniformLocation(program, "pMat")
+	vMatUnifromForAssimpModel = gl.getUniformLocation(program, "vMat")
+	mMatUnifromForAssimpModel = gl.getUniformLocation(program, "mMat")
+	bMatUnifromForAssimpModel = []
 	for(var i = 0; i < 100; i++) {
-		bMatUnifromForDeepCube.push(gl.getUniformLocation(program, "bMat["+i+"]"))
+		bMatUnifromForAssimpModel.push(gl.getUniformLocation(program, "bMat["+i+"]"))
 	}
-	viewPosUnifromForDeepCube = gl.getUniformLocation(program, "viewPos")
-	diffuseUnifromForDeepCube = gl.getUniformLocation(program, "diffuse")
-	isStaticUniformForDeepCube = gl.getUniformLocation(program, "isStatic")
+	viewPosUnifromForAssimpModel = gl.getUniformLocation(program, "viewPos")
+	diffuseUnifromForAssimpModel = gl.getUniformLocation(program, "diffuse")
+	isStaticUniformForAssimpModel = gl.getUniformLocation(program, "isStatic")
+	isInstancedUniformForAssimpModel = gl.getUniformLocation(program, "isInstanced")
 
 	//Uniform Locations For Point Light
 	ptL_modelMatrixUniform = gl.getUniformLocation(program, "mMat");

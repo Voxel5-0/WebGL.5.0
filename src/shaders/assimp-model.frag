@@ -35,7 +35,12 @@ void main(void) {
 	vec3 lightDir = normalize(vec3(0.0, 0.0, 100.0) - P);
 	vec3 viewDir = normalize(viewPos - P);
 	vec3 reflectVec = reflect(-lightDir, normal);
-	vec3 matcolor = vec3(texture(diffuse, Tex));
+    vec4 textureColor = texture(diffuse, Tex);
+    if(textureColor.a <= 0.0){
+        discard;
+    }
+	vec3 matcolor = vec3(textureColor);
+    color = textureColor;
 
 	vec3 result = 0.1 * matcolor + max(dot(normal, lightDir), 0.0) * matcolor + pow(max(dot(reflectVec, viewDir), 0.0), 129.0) * vec3(0.7);    
 	//color = vec4(0.1 * matcolor + max(dot(normal, lightDir), 0.0) * matcolor + pow(max(dot(reflectVec, viewDir), 0.0), 129.0) * vec3(0.7), 1.0);

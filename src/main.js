@@ -59,17 +59,26 @@ var scene_camera_angles =  [
 								-139.0 //scene four
 						  ];
 
+						  //481.0,-120, 595.0
+var scene_one_tree_x = [481.0, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
+var scene_one_tree_y = [-120, -50, -55, -60, -60, -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
+var scene_one_tree_z = [595.0, 588, 10, 10, 10, 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
+
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
 //This is done to solve the problem for synchronisity
 var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
-	{ name: "Castle", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	{ name: "Room", files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], flipTex:true , isStatic : true },
-	{ name: "Bridge", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], flipTex:true , isStatic : true },
-	{ name: "BridgePart", files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], flipTex:false , isStatic : true },
-	{ name: "GirlPose1", files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], flipTex:true , isStatic : true },
-	{ name: "GirlPose2", files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], flipTex:true , isStatic : true },
-	{ name: "GirlPose3", files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], flipTex:false , isStatic : true },
+	{ name: "Castle",	 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'],								flipTex:false,	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "Room", 		files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], 	flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "Bridge", 		files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], 									flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "BridgePart", 	files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], 								flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "forest", 	files:[ 'src\\resources\\models\\scene5\\pine-forest\\forest_1.gltf', 'src\\resources\\models\\scene5\\pine-forest\\forest_1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 , XTranslationArray: scene_one_tree_x , YTranslationArray: scene_one_tree_y, ZTranslationArray:scene_one_tree_z },
+	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
 ]
@@ -88,21 +97,17 @@ assimpjs().then (function (ajs) {
 			for (let j = 0; j < modelList[i].files.length; j++) {
 				fileList.AddFile(modelList[i].files[j], new Uint8Array(arrayBuffers[k++]))
 			}
-			console.log("Loaded Files")
-			console.log("Converting Files to AssimpJSON....")
 			let result = ajs.ConvertFileList(fileList, 'assjson')
 			if (!result.IsSuccess() || result.FileCount() == 0) {
 				console.log(result.GetErrorCode())
 				return
 			}
-			console.log("Converted Files")
-			console.log("Parse JSON String....")
 			let resultFile = result.GetFile(0)
 			let jsonContent = new TextDecoder().decode(resultFile.GetContent())
 			let resultJson = JSON.parse(jsonContent)
-			console.log("Parsed JSON")
 			modelList[i].json = resultJson
 			modelList[i].directory = modelList[i].files[0].substring(0, modelList[i].files[0].lastIndexOf('/'))
+			console.log( modelList[i].name +" Loaded !")
 		}
 		main()
 	})
@@ -181,6 +186,18 @@ function init()
 	gl.depthFunc(gl.LEQUAL);
 	//gl.enable(gl.CULL_FACE);
 	//gl.clearColor(0.196078, 0.6, 0.8, 1.0);
+
+	//Z-Fighting solution
+	gl.enable(gl.PERSPECTIVE_CORRECTION_HINT);
+	gl.enable(gl.POLYGON_OFFSET_FILL); 
+	gl.polygonOffset(1.0, 1.0);
+	/**
+	 * Pending 
+	 * Use Floating-Point Depth Buffer:
+	 *  Consider using a floating-point depth buffer (GL_DEPTH_COMPONENT32F) if available,
+	 *  which provides better precision compared to the standard depth buffer.
+	 */
+
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	/*--------------------- Set OpenGL States --------------------------*/
 
@@ -201,7 +218,7 @@ function draw(now)
 	}
 	switch(scene){
 		case 0 :
-			RenderSceneZeroOpeningScene();
+			//RenderSceneZeroOpeningScene();
 			break;
 		case 1 :
 			RenderSceneOne();
@@ -245,6 +262,7 @@ function update(now)
 			UpdateSceneFour();
 			break;
 		case 5:
+			UpdateSceneFive();
 			break;				
 	}
 }
@@ -320,37 +338,7 @@ function toggleFullScreen()
 
 function uninitialize()
 {
-    if(vao_triangle)
-    {
-        gl.deleteVertexArray(vao_triangle);
-        vao_triangle = null;
-    }
-
-    if(vbo)
-    {
-        gl.deleteBuffer(vbo);
-        vbo = null;
-    }
-
-    if(shaderProgramObj)
-    {
-        if(fragmentShaderObj)
-        {
-            gl.detachShader(shaderProgramObj,fragmentShaderObj);
-            gl.deleteShader(fragmentShaderObj);
-            fragmentShaderObj = null;
-        }
-
-        if(vertexShaderObj)
-        {
-            gl.detachShader(shaderProgramObj, vertexShaderObj);
-            gl.deleteShader(vertexShaderObj);
-            vertexShaderObj = null;
-        }
-
-        gl.deleteProgram(shaderProgramObj);
-        shaderProgramObj = null;
-    }
+	//TODO : add uninitialize calls
 
 	fadeInOutEffect.deallocate();
 }
@@ -374,6 +362,7 @@ function keyDown(event)
 			scene = scene - 1;
 			console.log("Moving to scene :"+scene);
 			break;
+
 		case 'KeyG':
 			grayscale = 0;
 			console.log("Converting to grayscale");
@@ -396,35 +385,32 @@ function keyDown(event)
 			MoveCameraBack(move_sensitivity*2);
 		break;
 
-		case 88:
+		case 88://x
 				test_translate_X += move_sensitivity;
 			break;	
-		case 89:
+		case 89://y
 				test_translate_Y += move_sensitivity;
 			break;
-		case 90:
+		case 90://z
 				test_translate_Z += move_sensitivity;
 			break;		
 
-		case 120:
+		case 69://e
 				test_translate_X -= move_sensitivity;
 			break;	
-		case 121:
-				test_translate_Y -= move_sensitivity;
-			break;
-		case 122:
+		// case 70://f
+		// 		test_translate_Y -= move_sensitivity;
+		// 	break;
+		case 71://g
 				test_translate_Z -= move_sensitivity;
 			break;			
 		
-		case 49:
+		case 49://1
 				test_scale_X += move_sensitivity;
 			break;	
-		case 50:
-				test_scale_Y += move_sensitivity;
+		case 50://2
+				test_scale_X -= move_sensitivity;
 			break;
-		case 51:
-				test_scale_Z += move_sensitivity;
-			break;		
 		case 32:
 			//start - trail
 			console.log("Start particle trail "+bool_start_ptrail_update);
@@ -439,11 +425,12 @@ function keyDown(event)
 			toggleFullScreen();
 		break;
             
-        case 80:
+        case 80://p
             console.log("Camera position: " + camera_position);
             console.log("X rotation: " + x_rotation);
             console.log("Y rotation: " + y_rotation);
 			console.log("X , Y ,Z  adjustments:" + test_translate_X +" , "+ test_translate_Y +" , "+test_translate_Z);
+			console.log("Scale :" + test_scale_X);
             break;
 	}
 }

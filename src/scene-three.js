@@ -21,7 +21,6 @@ const Scene3_controlPoints = [
 // ---------------------------
 function InitializeSceneThree()
 {
-  
 }
 
 function RenderSceneThree()
@@ -41,7 +40,7 @@ function RenderSceneThree()
   //Render final scene in final buffer
   gl.bindFramebuffer(gl.FRAMEBUFFER, finalScene_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  //Render castle for actual scene
+  // //Render castle for actual scene
   var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [30.0, -30.0, -1.0])
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
@@ -49,12 +48,26 @@ function RenderSceneThree()
   renderAssimpModel(modelMatrix,1,0,point_lightPositions,point_lightColors);
 
 
-  mat4.translate(modelMatrix, modelMatrix, [30.0 + 90 , -90.0 + 125 , -1.0 + 352])
-  mat4.scale(modelMatrix,modelMatrix,[8.0 + test_scale_X , 8.0+test_scale_X , 8.0+test_scale_X]);
+  mat4.translate(modelMatrix, modelMatrix, [30.0 + 90 + 7.699999999999999 , -90.0 + 130 + 1.1, -1.0 + 352 - 1.1 ])
+  mat4.scale(modelMatrix,modelMatrix,[8.5 , 8.5 , 8.5]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
   renderAssimpModel(modelMatrix,4,0,point_lightPositions,point_lightColors);
+
+  // X , Y ,Z  adjustments:2.2 , 0 , -5.5
+  
+  mat4.identity(modelMatrix);
+  mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2 + 30.0 + 90 + 7.699999999999999 + test_translate_X , 0.0 -90.0 + 130 + 1.1 + test_translate_Y , 0.0 - 5.5 -1.0 + 352 - 1.1 + test_translate_Z])
+  mat4.n(modelMatrix,modelMatrix,[5.0, 5.0 , 5.0]);
+  mat4.rotateY(modelMatrix, modelMatrix, [90 + (4.3 + 6.5 + 6.5 + 25.2 + 5.4 + test_scale_X)])
+  renderAssimpModel(modelMatrix,8,0,point_lightPositions,point_lightColors);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
+
+  mat4.identity(modelMatrix);
+  //mat4.translate(modelMatrix, modelMatrix, [30.0 + 90 + test_translate_X, -90.0 + 125  + test_translate_Y, -1.0 + 352 + test_translate_Z])
+  //mat4.scale(modelMatrix,modelMatrix,[1.0 + test_scale_X,1.0 + test_scale_X ,1.0 + test_scale_X]);
+  //pl_display(modelMatrix);
+
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -78,12 +91,10 @@ function UpdateSceneThree()
   if (startTime == 0) {
     startTime = performance.now() / 1000;
   }
-  console.log("scene 3 update with start time "+startTime +" " +  performance.now()/1000);
   if (scene == 3 && (startTime + 30 + 32 > performance.now()/1000)) {
-    console.log("bazier curve " + startTime);
     bezierCurve(Scene3_controlPoints, performance.now() / 1000, startTime+32, 30);
   }else{
-    scene++;
+   // scene++;
   }
 }
 

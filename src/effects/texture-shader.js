@@ -23,7 +23,7 @@ function InitializeTextureShader()
 
 		"void main(void)" 							+
 		"{" +
-			"gl_Position = v_position;" +
+			"gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix *  v_position;" +
 			"out_texcoord = v_texcoord;" +
 		"}" ;
 
@@ -54,11 +54,10 @@ function InitializeTextureShader()
 		
 		"void main(void)" 													+
 		"{" 																+
-		// "	vec4 color = texture(u_texture_0_sampler,out_texcoord);"+
-		// "	float grayScaleFactor = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11 )); "+
-		// "   vec4 grayScaleColor = vec4(grayScaleFactor,grayScaleFactor,grayScaleFactor,1);"+
-		// "	FragColor = grayScaleColor;"+
-		"   FragColor = texture(u_texture_0_sampler, out_texcoord);" 	+
+		"	vec4 color = texture(u_texture_0_sampler,out_texcoord);"+
+		"	if(color.a == 0.0)"+
+		"		discard;"+
+		"   FragColor = color;" 	+
 		"}";
 
 	texture_fragment_shader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -108,9 +107,9 @@ function RenderWithTextureShaderMVP(model_matrix, view_matrix, projection_matrix
 {
 	gl.useProgram(texture_shader_program);
 
-    // gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
-    // gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
-    // gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
+    gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
+    gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
+    gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
