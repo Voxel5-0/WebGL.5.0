@@ -7,6 +7,11 @@ var u_use_model_matrix;
 var u_view_matrix;
 var u_projection_matrix;
 var u_texture_0_sampler;
+var u_grayScaleAnimateFactor = 1.0;
+var u_viewportHeight;
+
+var grayScaleAnimateFactor = 0.0;
+var bAnimateGrayscale = false;
 
 function InitializeGrayScaleTextureShader()
 {
@@ -52,19 +57,28 @@ function InitializeGrayScaleTextureShader()
 
 
 	var textureFragmentShaderSource = 
-		"#version 300 es" 													+
-		"\n" 																+
-		"precision highp float;" 											+
-		"in vec2 out_texcoord;" 											+
-		"uniform sampler2D u_texture_0_sampler;" 							+
-		"out vec4 FragColor;" 												+
+		"#version 300 es" 														+
+		"\n" 																	+
+		"precision highp float;" 												+
+		"in vec2 out_texcoord;" 												+
+		"uniform sampler2D u_texture_0_sampler;" 								+
+		"uniform float u_grayScaleAnimateFactor;"								+
+		"uniform float u_viewportHeight;"										+
+		"out vec4 FragColor;" 													+
 		
-		"void main(void)" 													+
-		"{" 																+
-		"	vec4 color = texture(u_texture_0_sampler,out_texcoord);"+
-		"	float grayScaleFactor = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11 )); "+
-		"   vec4 grayScaleColor = vec4(grayScaleFactor,grayScaleFactor,grayScaleFactor,1);"+
-		"	FragColor = grayScaleColor;"+
+		"void main(void)" 														+
+		"{" 																	+
+		"	vec4 color = texture(u_texture_0_sampler,out_texcoord);"			+
+		"   if((gl_FragCoord.y / u_viewportHeight) < u_grayScaleAnimateFactor)"	+
+		"   {"																	+
+		"		float grayScaleFactor = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11 )); "+
+		"   	vec4 grayScaleColor = vec4(grayScaleFactor,grayScaleFactor,grayScaleFactor,1);"+
+		"		FragColor = grayScaleColor;"+
+		"	}"+
+		"	else"+
+		"	{"+
+		"		FragColor = color;"+
+		"	}"+
 		//"   FragColor = texture(u_texture_0_sampler, out_texcoord) * vec4(1.5,0.5,0.5,0.5);" 	+
 		"}";
 
@@ -109,7 +123,8 @@ function InitializeGrayScaleTextureShader()
 	u_view_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_view_matrix");
 	u_projection_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_projection_matrix");
     u_texture_0_sampler = gl.getUniformLocation(gs_texture_shader_program, "u_texture_0_sampler");
-
+	u_grayScaleAnimateFactor = gl.getUniformLocation(gs_texture_shader_program,"u_grayScaleAnimateFactor");
+	u_viewportHeight = gl.getUniformLocation(gs_texture_shader_program,"u_viewportHeight");
 }
 
 function RenderWithGrayScaleTextureShaderMVP(model_matrix, view_matrix, projection_matrix, texture_obj, texture_0_sampler)
@@ -123,6 +138,17 @@ function RenderWithGrayScaleTextureShaderMVP(model_matrix, view_matrix, projecti
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
     gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+
+	gl.uniform1f(u_viewportHeight,1080.0);
+	if(bAnimateGrayscale){
+		gl.uniform1f(u_grayScaleAnimateFactor,grayScaleAnimateFactor);
+		if(grayScaleAnimateFactor > 0.0)
+			grayScaleAnimateFactor = grayScaleAnimateFactor - 0.001;
+	}else{
+		gl.uniform1f(u_grayScaleAnimateFactor,grayScaleAnimateFactor);
+		if(grayScaleAnimateFactor < 1.0)
+			grayScaleAnimateFactor = grayScaleAnimateFactor + 0.001;
+	}
 
 	QuadRendererXY();
 
@@ -139,6 +165,21 @@ function RenderWithGrayScaleTextureShader(texture_obj, texture_0_sampler)
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
     gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+
+	gl.uniform1f(u_viewportHeight,1080.0);
+	if(bAnimateGrayscale){
+		gl.uniform1f(u_grayScaleAnimateFactor,grayScaleAnimateFactor);
+		if(grayScaleAnimateFactor > 0.0)
+			grayScaleAnimateFactor = grayScaleAnimateFactor - 0.001;
+		else{
+			grayscale = 0;
+		}
+	}else{
+		gl.uniform1f(u_grayScaleAnimateFactor,grayScaleAnimateFactor);
+		if(grayScaleAnimateFactor < 1.0){
+			grayScaleAnimateFactor = grayScaleAnimateFactor + 0.001;
+		}
+	}
 
 	QuadRendererXY();
 

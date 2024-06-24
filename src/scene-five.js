@@ -41,11 +41,21 @@ function InitializeSceneFive()
    
 function RenderSceneFive()
 {
-    var modelMatrix = mat4.create()
-    mat4.translate(modelMatrix, modelMatrix, [481.0,-120, 595.0])
-    mat4.scale(modelMatrix,modelMatrix,[1.0,1.0,1.0]);
+		//481.0,-120, 595.0
+    var scene_one_tree_x = [481.0, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
+    var scene_one_tree_y = [-120,-120, -55, -60, -60, -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
+    var scene_one_tree_z = [595.0, 588, 10, 10, 10, 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
+    var modelMatrixArray = new Float32Array(16)[4];
+
+    for(i =0 ; i<modelList[7].instanceCount;i++){
+      var modelMatrix = mat4.create()
+      mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i]+ test_translate_X ,scene_one_tree_y[i]+ test_translate_Y, scene_one_tree_z[i]+ test_translate_Z])
+      mat4.scale(modelMatrix,modelMatrix,[1.0 + test_scale_X,1.0 + test_scale_X,1.0+ test_scale_X]);
+      modelMatrixArray[i] = modelMatrix;
+    }
+   
     //mat4.rotateY(modelMatrix, modelMatrix, [90])
-    renderAssimpModel(modelMatrix,7,0,s5_point_lightPositions,s5_point_lightColors);
+    renderAssimpModel(modelMatrixArray,7,0,s5_point_lightPositions,s5_point_lightColors);
     // var view_matrix = GetCameraViewMatrix();
     // RenderWithInstanceShader(view_matrix, perspectiveProjectionMatrix, scene_one_tree_model_two_texture, 0);
     // ModelInstanceRenderer(scene_one_tree_two_model, scene_one_tree_model_instances);

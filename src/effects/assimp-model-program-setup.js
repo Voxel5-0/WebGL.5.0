@@ -7,7 +7,8 @@ var diffuseUnifromForAssimpModel;
 var isStaticUniformForAssimpModel;
 var isInstancedUniformForAssimpModel;
 
-var ptL_modelMatrixUniform, ptL_viewMatrixUniform, ptL_projectionMatrixUniform;
+//Model view matrices are not used for point lights remove later
+//var ptL_modelMatrixUniform, ptL_viewMatrixUniform, ptL_projectionMatrixUniform;
 var ptL_viewPosUniform;
 var ptL_materialDiffuseUniform,ptL_materialSpecularUniform,ptL_materialShininessUniform;
 var pointLightUniforms = [];
@@ -25,7 +26,6 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
-	gl.uniformMatrix4fv(mMatUnifromForAssimpModel, false, modelMatrix)
 	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
     //TODO : commented code is for dynamic model
     // if(!modelList[i].isStatic) {
@@ -39,13 +39,9 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
     // } else {
 	// Above code is commented and unifrom value is passes 0 by default to use Static Model
     gl.uniform1i(isStaticUniformForAssimpModel, 0)
-	gl.uniform1i(isInstancedUniformForAssimpModel,modelList[modelNumber].isInstanced);
+	//gl.uniform1i(isInstancedUniformForAssimpModel,modelList[modelNumber].isInstanced);
     //renderModel(vampire)
-	if(modelList[modelNumber].isInstanced){
-		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
-	}else{
-		renderModel(models[modelNumber])
-	}
+	
     // }
 	//console.log("rendered model "+modelNumber);
 	for (let i = 0; i < pointLightsCount; i++) {
@@ -62,7 +58,20 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
 	gl.uniform1f(ptL_materialSpecularUniform, 1.0);
 	gl.uniform1f(ptL_materialShininessUniform, 32.0);
 	
+	//For instancing we are passing array of model matrix
+	//gl.uniformMatrix4fv(mMatUnifromForAssimpModel, false, modelMatrix)
 	gl.uniform3fv(ptL_viewPosUniform, [0.0, 0.0, 5.0]);
+	if(modelList[modelNumber].isInstanced){
+		for (var i = 0; i < modelList[modelNumber].instanceCount ; i++) {
+			gl.uniformMatrix4fv(mMatUnifromForAssimpModel[i], false, modelMatrix[i])
+		}
+		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
+	}else{
+		gl.uniformMatrix4fv(mMatUnifromForAssimpModel[0], false,modelMatrix)
+		renderModel(models[modelNumber])
+	}
+	
+	
 
     gl.useProgram(null)
 }
@@ -79,7 +88,12 @@ function setupProgram(pointLightsCount) {
 
 	pMatUnifromForAssimpModel = gl.getUniformLocation(program, "pMat")
 	vMatUnifromForAssimpModel = gl.getUniformLocation(program, "vMat")
-	mMatUnifromForAssimpModel = gl.getUniformLocation(program, "mMat")
+	//mMatUnifromForAssimpModel = gl.getUniformLocation(program, "mMat")
+	mMatUnifromForAssimpModel = []
+	for (var i = 0; i < 100; i++) {
+		mMatUnifromForAssimpModel.push(gl.getUniformLocation(program, "mMat[" + i + "]"))
+	}
+
 	bMatUnifromForAssimpModel = []
 	for(var i = 0; i < 100; i++) {
 		bMatUnifromForAssimpModel.push(gl.getUniformLocation(program, "bMat["+i+"]"))
@@ -87,12 +101,12 @@ function setupProgram(pointLightsCount) {
 	viewPosUnifromForAssimpModel = gl.getUniformLocation(program, "viewPos")
 	diffuseUnifromForAssimpModel = gl.getUniformLocation(program, "diffuse")
 	isStaticUniformForAssimpModel = gl.getUniformLocation(program, "isStatic")
-	isInstancedUniformForAssimpModel = gl.getUniformLocation(program, "isInstanced")
+	//isInstancedUniformForAssimpModel = gl.getUniformLocation(program, "isInstanced")
 
 	//Uniform Locations For Point Light
-	ptL_modelMatrixUniform = gl.getUniformLocation(program, "mMat");
-	ptL_viewMatrixUniform = gl.getUniformLocation(program, "vMat");
-	ptL_projectionMatrixUniform = gl.getUniformLocation(program, "pMat");
+	//ptL_modelMatrixUniform = gl.getUniformLocation(program, "mMat");
+	//ptL_viewMatrixUniform = gl.getUniformLocation(program, "vMat");
+	//ptL_projectionMatrixUniform = gl.getUniformLocation(program, "pMat");
 	//ptL_viewPosUniform = gl.getUniformLocation(program, "viewPos");
 
 	ptL_materialDiffuseUniform = gl.getUniformLocation(

@@ -59,11 +59,6 @@ var scene_camera_angles =  [
 								-139.0 //scene four
 						  ];
 
-						  //481.0,-120, 595.0
-var scene_one_tree_x = [481.0, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
-var scene_one_tree_y = [-120, -50, -55, -60, -60, -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
-var scene_one_tree_z = [595.0, 588, 10, 10, 10, 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
-
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
 //This is done to solve the problem for synchronisity
 var modelList = [
@@ -76,7 +71,7 @@ var modelList = [
 	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "forest", 	files:[ 'src\\resources\\models\\scene5\\pine-forest\\forest_1.gltf', 'src\\resources\\models\\scene5\\pine-forest\\forest_1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 , XTranslationArray: scene_one_tree_x , YTranslationArray: scene_one_tree_y, ZTranslationArray:scene_one_tree_z },
+	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
@@ -198,7 +193,7 @@ function init()
 	 *  which provides better precision compared to the standard depth buffer.
 	 */
 
-	gl.clearColor(0.0, 0.0, 0.0, 1.0);
+	gl.clearColor(0.6, 0.6, 0.6, 1.0);
 	/*--------------------- Set OpenGL States --------------------------*/
 
     perspectiveProjectionMatrix = mat4.create();
@@ -364,7 +359,7 @@ function keyDown(event)
 			break;
 
 		case 'KeyG':
-			grayscale = 0;
+			bAnimateGrayscale = !bAnimateGrayscale;
 			console.log("Converting to grayscale");
 			break;		
 				
@@ -401,9 +396,10 @@ function keyDown(event)
 		// case 70://f
 		// 		test_translate_Y -= move_sensitivity;
 		// 	break;
-		case 71://g
-				test_translate_Z -= move_sensitivity;
-			break;			
+		// case 71://g
+		// 		test_translate_Z -= move_sensitivity;
+		// 		bAnimateGrayscale = !bAnimateGrayscale;
+		// 	break;			
 		
 		case 49://1
 				test_scale_X += move_sensitivity;

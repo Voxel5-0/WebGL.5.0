@@ -5,14 +5,12 @@ layout(location = 1)in vec3 vNor;
 layout(location = 2)in vec2 vTex;
 layout(location = 3)in ivec4 vBoneIds;
 layout(location = 4)in vec4 vWeights;
-layout(location = 5)in mat4 v_instance_model_matrix;
 
 uniform mat4 pMat;
 uniform mat4 vMat;
-uniform mat4 mMat;
+uniform mat4 mMat[100];
 uniform mat4 bMat[100];
 uniform bool isStatic;
-uniform bool isInstanced;
 
 out vec2 Tex;
 out vec3 N;
@@ -31,17 +29,13 @@ void main(void) {
 			vec3 localNormal = mat3(bMat[vBoneIds[i]]) * vNor;
 			totalNormal += localNormal;
 		}
-		P = vec3(mMat * totalPosition);
-        N = mat3(mMat) * totalNormal;
+		P = vec3(mMat[gl_InstanceID] * totalPosition);
+        N = mat3(mMat[gl_InstanceID]) * totalNormal;
         Tex = vTex;
         gl_Position = pMat * vMat * vec4(P, 1.0);
     } else {
-		if(isInstanced){
- 			P = vec3(mMat * ( v_instance_model_matrix * vPos));        	
-		}else{
-			P = vec3(mMat * vPos);
-		}
-		N = mat3(mMat) * vNor;
+ 		P = vec3(mMat[gl_InstanceID] * vPos);        	
+		N = mat3(mMat[gl_InstanceID]) * vNor;
         Tex = vTex;
 		gl_Position = pMat * vMat * vec4(P, 1.0);
 

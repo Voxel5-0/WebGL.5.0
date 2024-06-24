@@ -6,6 +6,7 @@ var u_texture_model_matrix;
 var u_texture_view_matrix;
 var u_texture_projection_matrix;
 var u_texture_texture_0_sampler;
+var u_texture_use_model_matrix;
 
 function InitializeTextureShader()
 {
@@ -18,13 +19,21 @@ function InitializeTextureShader()
 		"uniform mat4 u_model_matrix;" 				+
 		"uniform mat4 u_view_matrix;" 				+
 		"uniform mat4 u_projection_matrix;" 		+
+		"uniform int u_use_model_matrix;\n" 			+
 
 		"out vec2 out_texcoord;" 					+
 
 		"void main(void)" 							+
 		"{" +
-			"gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix *  v_position;" +
-			"out_texcoord = v_texcoord;" +
+		"	if (u_use_model_matrix==1)\n"					+
+		"	{\n"											+
+		"		gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;\n"	+
+		"	}\n"											+
+		"	else\n"										+
+		"	{\n"											+
+		"		gl_Position = v_position;\n"				+
+		"	}\n"											+
+		"	out_texcoord = v_texcoord;" +
 		"}" ;
 
 	texture_vertex_shader = gl.createShader(gl.VERTEX_SHADER);
@@ -100,6 +109,7 @@ function InitializeTextureShader()
 	u_texture_view_matrix = gl.getUniformLocation(texture_shader_program, "u_view_matrix");
 	u_texture_projection_matrix = gl.getUniformLocation(texture_shader_program, "u_projection_matrix");
     u_texture_texture_0_sampler = gl.getUniformLocation(texture_shader_program, "u_texture_0_sampler");
+	u_texture_use_model_matrix = gl.getUniformLocation(texture_shader_program,"u_use_model_matrix");
 
 }
 
@@ -107,6 +117,7 @@ function RenderWithTextureShaderMVP(model_matrix, view_matrix, projection_matrix
 {
 	gl.useProgram(texture_shader_program);
 
+	gl.uniform1i(u_texture_use_model_matrix,1);
     gl.uniformMatrix4fv(u_texture_model_matrix, false, model_matrix);
     gl.uniformMatrix4fv(u_texture_view_matrix, false, view_matrix);
     gl.uniformMatrix4fv(u_texture_projection_matrix, false, projection_matrix);
@@ -124,7 +135,7 @@ function RenderWithTextureShaderMVP(model_matrix, view_matrix, projection_matrix
 function RenderWithTextureShader(texture_obj, texture_0_sampler)
 {
 	gl.useProgram(texture_shader_program);
-
+	gl.uniform1i(u_texture_use_model_matrix,0);
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
     gl.uniform1i(u_texture_texture_0_sampler, texture_0_sampler);

@@ -129,7 +129,9 @@ function RenderSceneOne() {
   if(bool_start_ptrail_update){
     pTrail_display(modelMatrix, perspectiveProjectionMatrix);
     mat4.identity(modelMatrix);
-	  mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
+    mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0 + test_translate_Y, -10.0])
+    mat4.scale(modelMatrix, modelMatrix,[0.5 + test_scale_X,0.5 + test_scale_X ,0.5 + test_scale_X]);
+    mat4.rotateY(modelMatrix, modelMatrix, [90])
     var view = GetCameraViewMatrix();
     RenderWithTextureShaderMVP(modelMatrix,view,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
   }
@@ -140,7 +142,7 @@ function RenderSceneOne() {
 
   //Render final scene with grayscale
   var model_matrix = mat4.create();
-  RenderWithVignnetTextureShader(finalScene_fbo.cbo, 0);
+  RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
 }
 
 function UpdateSceneOne() {
