@@ -252,7 +252,13 @@ function bezierCurve(controlPoints, currentTime, startTime, Duration) {
 
 function cameraShake()
 {
-	let x = (Math.random() *2 -1)*5;
-	let y = (Math.random() *2 -1)*5;
-    UpdateCameraPosition([camera_position[0]+x,camera_position[1]+y,0]);
+	let currentTime = performance.now();
+    let x = (Math.random() * 2 - 1) / 300;
+    let y = (Math.random() * 2 - 1) / 400;
+    if (currentTime - lastExecutionTime >= 100) { 
+		MoveCameraUp(y)
+		MoveCameraRight(x);
+
+        lastExecutionTime = currentTime;
+    }
 }

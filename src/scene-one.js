@@ -153,6 +153,7 @@ function UpdateSceneOne() {
   if(bool_start_ptrail_update){
     pTrail_update();
   }
+  cameraShake();
 }
 
 function UninitializeSceneOne() {
