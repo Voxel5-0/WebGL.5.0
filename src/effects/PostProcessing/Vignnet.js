@@ -2,11 +2,11 @@ var vg_texture_vertex_shader;
 var vg_texture_fragment_shader;
 var vg_texture_shader_program;
 
-var u_model_matrix;
-var u_use_model_matrix;
-var u_view_matrix;
-var u_projection_matrix;
-var u_texture_0_sampler;
+var u_vig_model_matrix;
+var u_vig_use_model_matrix;
+var u_vig_view_matrix;
+var u_vig_projection_matrix;
+var u_vig_texture_0_sampler;
 
 function InitializeVignnetTextureShader() {
     var textureVertexShaderSource =
@@ -98,24 +98,24 @@ function InitializeVignnetTextureShader() {
         }
     }
 
-    u_model_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_model_matrix");
-    u_use_model_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_use_model_matrix");
-    u_view_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_view_matrix");
-    u_projection_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_projection_matrix");
-    u_texture_0_sampler = gl.getUniformLocation(vg_texture_shader_program, "u_texture_0_sampler");
+    u_vig_model_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_model_matrix");
+    u_vig_use_model_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_use_model_matrix");
+    u_vig_view_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_view_matrix");
+    u_vig_projection_matrix = gl.getUniformLocation(vg_texture_shader_program, "u_projection_matrix");
+    u_vig_texture_0_sampler = gl.getUniformLocation(vg_texture_shader_program, "u_texture_0_sampler");
 
 }
 
 function RenderWithVignnetTextureShaderMVP(model_matrix, view_matrix, projection_matrix, texture_obj, texture_0_sampler) {
     gl.useProgram(vg_texture_shader_program);
-    gl.uniform1i(u_use_model_matrix, 1);
-    gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
-    gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
-    gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
+    gl.uniform1i(u_vig_use_model_matrix, 1);
+    gl.uniformMatrix4fv(u_vig_model_matrix, false, model_matrix);
+    gl.uniformMatrix4fv(u_vig_view_matrix, false, view_matrix);
+    gl.uniformMatrix4fv(u_vig_projection_matrix, false, projection_matrix);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
-    gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+    gl.uniform1i(u_vig_texture_0_sampler, texture_0_sampler);
 
     QuadRendererXY();
 
@@ -126,11 +126,11 @@ function RenderWithVignnetTextureShaderMVP(model_matrix, view_matrix, projection
 
 function RenderWithVignnetTextureShader(texture_obj, texture_0_sampler) {
     gl.useProgram(vg_texture_shader_program);
-    gl.uniform1i(u_use_model_matrix, 0);
+    gl.uniform1i(u_vig_use_model_matrix, 0);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
-    gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
+    gl.uniform1i(u_vig_texture_0_sampler, texture_0_sampler);
 
     QuadRendererXY();
 
