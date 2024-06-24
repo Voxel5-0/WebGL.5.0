@@ -43,8 +43,9 @@ scene_camera_positions = [
 							[298.5107073089176,785.1349368758114,2085.443908695071],     //scene three camera initial position
 						 	[582.603042074097,259.96511411123737,630.7985127382476],	//four
 							[313.8060977313394,-14.586146289716707,349.4001499645148],	//five
-							[287.0499275829001,100.0489134224825,2020.4465969962635], // scene six camera initial position,
-							[287.0499275829001,100.0489134224825,2020.4465969962635], // scene seven camera initial position
+							[313.8060977313394,-14.586146289716707,349.4001499645148], // scene six camera initial position,
+							[558.7481356908454,210.18911259491423,2025.789776715808], // scene seven camera initial position
+							[330.8626849099249,-1.6938798328507738,453.4583973867315],	//eight
 						];
 
 // Camera position: 1869.1399715022253,1182.981200138941,3539.959281976318
@@ -58,13 +59,22 @@ var scene_camera_angles =  [
 								-170.0,	//scene two
 								-88.39999999999996,	//scene three
 								-136.60000000000002, //scene four
-								-139.0 //scene four
+								-139.0, //scene five
+								-139.0, //scene six
+								-139.0, //scene seven
+								-68.0 //scene eight
 						  ];
 
 var scene_camera_anglesX =  [
 							0.0, //scene zero
 							0.0,	//scene one
-							-7.0 // scene seven
+							0.0,	//scene two
+							0.0,	//scene othree
+							0.0,	//scene four
+							0.0,	//scene five
+							0.0,	//scene six
+							-7.0, // scene seven
+							0.0	//scene eight
 					];
 
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
@@ -78,7 +88,6 @@ var modelList = [
 	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	// { name: "forest", 	files:[ 'src\\resources\\models\\scene5\\pine-forest\\forest_1.gltf', 'src\\resources\\models\\scene5\\pine-forest\\forest_1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
@@ -178,6 +187,7 @@ function init()
 	InitializeSceneThree();
 	InitializeSceneFour();
 	InitializeSceneFive();
+	InitializeSceneSix();
 	InitializeSceneSeven();
 	InitializeSceneEight();
 
@@ -199,9 +209,9 @@ function init()
 	//gl.clearColor(0.196078, 0.6, 0.8, 1.0);
 
 	//Z-Fighting solution
-	gl.enable(gl.PERSPECTIVE_CORRECTION_HINT);
-	gl.enable(gl.POLYGON_OFFSET_FILL); 
-	gl.polygonOffset(1.0, 1.0);
+	// gl.enable(gl.PERSPECTIVE_CORRECTION_HINT);
+	// gl.enable(gl.POLYGON_OFFSET_FILL); 
+	// gl.polygonOffset(1.0, 1.0);
 	/**
 	 * Pending 
 	 * Use Floating-Point Depth Buffer:
@@ -250,12 +260,16 @@ function draw(now)
 			UninitializeSceneFour();
     		RenderSceneFive();
 			break;	
+		case 6 : 
+			UninitializeSceneFive();
+    		RenderSceneSix();
+			break;	
 		case 7:
-			//UninitializeSceneSix();
+			UninitializeSceneSix();
 			RenderSceneSeven(); 
 			break;
 		case 8:
-			//UninitializeSceneSeven();
+			UninitializeSceneSeven();
 			RenderSceneEight(); 
 			break;
 
@@ -283,7 +297,10 @@ function update(now)
 			break;
 		case 5:
 			UpdateSceneFive();
-			break;				
+			break;	
+		case 6:
+			UpdateSceneSix();
+			break;					
 		case 7:
 			UpdateSceneSeven();
 			break;				
@@ -379,14 +396,21 @@ function keyDown(event)
 
 	switch(event.code){
 		case 'KeyN':
-			scene = scene + 1;
-			console.log("Moving to scene :"+scene);
-			break;	
-		break;
+			if(scene<SCENE_COUNT){
+				scene = scene + 1;
+				console.log("Moving to scene :"+scene);
+			}else{
+				console.log("Scene "+scene+" was last scene");
+			}
+			break;
 		
 		case 'KeyB':
-			scene = scene - 1;
-			console.log("Moving to scene :"+scene);
+			if(scene > 1){
+				scene = scene - 1;
+				console.log("Moving to scene :"+scene);
+			}else{
+				console.log("Scene "+scene+" was first scene");
+			}
 			break;
 
 		case 'KeyG':
@@ -456,7 +480,7 @@ function keyDown(event)
             console.log("Camera position: " + camera_position);
             console.log("X rotation: " + x_rotation);
             console.log("Y rotation: " + y_rotation);
-			console.log("X , Y ,Z  adjustments:" + test_translate_X +" , "+ test_translate_Y +" , "+test_translate_Z);
+			console.log("X , Y ,Z  adjustments: " + test_translate_X +" , "+ test_translate_Y +" , "+test_translate_Z);
 			console.log("Scale :" + test_scale_X);
             break;
 	}

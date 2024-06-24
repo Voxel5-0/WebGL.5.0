@@ -158,7 +158,7 @@ function UpdateSceneFour()
   if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
     bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
   }else{
-    scene+=3;
+    scene++;
   }
 }
 

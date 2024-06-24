@@ -1,4 +1,4 @@
-const SCENE_COUNT = 8;
+const SCENE_COUNT = 11;
 
 const WebGLMacros = {AMC_ATTRIBUTE_VERTEX : 0,
 					 AMC_ATTRIBUTE_COLOR : 1,
