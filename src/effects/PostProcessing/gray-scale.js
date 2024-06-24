@@ -3,6 +3,7 @@ var gs_texture_fragment_shader;
 var gs_texture_shader_program;
 
 var u_model_matrix;
+var u_use_model_matrix;
 var u_view_matrix;
 var u_projection_matrix;
 var u_texture_0_sampler;
@@ -12,19 +13,24 @@ function InitializeGrayScaleTextureShader()
 	var textureVertexShaderSource = 
 		"#version 300 es" 							+
 		"\n" 										+
-		"in vec4 v_position;" 						+
-		"in vec2 v_texcoord;" 						+
-
-		"uniform mat4 u_model_matrix;" 				+
-		"uniform mat4 u_view_matrix;" 				+
-		"uniform mat4 u_projection_matrix;" 		+
-
-		"out vec2 out_texcoord;" 					+
-
-		"void main(void)" 							+
-		"{" +
-			"gl_Position = v_position;" +
-			"out_texcoord = v_texcoord;" +
+		"in vec4 v_position;\n" 						+
+		"in vec2 v_texcoord;\n" 						+
+		"uniform mat4 u_model_matrix;\n" 				+
+		"uniform int u_use_model_matrix;\n" 			+
+		"uniform mat4 u_view_matrix;\n" 				+
+		"uniform mat4 u_projection_matrix;\n" 		+
+		"out vec2 out_texcoord;\n" 					+
+		"void main(void)\n" 							+
+		"{\n" 										+
+		"if (u_use_model_matrix==1)\n"					+
+		"{\n"											+
+		"	gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;\n"	+
+		"}\n"											+
+		"else\n"										+
+		"{\n"											+
+		"	gl_Position = v_position;\n"				+
+		"}\n"											+
+		"out_texcoord = v_texcoord;\n" 				+
 		"}" ;
 
 	gs_texture_vertex_shader = gl.createShader(gl.VERTEX_SHADER);
@@ -56,8 +62,6 @@ function InitializeGrayScaleTextureShader()
 		"void main(void)" 													+
 		"{" 																+
 		"	vec4 color = texture(u_texture_0_sampler,out_texcoord);"+
-		"	if(color.a == 0.0)"+
-		"		discard;"+
 		"	float grayScaleFactor = ((color.r * 0.3) + (color.g * 0.59) + (color.b * 0.11 )); "+
 		"   vec4 grayScaleColor = vec4(grayScaleFactor,grayScaleFactor,grayScaleFactor,1);"+
 		"	FragColor = grayScaleColor;"+
@@ -101,6 +105,7 @@ function InitializeGrayScaleTextureShader()
 	}	
 
 	u_model_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_model_matrix");
+	u_use_model_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_use_model_matrix");
 	u_view_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_view_matrix");
 	u_projection_matrix = gl.getUniformLocation(gs_texture_shader_program, "u_projection_matrix");
     u_texture_0_sampler = gl.getUniformLocation(gs_texture_shader_program, "u_texture_0_sampler");
@@ -110,10 +115,10 @@ function InitializeGrayScaleTextureShader()
 function RenderWithGrayScaleTextureShaderMVP(model_matrix, view_matrix, projection_matrix, texture_obj, texture_0_sampler)
 {
 	gl.useProgram(gs_texture_shader_program);
-
-    // gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
-    // gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
-    // gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
+	gl.uniform1i(u_use_model_matrix, 1);
+    gl.uniformMatrix4fv(u_model_matrix, false, model_matrix);
+    gl.uniformMatrix4fv(u_view_matrix, false, view_matrix);
+    gl.uniformMatrix4fv(u_projection_matrix, false, projection_matrix);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
@@ -125,10 +130,12 @@ function RenderWithGrayScaleTextureShaderMVP(model_matrix, view_matrix, projecti
 
 }
 
+
 function RenderWithGrayScaleTextureShader(texture_obj, texture_0_sampler)
 {
 	gl.useProgram(gs_texture_shader_program);
-
+	gl.uniform1i(u_use_model_matrix, 0);
+	
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, texture_obj);
     gl.uniform1i(u_texture_0_sampler, texture_0_sampler);
