@@ -41,8 +41,10 @@ scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
 							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
 							[298.5107073089176,785.1349368758114,2085.443908695071],     //scene three camera initial position
-						 	[582.603042074097,259.96511411123737,630.7985127382476],
-							[313.8060977313394,-14.586146289716707,349.4001499645148]
+						 	[582.603042074097,259.96511411123737,630.7985127382476],	//four
+							[313.8060977313394,-14.586146289716707,349.4001499645148],	//five
+							[287.0499275829001,100.0489134224825,2020.4465969962635], // scene six camera initial position,
+							[287.0499275829001,100.0489134224825,2020.4465969962635], // scene seven camera initial position
 						];
 
 // Camera position: 1869.1399715022253,1182.981200138941,3539.959281976318
@@ -58,6 +60,12 @@ var scene_camera_angles =  [
 								-136.60000000000002, //scene four
 								-139.0 //scene four
 						  ];
+
+var scene_camera_anglesX =  [
+							0.0, //scene zero
+							0.0,	//scene one
+							-7.0 // scene seven
+					];
 
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
 //This is done to solve the problem for synchronisity
@@ -76,6 +84,9 @@ var modelList = [
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
+	{ name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] ,flipTex:false , isStatic : true },
+	{ name: "Bushes_1", files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] ,flipTex:false , isStatic : true },
+	{ name: "Flowers_1", files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] ,flipTex:false , isStatic : true },
 ]
 
 var grayscale = 1;
@@ -166,11 +177,15 @@ function init()
 	InitializeSceneThree();
 	InitializeSceneFour();
 	InitializeSceneFive();
+	InitializeSceneSeven();
+	InitializeSceneEight();
 
 	/* Other initializers */
 	InitializeCamera();
 	UpdateCameraPosition(scene_camera_positions[scene]);
 	UpdateCameraAngleY(scene_camera_angles[scene]);
+	
+	UpdateCameraAngleX(scene_camera_anglesX[scene]);
 	cameraInitialPositionForScene[scene] = 1;
 	/*--------------------- Project Initialization ---------------------*/
 
@@ -234,6 +249,15 @@ function draw(now)
 			UninitializeSceneFour();
     		RenderSceneFive();
 			break;	
+		case 7:
+			UninitializeSceneSix();
+			RenderSceneSeven(); 
+			break;
+		case 8:
+			UninitializeSceneSeven();
+			RenderSceneEight(); 
+			break;
+
 	}
     requestAnimationFrame(draw, canvas);
     update(now);
@@ -258,6 +282,12 @@ function update(now)
 			break;
 		case 5:
 			UpdateSceneFive();
+			break;				
+		case 7:
+			UpdateSceneSeven();
+			break;				
+		case 8:
+			UpdateSceneEight();
 			break;				
 	}
 }
