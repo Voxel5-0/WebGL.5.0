@@ -21,6 +21,8 @@ const Scene3_controlPoints = [
 // ---------------------------
 function InitializeSceneThree()
 {
+
+  pl_initialize();
 }
 
 function RenderSceneThree()
@@ -70,6 +72,8 @@ function RenderSceneThree()
   //mat4.scale(modelMatrix,modelMatrix,[1.0 + test_scale_X,1.0 + test_scale_X ,1.0 + test_scale_X]);
   //pl_display(modelMatrix);
 
+  pl_display();
+  
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -102,5 +106,5 @@ function UpdateSceneThree()
 
 function UninitializeSceneThree()
 {
-    
+  // pl_uninitialize();
 }

@@ -260,7 +260,7 @@ function updateArch(pTrail_arch) {
         //console.log(pTrail_arch[i]);
         if(archPos[i][3] > 0.0)
         {
-            archPos[i][3] -= 0.5;
+            archPos[i][3] -= 1.5;
         }
         // if(archPos[i][3] > 0.0)
         // {
