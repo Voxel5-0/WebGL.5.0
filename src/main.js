@@ -77,16 +77,17 @@ var modelList = [
 	{ name: "BridgePart", 	files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], 								flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_Pose3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "forest", 	files:[ 'src\\resources\\models\\scene5\\pine-forest\\forest_1.gltf', 'src\\resources\\models\\scene5\\pine-forest\\forest_1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
-	{ name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] ,flipTex:false , isStatic : true },
-	{ name: "Bushes_1", files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] ,flipTex:false , isStatic : true },
-	{ name: "Flowers_1", files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] ,flipTex:false , isStatic : true },
+	{ name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	{ name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	{ name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.obj', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 ]
 
 var grayscale = 1;
@@ -250,11 +251,11 @@ function draw(now)
     		RenderSceneFive();
 			break;	
 		case 7:
-			UninitializeSceneSix();
+			//UninitializeSceneSix();
 			RenderSceneSeven(); 
 			break;
 		case 8:
-			UninitializeSceneSeven();
+			//UninitializeSceneSeven();
 			RenderSceneEight(); 
 			break;
 

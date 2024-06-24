@@ -80,8 +80,8 @@ function RenderSceneFour()
   //Render skybox for actual scene
   DrawSkybox(SCENE_ONE);
   modelMatrix = mat4.create()
-  mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 + test_translate_X , -90.0 +  87.99 + test_translate_Y , -1.0 +  567.60 + 42.0 + test_translate_Z])
-  mat4.scale(modelMatrix,modelMatrix,[8.0 + test_scale_X , 8.0+test_scale_X , 8.0+test_scale_X]);
+  mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
+  mat4.scale(modelMatrix,modelMatrix,[8.0 , 8.0 , 8.0]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
   renderAssimpModel(modelMatrix,5,0,point_lightPositions,point_lightColors);
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
@@ -157,6 +157,8 @@ function UpdateSceneFour()
   }
   if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
     bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
+  }else{
+    scene+=3;
   }
 }
 

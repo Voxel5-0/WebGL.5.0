@@ -35,8 +35,6 @@ function InitializeSceneSeven()
 function RenderSceneSeven()
 {
 
-    
-
 
    //Uniforms for point lights
   var point_lightPositions = [13.21327183125484, -67.44632010003868, -4.840837788952009];
@@ -45,6 +43,9 @@ function RenderSceneSeven()
 
   //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
+  //DrawSkybox(SCENE_SEVEN);  
+ DrawSkybox(SCENE_ONE);  
+
   // terrain
   var modelMatrix = mat4.create();
   //mat4.translate(modelMatrix, modelMatrix, [30.0, -30.0, -1.0]);
@@ -138,8 +139,7 @@ function RenderSceneSeven()
   gl.disable(gl.BLEND);
 
 
-  //DrawSkybox(SCENE_SEVEN);  
-  DrawSkybox(SCENE_ONE);  
+
 
 }
 

@@ -263,7 +263,7 @@ function pl_updateParticle(p) {
 
         // Decreate Y translation
         // p[i].velocity[0] -= 0.0003;
-        p[i].velocity[1] -= 0.0001;
+        p[i].velocity[1] -= 0.0005;
         // p[i].velocity[2] -= 0.0000001;
         
         // Fading out
