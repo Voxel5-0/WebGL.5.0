@@ -46,7 +46,7 @@ function pTrail_initialize() {
         }
     }
     else {
-        console.log("Vertex Shader Compile Successfully...\n");
+        // console.log("Vertex Shader Compile Successfully...\n");
     }
 
     // Fragment shader
@@ -75,7 +75,7 @@ function pTrail_initialize() {
         }
     }
     else {
-        console.log("Fragment Shader Compile Successfully...\n");
+        // console.log("Fragment Shader Compile Successfully...\n");
     }
 
     // Shader program
@@ -93,7 +93,7 @@ function pTrail_initialize() {
         }
     }
     else {
-        console.log("Shader Program Linked Successfully...\n");
+        // console.log("Shader Program Linked Successfully...\n");
     }
 
     pTrail_projectionMatrixUniform = gl.getUniformLocation(pTrail_shaderProgramObject, "uProjectionMatrix");
@@ -189,8 +189,8 @@ function pTrail_loadGLTexture() {
     }
 
     pTrail_texture_particle.image.onload = function () {
-        console.log('Texture loaded successfully.')
-        console.log(pTrail_texture_particle.image)
+        // console.log('Texture loaded successfully.')
+        // console.log(pTrail_texture_particle.image)
 
         gl.bindTexture(gl.TEXTURE_2D, pTrail_texture_particle);
         

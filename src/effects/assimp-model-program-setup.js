@@ -222,7 +222,7 @@ function loadTexture(path, isTexFlipped) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tbo.image)
 		gl.generateMipmap(gl.TEXTURE_2D)
-		console.log("Successfully Loaded: " + path)
+		//console.log("Texture :" + path)
 	}
 	return tbo
 }

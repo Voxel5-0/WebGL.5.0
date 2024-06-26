@@ -12,6 +12,7 @@ var test_translate_Z = 0.0;
 var test_scale_X = 1.0;
 var test_scale_Y = 1.0 ;
 var test_scale_Z = 1.0;
+
 var test_angleRotation= 0.0;
 
 var fbo_width = 1920;
@@ -37,11 +38,11 @@ var perspectiveProjectionMatrix;
 var is_mouse_pressed;
 
 /* Scene Display Variables */
-var scene = 1;
+var scene = 0;
 
 var scene_camera_positions;
 scene_camera_positions = [
-							[492.45003920809063,-45,77.96151170852721],     //scene zero camera initial position,
+							[188.54773835466648,-105,4.046151170852721],     //scene zero camera initial position,
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
 							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
 							[298.5107073089176,785.1349368758114,2085.443908695071],     //scene three camera initial position
@@ -84,24 +85,23 @@ var scene_camera_anglesX =  [
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
 //This is done to solve the problem for synchronisity
 var modelList = [
-	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
 	{ name: "Castle",	 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'],								flipTex:false,	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "CastleReflection",	 	files:[ 'src\\resources\\models\\intro\\JustCastle.obj', 'src\\resources\\models\\intro\\JustCastle.mtl'],											flipTex:false,	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "Room", 		files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], 	flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "Bridge", 		files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], 									flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "BridgePart", 	files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], 								flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose4", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.obj', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
-	{ name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	{ name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	{ name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.obj', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "CastleReflection",	 	files:[ 'src\\resources\\models\\intro\\JustCastle.obj', 'src\\resources\\models\\intro\\JustCastle.mtl'],								flipTex:false,	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	// { name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	// { name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
 ]
 
 var grayscale = 1;
@@ -113,7 +113,6 @@ assimpjs().then (function (ajs) {
 	}).then((arrayBuffers) => {
 		var k = 0
 		for(var i = 0; i < modelList.length; i++) {
-			console.log("Loading Files for " + modelList[i].name + "....")
 			let fileList = new ajs.FileList()
 			for (let j = 0; j < modelList[i].files.length; j++) {
 				fileList.AddFile(modelList[i].files[j], new Uint8Array(arrayBuffers[k++]))
@@ -128,7 +127,7 @@ assimpjs().then (function (ajs) {
 			let resultJson = JSON.parse(jsonContent)
 			modelList[i].json = resultJson
 			modelList[i].directory = modelList[i].files[0].substring(0, modelList[i].files[0].lastIndexOf('/'))
-			console.log( modelList[i].name +" Loaded !")
+			console.log("Loading Files for Model : " + modelList[i].name + " Done!")
 		}
 		main()
 	})
@@ -185,7 +184,7 @@ function init()
 	InitializeQuadRenderer();
     InitializeTerrainRenderer();
     InitializeSkybox();
-	initAssimpModelShader(scene_one_light_count); 
+	initAssimpModelShader(scene_zero_light_count); 
 	pTrail_initialize(); 
 	initializeGrass();
 	InitializeVignnetTextureShader();
@@ -193,6 +192,7 @@ function init()
 	InitializeGrayScaleTextureShader();
 
 	/*Scene Specific Initialization */
+	InitializeSceneZero();
 	InitializeSceneOne();
 	InitializeSceneTwo();
 	InitializeSceneThree();
@@ -256,6 +256,7 @@ function draw(now)
 	switch(scene){
 		case 0 :
 			//RenderSceneZeroOpeningScene();
+			RenderSceneZero();
 			break;
 		case 1 :
 			RenderSceneOne();
@@ -299,6 +300,7 @@ function update(now)
 
 	switch(scene){
 		case 0:
+			UpdateSceneZero();
 			break;
 		case 1 :
 			UpdateSceneOne();
@@ -411,6 +413,11 @@ function uninitialize()
 	//TODO : add uninitialize calls
 
 	fadeInOutEffect.deallocate();
+	if(scene_zero_init_flag){
+		UninitializeSceneZero();
+	}
+	
+
 }
 
 function UpdateMoveSensitivity(sensitivity)
@@ -424,8 +431,13 @@ function keyDown(event)
 	switch(event.code){
 		case 'KeyN':
 			if(scene<SCENE_COUNT){
-				scene = scene + 1;
-				console.log("Moving to scene :"+scene);
+				if(scene == 1 && scene_one_showTitle){
+					scene_one_showTitle = false;
+					console.log("Moving to actual scene from titles");
+				}else{
+					scene = scene + 1;
+					console.log("Moving to scene :"+scene);
+				}
 			}else{
 				console.log("Scene "+scene+" was last scene");
 			}
@@ -500,7 +512,8 @@ function keyDown(event)
 			uninitialize();
 			window.close();
 		break;
-		case 70:
+		case 70://F
+			document.getElementById('audio').play();
 			toggleFullScreen();
 		break;
             

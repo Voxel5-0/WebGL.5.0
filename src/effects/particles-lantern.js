@@ -119,8 +119,7 @@ function pl_initialize() {
     }
 
     console.log("Particles for lanterns initialized...\n");
-    // Initialize projection matrix
-    // pl_perspectiveProjectionMatrix = mat4.create();
+
 }
 
 function pl_Particle() {

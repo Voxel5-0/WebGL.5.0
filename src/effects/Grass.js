@@ -143,9 +143,6 @@ function initializeGrass() {
             grass_uninitialize();
         }
     }
-    else {
-        console.log("Vertex Shader Compile Successfully For Grass...\n");
-    }
 
     // Fragment shader
      const fragmentShaderSourceCode = /* glsl */ `#version 300 es           
@@ -172,9 +169,6 @@ function initializeGrass() {
             grass_uninitialize();
         }
     }
-    else {
-        console.log("Fragment Shader Compile Successfully For Grass...\n");
-    }
 
     // Shader program
     grass_shaderProgramObject = gl.createProgram();
@@ -193,10 +187,7 @@ function initializeGrass() {
             grass_uninitialize();
         }
     }
-    else {
-        console.log("Shader Program Linked Successfully...\n");
-    }
-
+  
     //post-linking
     // grass_mvpMatrixUniform = gl.getUniformLocation(grass_shaderProgramObject, "mvpMatrix");
     grass_modelMatrixUniform = gl.getUniformLocation(grass_shaderProgramObject, "modelMatrix");
@@ -343,7 +334,6 @@ function grass_loadGLTexture() {
     tex_grass_length = gl.createTexture();
     tex_grass_length.image = new Image();
     tex_grass_length.image.onload = function () {
-        console.log('Texture loaded successfully.' + tex_grass_length.image.src)
         gl.bindTexture(gl.TEXTURE_2D, tex_grass_length);
         
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -359,7 +349,6 @@ function grass_loadGLTexture() {
     tex_grass_orientation = gl.createTexture();
     tex_grass_orientation.image = new Image();
     tex_grass_orientation.image.onload = function () {
-        console.log('Texture loaded successfully.' + tex_grass_orientation.image.src)
         gl.bindTexture(gl.TEXTURE_2D, tex_grass_orientation);
         
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -375,7 +364,6 @@ function grass_loadGLTexture() {
     tex_grass_color = gl.createTexture();
     tex_grass_color.image = new Image();
     tex_grass_color.image.onload = function () {
-        console.log('Texture loaded successfully.' + tex_grass_color.image.src)
         gl.bindTexture(gl.TEXTURE_2D, tex_grass_color);
         
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -391,7 +379,6 @@ function grass_loadGLTexture() {
     tex_grass_bend = gl.createTexture();
     tex_grass_bend.image = new Image();
     tex_grass_bend.image.onload = function () {
-        console.log('Texture loaded successfully.'+tex_grass_bend.image.src)
         gl.bindTexture(gl.TEXTURE_2D, tex_grass_bend);
         
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);

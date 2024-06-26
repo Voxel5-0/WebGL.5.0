@@ -1,15 +1,11 @@
 /*********************************************************************************
  * 
  * SCENE Description :
- * 
  * Here we need a sound effect and on screen we are able see river flowing 
- * 
  * Jhula dhanak ka dhire dhire hum jhule
  * 
- * Terrain - Done 
- * Trees - Model loading done
- * Water
- * Rainbow - Texture - blending 
+ * TIME : 2.19 to 3.11 
+ * 
  * Atmospheric scaterring 
  * Bill boarding  - field of flowers
  * 
@@ -55,7 +51,7 @@ function RenderSceneFive()
     }
    
     //mat4.rotateY(modelMatrix, modelMatrix, [90])
-    renderAssimpModelWithInstancing(modelMatrixArray,7,0,[],[]);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[]);
     //renderAssimpModel(modelMatrixArray[0],7,0,[],[]);
     //var view_matrix = GetCameraViewMatrix();
     // RenderWithInstanceShader(view_matrix, perspectiveProjectionMatrix, scene_one_tree_model_two_texture, 0);
