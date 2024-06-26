@@ -49,7 +49,7 @@ function UpdateCamera() {
 	vec3.normalize(camera_right, camera_right);
 
 	vec3.cross(camera_worldUp, camera_right, camera_front);
-	camera_up = vec3.normalize(camera_up, camera_up);
+	vec3.normalize(camera_up, camera_up);
 }
 
 function MoveCameraRight(multiplier) {
@@ -77,15 +77,15 @@ function MoveCameraDown(move_sensitivity) {
 }
 
 function MoveCameraFront(move_sensitivity) {
-	camera_position[0] -= camera_front[0] * move_sensitivity;
-	camera_position[1] -= camera_front[1] * move_sensitivity;
-	camera_position[2] -= camera_front[2] * move_sensitivity;
-}
-
-function MoveCameraBack(move_sensitivity) {
 	camera_position[0] += camera_front[0] * move_sensitivity;
 	camera_position[1] += camera_front[1] * move_sensitivity;
 	camera_position[2] += camera_front[2] * move_sensitivity;
+}
+
+function MoveCameraBack(move_sensitivity) {
+	camera_position[0] -= camera_front[0] * move_sensitivity;
+	camera_position[1] -= camera_front[1] * move_sensitivity;
+	camera_position[2] -= camera_front[2] * move_sensitivity;
 }
 
 function GetCameraViewMatrix() {
