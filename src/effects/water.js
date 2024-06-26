@@ -6,11 +6,13 @@
 // WATER
 
 // Constants
-const WATER_HEIGHT = -50.0;               // Y value for the water_vertices
+var WATER_HEIGHT = -60.0+49.500000000000036;               // Y value for the water_vertices
 const WATER_MESH_SIZE = 1024;           // Should be same as terrain size value
 const WATER_TEXTURE_TILING = 4;
 const WATER_DISTORTION_STRENGTH = 0.02;
 const WATER_MOVE_SPEED = 0.00001;
+var waterHeight		  = 0.0;
+var water_plane_reflection     = new Float32Array([0.0, 1.0, 0.0, WATER_HEIGHT]);
 
 // Mesh data
 var water_vertices;
@@ -38,6 +40,8 @@ var water_texture_tiling_uniform;
 var water_distortion_strength_uniform;
 var lightColor_uniform;
 var lightPosition_uniform;
+var water_texture_uniform;
+var water_plane_uniform;
 
 // Vertex arrays and buffers
 var vao_water;
@@ -75,11 +79,15 @@ function initializeWater()
     // 2. Get uniform locations
     // 3. Generate mesh and initialize VAO and VBOs
     // 4. Load textures
+    // 5. Create FBOs for reflection and refraction
     
     initializeWaterShaders();
     getWaterUniformLocations();
     initializeWaterVAOAndVBO();
     loadWaterTextures();
+
+    reflection_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	refraction_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 }
 
 
@@ -91,36 +99,30 @@ function initializeWaterShaders()
 
     in vec4 vPosition;
     in vec2 vTexcoord;
-    in vec3 vNormal;
 
     uniform mat4 u_modelMatrix;
     uniform mat4 u_viewMatrix;
     uniform mat4 u_projectionMatrix;
     uniform float u_textureTiling;
     uniform vec3 u_cameraPosition;
-    uniform vec3 u_lightPosition;
+    uniform vec4 u_plane;
 
-    out vec4 out_worldPosition;
     out vec2 out_texcoord;
-    out vec3 out_normal;
     out vec3 out_toCamera;
-    out vec3 out_fromLightVector;
+    out vec4 out_clipSpace;
+
+    const float tiling = 8.0;
+    float clip_distance;
 
     void main(void)
     {
-        vec4 worldPos = u_modelMatrix * vPosition;
-        vec4 positionRelativeToCamera = u_viewMatrix * worldPos;
 
-        out_worldPosition = u_projectionMatrix * positionRelativeToCamera;
-        out_texcoord = vTexcoord * u_textureTiling;
-        out_normal = vNormal;
-        out_toCamera = u_cameraPosition * worldPos.xyz;
-        
-        out_fromLightVector.x = out_worldPosition.x - u_lightPosition.x;
-        out_fromLightVector.y = out_worldPosition.y - u_lightPosition.y;
-        out_fromLightVector.z = -out_worldPosition.z + u_lightPosition.z;
-
-        gl_Position = out_worldPosition;
+        clip_distance = dot(u_modelMatrix * vPosition, u_plane);
+        vec4 worldPosition = u_modelMatrix * vPosition;
+        out_clipSpace   = u_projectionMatrix * u_viewMatrix * worldPosition;
+        gl_Position = out_clipSpace;
+        out_texcoord = vTexcoord * tiling;
+        out_toCamera = u_cameraPosition - worldPosition.xyz;
     }
     `;
 
@@ -138,83 +140,61 @@ function initializeWaterShaders()
     }
     
     // Fragment shader
-    var water_fragment_shader_source_code =
+  var water_fragment_shader_source_code =
     `#version 300 es
     precision highp float;
     const float SHINE_DAMPER = 10.0;
     const float REFLECTIVITY = 0.7;
 
-    in vec4 out_worldPosition;
     in vec2 out_texcoord;
-    in vec3 out_normal;
     in vec3 out_toCamera;
-    in vec3 out_fromLightVector;
+    in vec4 out_clipSpace;
 
     uniform sampler2D u_reflectTextureSampler;
     uniform sampler2D u_refractTextureSampler;
     uniform sampler2D u_dudvTextureSampler;
-    uniform sampler2D u_normalTextureSampler;
+    uniform float u_moveFactor;
+
     uniform sampler2D u_depthTextureSampler;
 
-    uniform vec3 u_lightColor;
-
-    uniform float u_moveFactor;
-    uniform float u_distortionStrength;
+    const float waveStrenth = 0.1;
 
     out vec4 FragColor;
 
-
-    // TODO: Change these values if the perspective near and far parameters change
-    const float near = 0.1;
-    const float far = 100.0;
-
-
     void main(void)
     {
-        vec2 ndc = (out_worldPosition.xy / out_worldPosition.w) / 2.0 * 0.5;
-        
-        vec2 refractionTexcoord = vec2(ndc.x, ndc.y);
-        vec2 reflectionTexcoord = vec2(ndc.x, -ndc.y);
+        vec4 texture_color;
+	    vec4 texture_reflection;
+	    vec4 texture_refraction;
+	    vec2 ndc				= (out_clipSpace.xy/out_clipSpace.w)/2.0 + 0.5;
 
-        float terrainDepth = texture(u_depthTextureSampler, refractionTexcoord).r;
-        float terrainDistance = 2.0 * near * far / (far + near - (2.0 * terrainDepth - 1.0) * (far - near));
+	    vec2 refract_texcoord   = vec2(ndc.x,  ndc.y);
+	    vec2 reflect_texcoord   = vec2(ndc.x, -ndc.y);
+    
+	    vec2 distortion1		= (texture(u_dudvTextureSampler, vec2(out_texcoord.x + u_moveFactor, out_texcoord.y)).rg * 2.0 - 1.0) * waveStrenth;
+	    vec2 distortion2		= (texture(u_dudvTextureSampler, vec2(-out_texcoord.x + u_moveFactor, out_texcoord.y + u_moveFactor)).rg * 2.0 - 1.0) * waveStrenth;
 
-        vec2 distortedTexcoord = texture(u_dudvTextureSampler, vec2(out_texcoord.x + u_moveFactor, out_texcoord.y)).rg * 0.1;
-        distortedTexcoord= out_texcoord + vec2(distortedTexcoord.x, distortedTexcoord.y + u_moveFactor);
-        vec2 totalDistortion = (texture(u_dudvTextureSampler, distortedTexcoord).rg * 2.0 - 1.0) * u_distortionStrength ;
+	    distortion1			    = distortion1 * distortion2;
+	    refract_texcoord		= refract_texcoord + distortion1;
+	    refract_texcoord		= clamp(refract_texcoord, 0.001, 0.999);
 
-        
-        refractionTexcoord += totalDistortion;
-        refractionTexcoord = clamp(refractionTexcoord, 0.001, 0.999);
-        reflectionTexcoord += totalDistortion;
+	    reflect_texcoord		= reflect_texcoord + distortion1;
 
-        reflectionTexcoord.x = clamp(reflectionTexcoord.x, 0.001, 0.999);
-        reflectionTexcoord.y = clamp(reflectionTexcoord.y, -0.999, -0.001);
+	    reflect_texcoord.x		= clamp(reflect_texcoord.x,  0.001,  0.999);
+	    reflect_texcoord.y		= clamp(reflect_texcoord.y, -0.999, -0.001);
 
-        vec4 reflectColor = texture(u_reflectTextureSampler, reflectionTexcoord);
-        vec4 refractColor = texture(u_refractTextureSampler, refractionTexcoord);
+	    texture_reflection		= texture(u_reflectTextureSampler, reflect_texcoord);
+	    texture_refraction		= texture(u_refractTextureSampler, refract_texcoord);
+	    vec3 veiwVector		    = normalize(out_toCamera);
 
-        vec3 viewVector = normalize(out_toCamera);
-        float refractiveFactor = dot(viewVector, vec3(0.0, 1.0, 0.0));
-        refractiveFactor = pow(refractiveFactor, 0.5);
-        refractiveFactor = clamp(refractiveFactor, 0.001, 0.999);
 
-        vec4 normalMapColor = texture(u_normalTextureSampler, distortedTexcoord);
-        vec3 normal = vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 3.0, normalMapColor.g * 2.0 - 1.0);
-        normal = normalize(normal);
-
-        vec3 reflectedLight = reflect(normalize(out_fromLightVector), normal);
-        float specular = max(dot(reflectedLight, viewVector), 0.0);
-        specular = pow(specular, SHINE_DAMPER);
-        vec3 specularHighlights = u_lightColor * specular * REFLECTIVITY;
-        //FragColor = reflectColor;
-        FragColor = mix(refractColor,reflectColor,refractiveFactor);
-        FragColor = mix(FragColor, vec4(0.5, 0.5, 1.5f, 1.0), 0.2) + vec4(specularHighlights, 0.0);
+	    float refractiveFactor  = dot(veiwVector, vec3(0.0,1.0,0.0));
+	    texture_color			= mix(texture_reflection, texture_refraction, 0.4);
+	    texture_color			= mix(texture_color, vec4(0.0,0.3,0.5,1.0), 0.2);
+	
+        FragColor				= texture(u_reflectTextureSampler,reflect_texcoord);
     }
     `;
-
-    //        FragColor = mix(refractColor,reflectColor,refractiveFactor);
-
 
     water_fragment_shader_object = gl.createShader(gl.FRAGMENT_SHADER);
     gl.shaderSource(water_fragment_shader_object, water_fragment_shader_source_code);
@@ -237,7 +217,6 @@ function initializeWaterShaders()
     // Pre link binding
     gl.bindAttribLocation(water_shader_program_object, WebGLMacros.AMC_ATTRIBUTE_VERTEX, "vPosition");
     gl.bindAttribLocation(water_shader_program_object, WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, "vTexcoord");
-    gl.bindAttribLocation(water_shader_program_object, WebGLMacros.AMC_ATTRIBUTE_NORMAL, "vNormal");
 
     // Linking shaders
     gl.linkProgram(water_shader_program_object);
@@ -267,17 +246,32 @@ function getWaterUniformLocations()
     water_move_factor_uniform = gl.getUniformLocation(water_shader_program_object, "u_moveFactor");
     water_texture_tiling_uniform = gl.getUniformLocation(water_shader_program_object, "u_textureTiling");
     water_distortion_strength_uniform = gl.getUniformLocation(water_shader_program_object, "u_distortionStrength");
-    //    uniform vec3 u_lightColor;
-    lightColor_uniform = gl.getUniformLocation(water_shader_program_object, "u_lightColor");
-    lightPosition_uniform = gl.getUniformLocation(water_shader_program_object, "u_lightPosition");
-
+    // lightColor_uniform = gl.getUniformLocation(water_shader_program_object, "u_lightColor");
+    // lightPosition_uniform = gl.getUniformLocation(water_shader_program_object, "u_lightPosition");
+    
+    // water_texture_uniform = gl.getUniformLocation(water_shader_program_object, "u_waterTextureSampler");
+    water_plane_uniform = gl.getUniformLocation(water_shader_program_object, "u_plane");
 }
 
 
 function initializeWaterVAOAndVBO()
 {
-    // Generate the water mesh vertices, texcoords normals and indices
-    generateWaterMesh();
+
+    // X translation 515.9000000000044,
+    // Z translation 402.6000000000021
+    var square_position = new Float32Array([
+        523.0 * 1.0, -50.60000000000004,  523.0 *1.0,
+        523.0 *-1.0,-50.60000000000004,  523.0 *1.0,
+        523.0 *-1.0, -50.60000000000004, 523.0 *-1.0,
+        523.0 *1.0, -50.60000000000004, 523.0 *-1.0
+   ]);
+
+   var square_texcoord = new Float32Array([
+       1.0, 1.0,
+       0.0, 1.0,
+       0.0, 0.0,
+       1.0, 0.0
+   ]);
     
     // Setup vao and vbo
     vao_water = gl.createVertexArray();
@@ -286,7 +280,7 @@ function initializeWaterVAOAndVBO()
     // Position
     vbo_water_position = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_position);
-    gl.bufferData(gl.ARRAY_BUFFER, water_vertices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, square_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_VERTEX, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_VERTEX);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -294,82 +288,27 @@ function initializeWaterVAOAndVBO()
     // Texcoords
     vbo_water_texcoord = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_texcoord);
-    gl.bufferData(gl.ARRAY_BUFFER, water_texcoord, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, square_texcoord, gl.STATIC_DRAW);
     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    // Normals
-    vbo_water_normals = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_normals);
-    gl.bufferData(gl.ARRAY_BUFFER, water_normal, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_NORMAL, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_NORMAL);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    // // Normals
+    // vbo_water_normals = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_normals);
+    // gl.bufferData(gl.ARRAY_BUFFER, water_normal, gl.STATIC_DRAW);
+    // gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_NORMAL, 3, gl.FLOAT, false, 0, 0);
+    // gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_NORMAL);
+    // gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    // Indices
-    vbo_water_indices = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, water_indices, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    // // Indices
+    // vbo_water_indices = gl.createBuffer();
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
+    // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, water_indices, gl.STATIC_DRAW);
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     
     gl.bindVertexArray(null);
 }
-
-
-
-function generateWaterMesh()
-{
-    // Create a quad with vertices -
-    // (0, 0, 0),
-    // (0, 0, WATER_MESH_SIZE),
-    // (WATER_MESH_SIZE, 0, 0),
-    // (WATER_MESH_SIZE, 0, WATER_MESH_SIZE)
-
-    const vertexCount = 4;
-    
-    water_vertices = new Float32Array(vertexCount * 3);
-    water_texcoord = new Float32Array(vertexCount * 2);
-    water_normal = new Float32Array(vertexCount * 3);
-    water_indices = new Uint32Array(6);
-   
-    var verticesIndex = 0;
-    var texcoordsIndex = 0;
-    var normalsIndex = 0;
-    var indicesIndex = 0;
-
-
-    for (var i = 0; i < 2; i++)
-    {
-        var x = i * WATER_MESH_SIZE;
-        
-        for (var j = 0; j < 2; j++)
-        {
-            var z = j * WATER_MESH_SIZE;
-            
-            water_vertices[verticesIndex++] = x;
-            water_vertices[verticesIndex++] = WATER_HEIGHT;
-            water_vertices[verticesIndex++] = z;
-            
-            water_texcoord[texcoordsIndex++] = i;
-            water_texcoord[texcoordsIndex++] = j;
-            
-            water_normal[normalsIndex++] = 0.0;
-            water_normal[normalsIndex++] = 1.0;
-            water_normal[normalsIndex++] = 0.0;
-        }
-    }
-
-    // Push indices in the order 0, 1, 2, 2, 1, 3 for the 2 triangles of a quad
-    water_indices[indicesIndex++] = 0;
-    water_indices[indicesIndex++] = 1;
-    water_indices[indicesIndex++] = 2;
-
-    water_indices[indicesIndex++] = 2;
-    water_indices[indicesIndex++] = 1;
-    water_indices[indicesIndex++] = 3;
-}
-
 
 function loadWaterTextures()
 {
@@ -409,7 +348,7 @@ function loadWaterTextures()
 
     water_normal_texture.image = new Image();
     water_normal_texture.crossOrigin = "anonymous";
-    water_normal_texture.image.src = "src/resources/textures/matchingNormalMap.png";
+    water_normal_texture.image.src = "src/resources/textures/water.jpg";
 
     water_normal_texture.image.addEventListener('load', function()
     {
@@ -435,7 +374,7 @@ function loadWaterTextures()
 
 
 // Render water
-function RenderWater(reflection_texture, refraction_texture, refraction_depth_texture,xAdjustment,yAdjustment,zAdjustment)
+function RenderWater(reflection_texture, refraction_texture, refraction_depth_texture,xAdjustment,yAdjustment,zAdjustment,scale)
 {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -445,10 +384,13 @@ function RenderWater(reflection_texture, refraction_texture, refraction_depth_te
     var modelMatrix = mat4.create();
     var viewMatrix = mat4.create();
 
-    mat4.translate(modelMatrix, modelMatrix, [-700.0 + xAdjustment, -60.0 + yAdjustment, -100.0+zAdjustment]);
+    mat4.translate(modelMatrix, modelMatrix, [-700.0 + xAdjustment + test_translate_X, WATER_HEIGHT + yAdjustment + test_translate_Y, -100.0+zAdjustment + + test_translate_Z]);
+    mat4.scale(modelMatrix,modelMatrix,[1.0 + scale + test_scale_X,1.0+scale + test_scale_X,1.0+scale + test_scale_X])
+    mat4.rotateY(modelMatrix,modelMatrix,[0.0 - 127 + test_angleRotation]);
     gl.uniformMatrix4fv(water_model_matrix_uniform, false, modelMatrix);
     gl.uniformMatrix4fv(water_view_matrix_uniform, false, GetCameraViewMatrix());
     gl.uniformMatrix4fv(water_projection_matrix_uniform, false, perspectiveProjectionMatrix);
+    gl.uniform4fv(water_plane_uniform, water_plane_reflection);
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, reflection_texture);
@@ -465,14 +407,15 @@ function RenderWater(reflection_texture, refraction_texture, refraction_depth_te
     gl.activeTexture(gl.TEXTURE3);
     gl.bindTexture(gl.TEXTURE_2D, water_normal_texture);
     gl.uniform1i(water_normal_texture_sampler_uniform, 3);
+    // gl.uniform1i(water_texture_uniform,3);
 
     gl.activeTexture(gl.TEXTURE4);
     gl.bindTexture(gl.TEXTURE_2D, refraction_depth_texture);
     gl.uniform1i(water_refract_depth_texture_sampler_uniform, 4);
 
     gl.uniform3fv(water_camera_position_sampler_uniform, camera_position);
-    gl.uniform3fv(lightPosition_uniform,camera_position);
-    gl.uniform3fv(lightColor_uniform,[1.0,0.0,1.0]);
+    // gl.uniform3fv(lightPosition_uniform,camera_position);
+    // gl.uniform3fv(lightColor_uniform,[1.0,0.0,1.0]);
 
     gl.uniform1f(water_move_factor_uniform, water_move_factor);
     gl.uniform1f(water_texture_tiling_uniform, WATER_TEXTURE_TILING);
@@ -480,7 +423,8 @@ function RenderWater(reflection_texture, refraction_texture, refraction_depth_te
 
     gl.bindVertexArray(vao_water);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
-    gl.drawElements(gl.TRIANGLES, water_indices.length, gl.UNSIGNED_INT, 0);
+    //gl.drawElements(gl.TRIANGLES, water_indices.length, gl.UNSIGNED_INT, 0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
 

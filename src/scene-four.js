@@ -27,18 +27,12 @@ const Scene4_controlPoints = [
 // ---------------------------
 function InitializeSceneFour()
 {
-  var scene_four_height_map_image = "src/resources/textures/terrain.png";
-  var scene_four_blend_map = "src/resources/textures/BlendMap.png";
-  var scene_four_rock_1_image = "src/resources/textures/soil.jpg";
-  var scene_four_rock_2_image = "src/resources/textures/soil.jpg";
-  var scene_four_path_image = "src/resources/textures/ground.jpg";
-  var scene_four_snow_image = "src/resources/textures/soil.jpg";
-
-  var scene_four_tree_one_model_obj_file = "src\\resources\\models\\intro\\Palace_withColors.obj";
-  var scene_four_tree_two_model_obj_file = "src\\resources\\intro\\scene_one_tree_two_model.obj";
-
-  var scene_four_tree_one_model_texture_image = "src\\resources\\models\\intro\\TCom_Metal_BrassPolished_header.jpg";
-  var scene_four_tree_two_model_texture_image = "src\\resources\\models\\scene_one_tree_two_texture.png";
+  var scene_four_height_map_image = "src/resources/textures/terrain/RollingHills/Terrain002_2K.png";
+  var scene_four_blend_map        = "src/resources/textures/BlendMap.png";
+  var scene_four_rock_1_image     = "src/resources/textures/ground.jpg";
+  var scene_four_rock_2_image     = "src/resources/textures/soil.jpg";
+  var scene_four_path_image       = "src/resources/textures/ground.jpg";
+  var scene_four_snow_image       = "src/resources/textures/soil.jpg";
 
   InitializeTerrainRenderer();
   InitializeHeightMapTerrain(scene_four_height_map_image,scene_four_blend_map,scene_four_rock_1_image,scene_four_rock_2_image,scene_four_path_image,scene_four_snow_image,4);
@@ -118,7 +112,7 @@ function RenderSceneFour()
   //bindReflectionFBO();
   gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  CameraReflect();
+  // CameraReflect();
   //render disney castle model for reflection FBO 
 	var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
@@ -131,7 +125,7 @@ function RenderSceneFour()
   //Render in Refraction FBO
   gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  CameraReflect();
+  // CameraReflect();
   //render skybox for refraction FBO 
   DrawSkybox(SCENE_ONE);
   //render disney castle model for refraction FBO 

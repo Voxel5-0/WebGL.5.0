@@ -18,8 +18,10 @@
 
 var SCENE_ONE = 1;
 var scene_one_AMC_title_texture;
+var bool_start_ptrail_update = false;
 
-const controlPoints = [
+/*----------------------------------- Camera Contol Points and variables -----------------------------------*/
+const scene_one_controlPoints = [
   [-5.99579627507126, -0.983638457861292, 35.95826514464386, -62.4429236732048, -570.19999999998],
   [-5.243557997172071, -3.4811357751406176, 21.678070445282525, -23.042920367320533, -544.7999999995],
   [-2.9448600533500287, -19.595267421016295, -24.700377140328975, -10.24292036, -576.2],
@@ -29,127 +31,103 @@ const controlPoints = [
 ];
 var startTime = 0;
 
-var bool_start_ptrail_update = false;
+/*----------------------------------- Point Light Variables and Positions -----------------------------------*/
+var scene_one_lightPositions = [
+  [13.21327183125484, -67.44632010003868, -4.840837788952009], //middle
+  [9.958236978785187, -87.20368404972493, 4.3888549228581475], //left
+  [10.240470221367731, -86.58628336655747, -14.213709470661364], //right
+  [30.354274982918096, -82.16404503148408, -5.308960274678841], //middleBottom
+  [10.037352469619046, -94.20165532734516, 23.91656258654752], //Left-pit
+  [11.225923093363434, -95.20251447029362, -35.5777721241391], //Right-pit
+  [3.519062612861857, -51.2143286217448, -10.05733734202175], //longTowerbottom
+  [7.394419029927332, -37.85214289591929, -11.998835777015215], //longTowerTop
+];
+var scene_one_lightColors = [1, 0.776, 0.559];
+var scene_one_light_count = 8;
 
-var light_count = 8;
+
+/*----------------------------------- Scene One Initialise -----------------------------------*/
 
 function InitializeSceneOne() {
-  
-  const skyboxTexturesForScene1 = [ 
+  let scene_one_skyboxTextures = [ 
     "src/resources/textures/skybox/Scene1/right.jpg", 
     "src/resources/textures/skybox/Scene1/left.jpg", 
     "src/resources/textures/skybox/Scene1/top.jpg",
     "src/resources/textures/skybox/Scene1/bottom.jpg",
     "src/resources/textures/skybox/Scene1/front.jpg", 
     "src/resources/textures/skybox/Scene1/back.jpg"
-];
-
-  initAssimpModelShader(light_count); 
-  pTrail_initialize(); 
-  
-  finalScene_fbo = GenerateFramebuffer(1920, 1080);
-  coloredFinalScene_fbo = GenerateFramebuffer(1920, 1080);
-  reflection_fbo = GenerateFramebuffer(1920, 1080);
-	refraction_fbo = GenerateFramebuffer(1920, 1080);
-
-
-  initializeWater();
-  InitializeGrayScaleTextureShader();
+  ];
   InitializeQuadRendererXY();
-  LoadSkyboxTextures(skyboxTexturesForScene1, 1);
-  initializeGrass();
-  InitializeVignnetTextureShader();
-
+  LoadSkyboxTextures(scene_one_skyboxTextures, 1);
   var scene_one_AMC_title_texture_path = "src\\resources\\textures\\Titles\\Astromedicomp.png";
   scene_one_AMC_title_texture = loadTexture(scene_one_AMC_title_texture_path, false) 
 }
 
 
+/*----------------------------------- Scene One Render -----------------------------------*/
 function RenderSceneOne() {
   var view_matrix = GetCameraViewMatrix();
 
   gl.useProgram(null);
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, null);
-  
-  //Uniforms for point lights
-  var lightPositions = [
-    [13.21327183125484, -67.44632010003868, -4.840837788952009], //middle
-    [9.958236978785187, -87.20368404972493, 4.3888549228581475], //left
-    [10.240470221367731, -86.58628336655747, -14.213709470661364], //right
-    [30.354274982918096, -82.16404503148408, -5.308960274678841], //middleBottom
-    [10.037352469619046, -94.20165532734516, 23.91656258654752], //Left-pit
-    [11.225923093363434, -95.20251447029362, -35.5777721241391], //Right-pit
-    [3.519062612861857, -51.2143286217448, -10.05733734202175], //longTowerbottom
-    [7.394419029927332, -37.85214289591929, -11.998835777015215], //longTowerTop
-  ];
 
-  var lightColors = [1, 0.776, 0.559];
-
-  animateWater();
-  //Render in Reflection FBO
-  //bindReflectionFBO();
+  /*----------------------------------- Rendering For Reflection FBO -----------------------------------*/
   gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  CameraReflect();
-  //render disney castle model for reflection FBO 
-	var modelMatrix = mat4.create()
-	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
-	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  //render skybox for reflection FBO 
+  turnCameraReflectionOn();                        
+  animateWater();     
+  //just castle model for reflection : index 1
+	var scene1_modelMatrix = mat4.create()
+	mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
+  renderAssimpModel(scene1_modelMatrix,14,scene_one_light_count,scene_one_lightPositions,scene_one_lightColors);
   DrawSkybox(SCENE_ONE);  
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-  //Render in Refraction FBO
+  /*----------------------------------- Rendering For Refraction FBO -----------------------------------*/
   gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  CameraReflect();
-  //render skybox for refraction FBO 
+  turnCameraReflectiOff();
   DrawSkybox(SCENE_ONE);
-  //render disney castle model for refraction FBO 
-  var modelMatrix = mat4.create()
-	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
-	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
-  //Render final scene in final buffer
+  /*----------------------------------- Actual Scene One -----------------------------------*/
   gl.bindFramebuffer(gl.FRAMEBUFFER, finalScene_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  //Render castle for actual scene
-  var modelMatrix = mat4.create()
-	mat4.rotate(modelMatrix, modelMatrix, 0, [0.0, 0.0, 0.0])
-	mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(modelMatrix,0,light_count,lightPositions,lightColors);
-  // Render skybox for actual scene
+  //castle complete model : index 0
+  mat4.identity(scene1_modelMatrix)
+	mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
+  renderAssimpModel(scene1_modelMatrix,0,scene_one_light_count,scene_one_lightPositions,scene_one_lightColors);
   DrawSkybox(SCENE_ONE);
 
   if(bool_start_ptrail_update){
-    pTrail_display(modelMatrix, perspectiveProjectionMatrix);
-    mat4.identity(modelMatrix);
-    mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0 - 3.3, -10.0])
-    mat4.scale(modelMatrix, modelMatrix,[0.5 + 1.5 , 0.5 + 1 , 0.5 + 1]);
+    //One space key press- trail and AMC title
+    pTrail_display(scene1_modelMatrix, perspectiveProjectionMatrix);
+    mat4.identity(scene1_modelMatrix);
+    mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0 - 3.3, -10.0])
+    mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 , 0.5 + 1]);
     var view = mat4.create();
-    RenderWithTextureShaderMVP(modelMatrix,view,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
+    RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
   }
   //displayGrass();
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,515.9000000000044,0,402.6000000000021,0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
-  //Render final scene with grayscale
-  var model_matrix = mat4.create();
+  /*----------------------------------- Post Processing on Scene -----------------------------------*/
   RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
+  // RenderWithTextureShader(finalScene_fbo.cbo, 0);
 }
 
+
+/*----------------------------------- Scene One Update -----------------------------------*/
 function UpdateSceneOne() {
   if (startTime == 0) {
     startTime = performance.now() / 1000;
   }
   if (startTime + 30 > performance.now() / 1000) {
-    bezierCurve(controlPoints, performance.now() / 1000, startTime, 30);
+    bezierCurve(scene_one_controlPoints, performance.now() / 1000, startTime, 30);
   }  
   if(bool_start_ptrail_update){
     pTrail_update();
@@ -157,22 +135,8 @@ function UpdateSceneOne() {
   cameraShake();
 }
 
+/*----------------------------------- Scene One  Uninitialize -----------------------------------*/
 function UninitializeSceneOne() {
  
-  // if (scene_one_tree_model_one_texture)
-  // {
-  //   gl.deleteTexture(scene_one_tree_model_one_texture);
-  // }
-
-  // if (scene_one_tree_model_two_texture)
-  // {
-  //   gl.deleteTexture(scene_one_tree_model_two_texture);
-  // }
-
-  // UninitializeTerrainData(SCENE_ONE);
-  // UninitializeModelRenderer(scene_one_tree_one_model);
-  // UninitializeModelRenderer(scene_one_tree_two_model);
-
-  // pTrail_uninitialize();
-  // uninitializeWater();
+ 
 }

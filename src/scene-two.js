@@ -1,19 +1,21 @@
 /*********************************************************************************
  * 
  * SCENE Description :
- * Astromedicomps Voxel Group - 
+ * Astromedicomps Voxel Group - Title
 */
 
 var SCENE_TWO = 2;
 var scene_two_title_texture;
 var lastExecutionTime = 0;
 
-// ---------------------------
+/*----------------------------------- Scene two Initialise -----------------------------------*/
 function InitializeSceneTwo()
 {
     var scene_two_title_texture_path = "src\\resources\\textures\\Titles\\MainTitle.png";
     scene_two_title_texture = loadTexture(scene_two_title_texture_path, false) 
 }
+
+/*----------------------------------- Scene two Render -----------------------------------*/
 
 function RenderSceneTwo()
 {
@@ -31,18 +33,14 @@ function RenderSceneTwo()
     RenderWithGrayScaleTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_two_title_texture, 0);
     // RenderWithVignnetTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_two_title_texture, 0);
 }
-function updateMatrix() {
-    let x = (Math.random() * 2 - 1) / 300;
-    let y = (Math.random() * 2 - 1) / 400;
-    let modelMatrix = mat4.create();
-    let identityMatrix = mat4.create();
-    mat4.translate(modelMatrix, modelMatrix, [x, y, 0]);
-}
+
+/*----------------------------------- Scene two Update -----------------------------------*/
 function UpdateSceneTwo()
 {
    
 }
 
+/*----------------------------------- Scene two Uninitialize -----------------------------------*/
 function UninitializeSceneTwo()
 {
     

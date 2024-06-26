@@ -12,6 +12,10 @@ var test_translate_Z = 0.0;
 var test_scale_X = 1.0;
 var test_scale_Y = 1.0 ;
 var test_scale_Z = 1.0;
+var test_angleRotation= 0.0;
+
+var fbo_width = 1920;
+var fbo_height = 1080;
 
 var requestAnimationFrame = window.requestAnimationFrame ||
 							window.webkitRequestAnimationFrame ||
@@ -97,6 +101,7 @@ var modelList = [
 	{ name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
 	{ name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
 	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.obj', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "CastleReflection",	 	files:[ 'src\\resources\\models\\intro\\JustCastle.obj', 'src\\resources\\models\\intro\\JustCastle.mtl'],								flipTex:false,	isStatic : true , isInstanced :false, instanceCount : 1},
 ]
 
 var grayscale = 1;
@@ -145,6 +150,9 @@ function main()
 	canvas_original_width = canvas.width;
     canvas_original_height = canvas.height;
 
+	fbo_width = canvas.width;
+	fbo_height = canvas.height;
+
 	window.addEventListener("keydown", keyDown, false);
 	window.addEventListener("resize", resize, false);
 	window.addEventListener("mousedown", onMouseDown, false);
@@ -171,15 +179,18 @@ function init()
 
 	/*--------------------- Project Initialization ---------------------*/
 
-	/* -- Common Shader/Gemometries Initialzation */
+	/* -- Common Shader/Gemometries/Effects Initialzation */
 	InitializeTextureShader();
 	InitializeInstanceShader();
 	InitializeQuadRenderer();
     InitializeTerrainRenderer();
     InitializeSkybox();
-
-	fadeInOutEffect = new FadeInOutEffect();
-	fadeInOutEffect.allocate();
+	initAssimpModelShader(scene_one_light_count); 
+	pTrail_initialize(); 
+	initializeGrass();
+	InitializeVignnetTextureShader();
+	initializeWater();
+	InitializeGrayScaleTextureShader();
 
 	/*Scene Specific Initialization */
 	InitializeSceneOne();
@@ -198,6 +209,11 @@ function init()
 	
 	UpdateCameraAngleX(scene_camera_anglesX[scene]);
 	cameraInitialPositionForScene[scene] = 1;
+
+	/* Default FBOs Creation*/
+	finalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	coloredFinalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+
 	/*--------------------- Project Initialization ---------------------*/
 
 
@@ -316,12 +332,23 @@ function resize()
 	{
 		canvas.width=window.innerWidth;
 		canvas.height=window.innerHeight;
+
+		fbo_width = canvas.width;
+		fbo_height = canvas.height;
 	}
 	else
 	{
 		canvas.width=canvas_original_width;
 		canvas.height=canvas_original_height;
+
+		fbo_width = canvas.width;
+		fbo_height = canvas.height;
 	}
+
+	finalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	coloredFinalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	reflection_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	refraction_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
@@ -416,6 +443,9 @@ function keyDown(event)
 		case 'KeyG':
 			bAnimateGrayscale = !bAnimateGrayscale;
 			console.log("Converting to grayscale");
+			break;	
+		case 'KeyR':
+			test_angleRotation+=0.01;
 			break;		
 				
 	}
@@ -444,24 +474,22 @@ function keyDown(event)
 		case 90://z
 				test_translate_Z += move_sensitivity;
 			break;		
-
-		case 69://e
-				test_translate_X -= move_sensitivity;
-			break;	
-		// case 70://f
-		// 		test_translate_Y -= move_sensitivity;
-		// 	break;
-		// case 71://g
-		// 		test_translate_Z -= move_sensitivity;
-		// 		bAnimateGrayscale = !bAnimateGrayscale;
-		// 	break;			
 		
 		case 49://1
-				test_scale_X += move_sensitivity;
+				test_translate_X -= move_sensitivity;
 			break;	
 		case 50://2
+				test_translate_Y -= move_sensitivity;
+			break;	
+		case 51://3
+				test_translate_Z -= move_sensitivity;
+			break;	
+		case 52://4
+				test_scale_X += move_sensitivity;
+			break;	
+		case 53://5
 				test_scale_X -= move_sensitivity;
-			break;
+			break;			
 		case 32:
 			//start - trail
 			console.log("Start particle trail "+bool_start_ptrail_update);

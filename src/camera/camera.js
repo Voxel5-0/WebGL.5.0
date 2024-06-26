@@ -136,36 +136,40 @@ function UpdateCameraAngleX(angle) {
 }
 
 // Reflection matrix functions
-function CameraReflect() {
-	reflected = !reflected;
+function turnCameraReflectionOn() {
+	reflected = true;
+}
+
+function turnCameraReflectiOff() {
+	reflected = false;
 }
 
 function GetCameraReflectionMatrix() {
 	var reflectionMatrix = mat4.create();
-	mat4.identity(reflectionMatrix);
+	
+	var position = new Float32Array(camera_position);
+	var distance = 2 * position[1] - WATER_HEIGHT + test_scale_X;
 
-	if (reflected) {
-		var position = new Float32Array(camera_position);
+	position[1] = distance;
+	mat4.identity(camera_view_matrix);
+	var translation_matrix = mat4.create();
+	mat4.identity(translation_matrix);
+	var camera_pos_inv = vec3.create();
+	vec3.negate(camera_pos_inv, position);
+	mat4.translate(translation_matrix, translation_matrix, camera_pos_inv);
+	vec3.cross(camera_up_vector, camera_direction_vector, camera_right_vector);
 
-		//var distance = 2 * position[1] - WATER_HEIGHT;
-		position[1] = -position[1];
+	y_rotation_matrix = [
+		camera_right_vector[0], camera_up_vector[0], camera_direction_vector[0], 0,
+		camera_right_vector[1], -camera_up_vector[1], camera_direction_vector[1], 0,
+		camera_right_vector[2], camera_up_vector[2], camera_direction_vector[2], 0,
+		0, 0, 0, 1,
+	];
 
-		var camera_pos_inv = vec3.create();
-		vec3.negate(camera_pos_inv, position);
+	mat4.multiply(camera_view_matrix, y_rotation_matrix, translation_matrix);
+	UpdateCamera();
 
-		mat4.translate(reflectionMatrix, reflectionMatrix, camera_pos_inv);
-
-		var x_rotation_matrix = mat4.create();
-		var x_rotation_angle_radian = glMatrix.toRadian(-x_rotation);
-
-		mat4.rotateX(x_rotation_matrix, x_rotation_matrix, x_rotation_angle_radian);
-
-		mat4.multiply(reflectionMatrix, reflectionMatrix, x_rotation_matrix);
-		mat4.multiply(reflectionMatrix, reflectionMatrix, y_rotation_matrix);
-
-	}
-
-	return reflectionMatrix;
+	return camera_view_matrix;
 }
 
 //B-spline curve evaluation function
