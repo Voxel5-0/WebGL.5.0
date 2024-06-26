@@ -22,6 +22,42 @@ function initAssimpModelShader(pointLightsCount) {
 
 }
 
+function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLightsCount ,lightPositions,lightColors){
+	gl.useProgram(program)
+	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
+	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
+	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
+    gl.uniform1i(isStaticUniformForAssimpModel, 0)
+	for (let i = 0; i < pointLightsCount; i++) {
+		gl.uniform3fv(pointLightUniforms[i].position, lightPositions[i]);
+		gl.uniform3fv(pointLightUniforms[i].ambient, [0.2, 0.2, 0.2]);
+		gl.uniform3fv(pointLightUniforms[i].diffuse, lightColors);
+		gl.uniform3fv(pointLightUniforms[i].specular, [2.0, 2.0, 2.0]);
+		gl.uniform1f(pointLightUniforms[i].constant, 0.5);
+		gl.uniform1f(pointLightUniforms[i].linear, 0.02);
+		gl.uniform1f(pointLightUniforms[i].quadratic, 0.005);
+	}
+
+	gl.uniform1f(ptL_materialDiffuseUniform, 0.0);
+	gl.uniform1f(ptL_materialSpecularUniform, 1.0);
+	gl.uniform1f(ptL_materialShininessUniform, 32.0);
+	
+	//For instancing we are passing array of model matrix
+	//gl.uniformMatrix4fv(mMatUnifromForAssimpModel, false, modelMatrix)
+	gl.uniform3fv(ptL_viewPosUniform, [0.0, 0.0, 5.0]);
+	// if(modelList[modelNumber].isInstanced){
+		//gl.uniformMatrix4fv(mMatUnifromForAssimpModel[0], false,modelMatrixArray[0])
+		for (let i = 0; i < modelList[modelNumber].instanceCount ; i++) {
+			var modelMatrixForInst = mat4.create();
+			modelMatrixForInst = modelMatrixArray[i];
+			gl.uniformMatrix4fv(mMatUnifromForAssimpModel[i], false,modelMatrixForInst)
+		}
+		//renderModel(models[modelNumber])
+		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
+	// }
+    gl.useProgram(null)
+}
+
 function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors){
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
@@ -61,15 +97,18 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
 	//For instancing we are passing array of model matrix
 	//gl.uniformMatrix4fv(mMatUnifromForAssimpModel, false, modelMatrix)
 	gl.uniform3fv(ptL_viewPosUniform, [0.0, 0.0, 5.0]);
-	if(modelList[modelNumber].isInstanced){
-		for (var i = 0; i < modelList[modelNumber].instanceCount ; i++) {
-			gl.uniformMatrix4fv(mMatUnifromForAssimpModel[i], false, modelMatrix[i])
-		}
-		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
-	}else{
+	// if(modelList[modelNumber].isInstanced){
+	// 	//gl.uniformMatrix4fv(mMatUnifromForAssimpModel[0], false,modelMatrix[0])
+	// 	for (var i = 0; i < modelList[modelNumber].instanceCount ; i++) {
+	// 		var modelMatrixForInst = mat4.create();
+	// 		modelMatrixForInst = modelMatrix[i];
+	// 		gl.uniformMatrix4fv(mMatUnifromForAssimpModel[i], false,modelMatrixForInst)
+	// 	}
+	// 	renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
+	// }else{
 		gl.uniformMatrix4fv(mMatUnifromForAssimpModel[0], false,modelMatrix)
 		renderModel(models[modelNumber])
-	}
+	// }
 	
 	
 

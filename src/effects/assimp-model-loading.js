@@ -470,7 +470,7 @@ function renderModelWithInstancing(model, num_instances) {
 		gl.activeTexture(gl.TEXTURE0)
 		gl.bindTexture(gl.TEXTURE_2D, model.meshArray[i].diffuseTextures[0])
 		gl.bindVertexArray(model.meshArray[i].vao)
-		gl.drawElementsInstanced(gl.TRIANGLES, model.meshArray[i].count, gl.UNSIGNED_INT, 0, num_instances);
+		gl.drawElementsInstanced(gl.TRIANGLES, model.meshArray[i].count, gl.UNSIGNED_SHORT, 0, num_instances)
 	}
 	
 }
