@@ -28,7 +28,7 @@ function RenderSceneTwo()
         lastExecutionTime = currentTime; // Update the last execution time
     }
 
-    RenderWithGrayScaleTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_two_title_texture, 0);
+    RenderWithFBMTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_two_title_texture, 0);
     // RenderWithVignnetTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_two_title_texture, 0);
 }
 function updateMatrix() {

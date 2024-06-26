@@ -82,21 +82,21 @@ var scene_camera_anglesX =  [
 var modelList = [
 	//{ name: "Castle", files:[ 'palace/WALT_DISNEY_PICTURES_2006_LOGO.dae' ], flipTex:true },
 	{ name: "Castle",	 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'],								flipTex:false,	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "Room", 		files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], 	flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "Bridge", 		files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], 									flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "BridgePart", 	files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], 								flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
-	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
-	{ name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	{ name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	{ name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.obj', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "Room", 		files:[ 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.gltf', 'src\\resources\\models\\scene3\\Room_With_Girl (1)\\RoomWithGirl.bin'], 	flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "Bridge", 		files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_1.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_1.mtl'], 									flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "BridgePart", 	files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.obj', 'src\\resources\\models\\scene4\\bridge\\bridge_part.mtl'], 								flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.obj', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.obj', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.mtl'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.obj', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.obj', 'src\\resources\\models\\scene5\\MapleTree\\tree.mtl'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
+	// { name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.obj', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.mtl'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// // { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
+	// // { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
+	// { name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	// { name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	// { name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	// { name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.obj', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.mtl'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 ]
 
 var grayscale = 1;
@@ -492,6 +492,7 @@ function onMouseDown(e)
 	last_x = e.pageX;
 	last_y = e.pageY;
 	is_mouse_pressed = true;
+	
 }
 
 function onMouseUp()

@@ -8,7 +8,7 @@
 // Constants
 const WATER_HEIGHT = -50.0;               // Y value for the water_vertices
 const WATER_MESH_SIZE = 1024;           // Should be same as terrain size value
-const WATER_TEXTURE_TILING = 4;
+const WATER_TEXTURE_TILING = 1;
 const WATER_DISTORTION_STRENGTH = 0.02;
 const WATER_MOVE_SPEED = 0.00001;
 
@@ -191,8 +191,8 @@ function initializeWaterShaders()
         reflectionTexcoord.x = clamp(reflectionTexcoord.x, 0.001, 0.999);
         reflectionTexcoord.y = clamp(reflectionTexcoord.y, -0.999, -0.001);
 
-        vec4 reflectColor = texture(u_reflectTextureSampler, reflectionTexcoord);
-        vec4 refractColor = texture(u_refractTextureSampler, refractionTexcoord);
+        vec4 reflectColor = texture(u_reflectTextureSampler, ndc);
+        vec4 refractColor = texture(u_refractTextureSampler, ndc);
 
         vec3 viewVector = normalize(out_toCamera);
         float refractiveFactor = dot(viewVector, vec3(0.0, 1.0, 0.0));
@@ -274,10 +274,65 @@ function getWaterUniformLocations()
 }
 
 
+// function initializeWaterVAOAndVBO()
+// {
+//     // Generate the water mesh vertices, texcoords normals and indices
+//     generateWaterMesh();
+    
+//     // Setup vao and vbo
+//     vao_water = gl.createVertexArray();
+//     gl.bindVertexArray(vao_water);
+    
+//     // Position
+//     vbo_water_position = gl.createBuffer();
+//     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_position);
+//     gl.bufferData(gl.ARRAY_BUFFER, water_vertices, gl.STATIC_DRAW);
+//     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_VERTEX, 3, gl.FLOAT, false, 0, 0);
+//     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_VERTEX);
+//     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+//     // Texcoords
+//     vbo_water_texcoord = gl.createBuffer();
+//     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_texcoord);
+//     gl.bufferData(gl.ARRAY_BUFFER, water_texcoord, gl.STATIC_DRAW);
+//     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, 2, gl.FLOAT, false, 0, 0);
+//     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0);
+//     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+//     // Normals
+//     vbo_water_normals = gl.createBuffer();
+//     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_normals);
+//     gl.bufferData(gl.ARRAY_BUFFER, water_normal, gl.STATIC_DRAW);
+//     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_NORMAL, 3, gl.FLOAT, false, 0, 0);
+//     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_NORMAL);
+//     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+//     // Indices
+//     vbo_water_indices = gl.createBuffer();
+//     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
+//     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, water_indices, gl.STATIC_DRAW);
+//     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    
+//     gl.bindVertexArray(null);
+// }
+
 function initializeWaterVAOAndVBO()
 {
-    // Generate the water mesh vertices, texcoords normals and indices
-    generateWaterMesh();
+    // X translation 515.9000000000044,
+    // Z translation 402.6000000000021
+    var square_position = new Float32Array([
+        523.0 * 1.0, -50.60000000000004,  523.0 *1.0,
+        523.0 *-1.0,-50.60000000000004,  523.0 *1.0,
+        523.0 *-1.0, -50.60000000000004, 523.0 *-1.0,
+        523.0 *1.0, -50.60000000000004, 523.0 *-1.0
+   ]);
+
+   var square_texcoord = new Float32Array([
+       1.0, 1.0,
+       0.0, 1.0,
+       0.0, 0.0,
+       1.0, 0.0
+   ]);
     
     // Setup vao and vbo
     vao_water = gl.createVertexArray();
@@ -286,7 +341,7 @@ function initializeWaterVAOAndVBO()
     // Position
     vbo_water_position = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_position);
-    gl.bufferData(gl.ARRAY_BUFFER, water_vertices, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, square_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_VERTEX, 3, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_VERTEX);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -294,24 +349,24 @@ function initializeWaterVAOAndVBO()
     // Texcoords
     vbo_water_texcoord = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_texcoord);
-    gl.bufferData(gl.ARRAY_BUFFER, water_texcoord, gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, square_texcoord, gl.STATIC_DRAW);
     gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    // Normals
-    vbo_water_normals = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_normals);
-    gl.bufferData(gl.ARRAY_BUFFER, water_normal, gl.STATIC_DRAW);
-    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_NORMAL, 3, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_NORMAL);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    // // Normals
+    // vbo_water_normals = gl.createBuffer();
+    // gl.bindBuffer(gl.ARRAY_BUFFER, vbo_water_normals);
+    // gl.bufferData(gl.ARRAY_BUFFER, water_normal, gl.STATIC_DRAW);
+    // gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_NORMAL, 3, gl.FLOAT, false, 0, 0);
+    // gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_NORMAL);
+    // gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    // Indices
-    vbo_water_indices = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, water_indices, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    // // Indices
+    // vbo_water_indices = gl.createBuffer();
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
+    // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, water_indices, gl.STATIC_DRAW);
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     
     gl.bindVertexArray(null);
 }
@@ -480,7 +535,8 @@ function RenderWater(reflection_texture, refraction_texture, refraction_depth_te
 
     gl.bindVertexArray(vao_water);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vbo_water_indices);
-    gl.drawElements(gl.TRIANGLES, water_indices.length, gl.UNSIGNED_INT, 0);
+    // gl.drawElements(gl.TRIANGLES, water_indices.length, gl.UNSIGNED_INT, 0);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
 

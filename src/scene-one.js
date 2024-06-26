@@ -59,6 +59,7 @@ function InitializeSceneOne() {
   LoadSkyboxTextures(skyboxTexturesForScene1, 1);
   initializeGrass();
   InitializeVignnetTextureShader();
+  InitializeFBMTextureShader();
 
   var scene_one_AMC_title_texture_path = "src\\resources\\textures\\Titles\\Astromedicomp.png";
   scene_one_AMC_title_texture = loadTexture(scene_one_AMC_title_texture_path, false) 
@@ -135,21 +136,21 @@ function RenderSceneOne() {
     RenderWithTextureShaderMVP(modelMatrix,view,perspectiveProjectionMatrix,scene_one_AMC_title_texture, 0);
   }
   //displayGrass();
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,reflection_fbo.dbo,515.9000000000044,0,402.9000000000044);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
   //Render final scene with grayscale
   var model_matrix = mat4.create();
-  RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
+  RenderWithVignnetTextureShader(finalScene_fbo.cbo, 0);
 }
 
 function UpdateSceneOne() {
   if (startTime == 0) {
     startTime = performance.now() / 1000;
   }
-  if (startTime + 30 > performance.now() / 1000) {
-    bezierCurve(controlPoints, performance.now() / 1000, startTime, 30);
+  if (startTime + 5 > performance.now() / 1000) {
+    bezierCurve(controlPoints, performance.now() / 1000, startTime, 5);
   }  
   if(bool_start_ptrail_update){
     pTrail_update();
