@@ -11,6 +11,12 @@ var isInstancedUniformForAssimpModel;
 //var ptL_modelMatrixUniform, ptL_viewMatrixUniform, ptL_projectionMatrixUniform;
 var ptL_viewPosUniform;
 var ptL_materialDiffuseUniform,ptL_materialSpecularUniform,ptL_materialShininessUniform;
+
+var model_fog_u_isFogEnabled;
+var model_fog_u_fogColor;
+var model_fog_u_fogNear;
+var model_fog_u_fogFar;
+
 var pointLightUniforms = [];
 
 function initAssimpModelShader(pointLightsCount) {
@@ -22,7 +28,7 @@ function initAssimpModelShader(pointLightsCount) {
 
 }
 
-function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLightsCount ,lightPositions,lightColors){
+function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLightsCount ,lightPositions,lightColors , isFogEnabled,fogColor){
 	gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
@@ -41,6 +47,11 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
 	gl.uniform1f(ptL_materialDiffuseUniform, 0.0);
 	gl.uniform1f(ptL_materialSpecularUniform, 1.0);
 	gl.uniform1f(ptL_materialShininessUniform, 32.0);
+
+	gl.uniform1i(model_fog_u_isFogEnabled,isFogEnabled);
+	gl.uniform4fv(model_fog_u_fogColor, fogColor);
+	gl.uniform1f(model_fog_u_fogNear, 0.01);
+	gl.uniform1f(model_fog_u_fogFar, 1000);
 	
 	//For instancing we are passing array of model matrix
 	//gl.uniformMatrix4fv(mMatUnifromForAssimpModel, false, modelMatrix)
@@ -58,11 +69,15 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
     gl.useProgram(null)
 }
 
-function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors){
+function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors,isFogEnabled,fogColor){
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
 	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
+	gl.uniform1i(model_fog_u_isFogEnabled,isFogEnabled);
+	gl.uniform4fv(model_fog_u_fogColor, fogColor);
+	gl.uniform1f(model_fog_u_fogNear, 0.01);
+	gl.uniform1f(model_fog_u_fogFar, 1000);
     //TODO : commented code is for dynamic model
     // if(!modelList[i].isStatic) {
     //   updateModel(models[i], 0, 0.01)
@@ -140,6 +155,12 @@ function setupProgram(pointLightsCount) {
 	viewPosUnifromForAssimpModel = gl.getUniformLocation(program, "viewPos")
 	diffuseUnifromForAssimpModel = gl.getUniformLocation(program, "diffuse")
 	isStaticUniformForAssimpModel = gl.getUniformLocation(program, "isStatic")
+
+	model_fog_u_isFogEnabled = gl.getUniformLocation(program, "u_isFogEnabled");
+	model_fog_u_fogColor = gl.getUniformLocation(program, "u_fogColor");
+	model_fog_u_fogNear = gl.getUniformLocation(program, "u_fogNear");
+	model_fog_u_fogFar = gl.getUniformLocation(program, "u_fogFar");
+
 	//isInstancedUniformForAssimpModel = gl.getUniformLocation(program, "isInstanced")
 
 	//Uniform Locations For Point Light

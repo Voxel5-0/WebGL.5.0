@@ -23,14 +23,13 @@ const Scene4_controlPoints = [
 // ---------------------------
 function InitializeSceneFour()
 {
-  var scene_four_height_map_image = "src/resources/textures/terrain/RollingHills/Terrain002_2K.png";
+  var scene_four_height_map_image = "src/resources/textures/terrain.png";
   var scene_four_blend_map        = "src/resources/textures/BlendMap.png";
   var scene_four_rock_1_image     = "src/resources/textures/ground.jpg";
   var scene_four_rock_2_image     = "src/resources/textures/soil.jpg";
   var scene_four_path_image       = "src/resources/textures/ground.jpg";
   var scene_four_snow_image       = "src/resources/textures/soil.jpg";
 
-  InitializeTerrainRenderer();
   InitializeHeightMapTerrain(scene_four_height_map_image,scene_four_blend_map,scene_four_rock_1_image,scene_four_rock_2_image,scene_four_path_image,scene_four_snow_image,4);
   
 }
@@ -57,23 +56,25 @@ function RenderSceneFour()
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render terrain
   if (terrain_data[SCENE_FOUR]) {
-    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR);
+    let fogColor = [0.8, 0.9, 1, 1];
+    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor);
   }
   //Render models for actual scene grayscale
   var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [481.0,-120, 595.0])
   mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors);
+  let fogColor = [0.8, 0.9, 1, 1];
+  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,1,fogColor);
   //mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
   //renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors);
   //Render skybox for actual scene
-  DrawSkybox(SCENE_ONE);
+  DrawSkybox(SCENE_ZERO);
   modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
   mat4.scale(modelMatrix,modelMatrix,[8.0 , 8.0 , 8.0]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors,1,fogColor);
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -82,23 +83,24 @@ function RenderSceneFour()
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render terrain
   if (terrain_data[SCENE_FOUR]) {
-    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR);
+    let fogColor = [0.8, 0.9, 1, 1];
+    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor);
   }
   //Render models for actual scene grayscale
   var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [481.0,-120, 595.0])
   mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,1,fogColor);
   mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
-  renderAssimpModel(modelMatrix,4,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,4,0,point_lightPositions,point_lightColors,1,fogColor);
   //Render skybox for actual scene
-  DrawSkybox(SCENE_ONE);
+  DrawSkybox(SCENE_ZERO);
   modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 + test_translate_X , -90.0 +  87.99 + test_translate_Y , -1.0 +  567.60 + 42.0 + test_translate_Z])
   mat4.scale(modelMatrix,modelMatrix,[8.0 + test_scale_X , 8.0+test_scale_X , 8.0+test_scale_X]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors,1,fogColor);
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -113,9 +115,9 @@ function RenderSceneFour()
 	var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,1,fogColor);
   //render skybox for reflection FBO 
-  DrawSkybox(SCENE_ONE);  
+  DrawSkybox(SCENE_ZERO);  
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   //Render in Refraction FBO
@@ -123,12 +125,12 @@ function RenderSceneFour()
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   // CameraReflect();
   //render skybox for refraction FBO 
-  DrawSkybox(SCENE_ONE);
+  DrawSkybox(SCENE_ZERO);
   //render disney castle model for refraction FBO 
   var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,1,fogColor);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   //Render final scene with grayscale

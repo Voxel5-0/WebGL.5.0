@@ -15,21 +15,7 @@ var SCENE_FIVE = 5;
 
 var godRays_final_fbo;
 
-//Uniforms for point lights
-//  var s5_point_lightPositions = [
-//   [13.21327183125484, -67.44632010003868, -4.840837788952009], //middle
-//   [9.958236978785187, -87.20368404972493, 4.3888549228581475], //left
-//   [10.240470221367731, -86.58628336655747, -14.213709470661364], //right
-//   [30.354274982918096, -82.16404503148408, -5.308960274678841], //middleBottom
-//   [10.037352469619046, -94.20165532734516, 23.91656258654752], //Left-pit
-//   [11.225923093363434, -95.20251447029362, -35.5777721241391], //Right-pit
-//   [3.519062612861857, -51.2143286217448, -10.05733734202175], //longTowerbottom
-//   [7.394419029927332, -37.85214289591929, -11.998835777015215], //longTowerTop
-// ];
 
-// var s5_point_lightColors = [1, 0.776, 0.559];
-
-// ---------------------------
 function InitializeSceneFive()
 {
   var scene_five_height_map_image = "src/resources/textures/terrain.png";
@@ -38,12 +24,6 @@ function InitializeSceneFive()
   var scene_five_rock_2_image = "src/resources/textures/soil.jpg";
   var scene_five_path_image = "src/resources/textures/ground.jpg";
   var scene_five_snow_image = "src/resources/textures/soil.jpg";
-
-  var scene_four_tree_one_model_obj_file = "src\\resources\\models\\intro\\Palace_withColors.obj";
-  var scene_four_tree_two_model_obj_file = "src\\resources\\intro\\scene_one_tree_two_model.obj";
-
-  var scene_four_tree_one_model_texture_image = "src\\resources\\models\\intro\\TCom_Metal_BrassPolished_header.jpg";
-  var scene_four_tree_two_model_texture_image = "src\\resources\\models\\scene_one_tree_two_texture.png";
 
   godRays_final_fbo = GenerateFramebuffer(1920, 1080);
 
@@ -61,25 +41,28 @@ function RenderSceneFive()
     var scene_one_tree_z = [595.0, 588, 10, 10, 10, 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
     var modelMatrixArray = [];
 
+    
+    /***********************************Rendering for Godrays FBO************************************************* */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    DrawSkybox(SCENE_ZERO);
+    let fogColor = [0.8, 0.9, 1, 1];
+    //Render terrain
+    if (terrain_data[SCENE_FIVE]) {
+      let fogColor = [0.8, 0.9, 1, 0.0];
+      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor);
+    }
     for(i =0 ; i<modelList[0].instanceCount;i++){
       var modelMatrix = mat4.create()
       mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i]+ test_translate_X ,scene_one_tree_y[i]+ test_translate_Y, scene_one_tree_z[i]+ test_translate_Z])
       mat4.scale(modelMatrix,modelMatrix,[10.0 +test_scale_X,10.0 + test_scale_X,10.0+test_scale_X]);
       modelMatrixArray.push(modelMatrix);
     }
-
-    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    DrawSkybox(SCENE_ZERO);
-    //Render terrain
-    if (terrain_data[SCENE_FOUR]) {
-      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE);
-    }
-    renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[]);
-
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
+    /***********************************Rendering for godRays occlusion FBO************************************************* */
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_occlusion_fbo.fbo);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -109,10 +92,11 @@ function RenderSceneFive()
     gl.useProgram(null);
 
     //Render terrain
-    renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[]);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+    /***********************************Rendering for godRays final pass************************************************* */
     v = vec4.fromValues(1000.0,350.0,1800.0, 1.0);
     vec4.transformMat4(v, v,godrays_viewMatrix)
     vec4.transformMat4(v, v, perspectiveProjectionMatrix)
@@ -126,22 +110,13 @@ function RenderSceneFive()
 
     godrays_display_godrays();
     
+    /***********************************Rendering for Actual scene************************************************* */
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_final_fbo.fbo);
     godrays_display_final();
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+    /***********************************Post Processing************************************************* */
     RenderWithTextureShader(godRays_final_fbo.cbo,0)
-    //mat4.rotateY(modelMatrix, modelMatrix, [90])
-    //renderAssimpModel(modelMatrixArray[0],7,0,[],[]);
-    //var view_matrix = GetCameraViewMatrix();
-    // RenderWithInstanceShader(view_matrix, perspectiveProjectionMatrix, scene_one_tree_model_two_texture, 0);
-    // ModelInstanceRenderer(scene_one_tree_two_model, scene_one_tree_model_instances);
-
-    // RenderWithInstanceShader(view_matrix, perspectiveProjectionMatrix, scene_one_tree_model_one_texture, 0);
-    // ModelInstanceRenderer(scene_one_tree_one_model, scene_one_tree_model_instances);
-
-    // console.log("GetCameraViewMatrix() "+ GetCameraViewMatrix());
-    // console.log("perspectiveProjectionMatrix "+ perspectiveProjectionMatrix);
 }
 
 function UpdateSceneFive()

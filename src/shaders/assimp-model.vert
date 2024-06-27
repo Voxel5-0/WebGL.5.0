@@ -16,6 +16,8 @@ out vec2 Tex;
 out vec3 N;
 out vec3 P;
 
+out float v_fogDepth;
+
 void main(void) {
 	if(isStatic) {
 		vec4 totalPosition = vec4(0.0);
@@ -38,6 +40,6 @@ void main(void) {
 		N = mat3(mMat[gl_InstanceID]) * vNor;
         Tex = vTex;
 		gl_Position = pMat * vMat * vec4(P, 1.0);
-
+		v_fogDepth = -(vMat * vec4(P, 1.0)).z;
     }
 }

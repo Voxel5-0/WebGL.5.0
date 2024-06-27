@@ -14,6 +14,9 @@ var terrain_u_texture_1_sampler = new Array(SCENE_COUNT);
 var terrain_u_blend_map_sampler = new Array(SCENE_COUNT);
 var terrain_u_path_sampler = new Array(SCENE_COUNT);
 var terrain_u_grass_sampler = new Array(SCENE_COUNT);
+var terrain_u_fogColor;
+var terrain_u_fogNear;  
+var terrain_u_fogFar;
 
 /* terrain variables */
 var terrain_data = new Array(SCENE_COUNT);
@@ -28,13 +31,14 @@ function InitializeTerrainRenderer() {
     "uniform mat4 u_projection_matrix;" +
     "uniform mat4 u_view_matrix;" +
     "uniform mat4 u_model_matrix;" +
-
+    "out float v_fogDepth;"+
     "out vec2 fs_v_texture_0_coordinate;" +
 
     "void main()" +
     "{" +
     "fs_v_texture_0_coordinate = v_texture_0_coordinate;" +
     "gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;" +
+    "v_fogDepth = -(u_view_matrix * u_model_matrix * v_position).z;"+
     "}";
 
 
@@ -57,6 +61,7 @@ function InitializeTerrainRenderer() {
     "\n" +
     "precision highp float;" +
     "in vec2 fs_v_texture_0_coordinate;" +
+    "in float v_fogDepth;"+
 
     "uniform sampler2D u_texture_0_sampler;" + //texture unit 0
     "uniform sampler2D u_texture_1_sampler;" + //texture unit 1
@@ -64,6 +69,10 @@ function InitializeTerrainRenderer() {
     "uniform sampler2D u_blend_map_sampler;" + //texture unit 2
     "uniform sampler2D u_path_sampler;" + //texture unit 3
     "uniform sampler2D u_grass_sampler;" + //texture unit 4
+
+    "uniform vec4 u_fogColor;"+
+    "uniform float u_fogNear;"+  
+    "uniform float u_fogFar;"+
 
     "out vec4 FragColor;" +
 
@@ -81,6 +90,8 @@ function InitializeTerrainRenderer() {
     "vec4 grass_color = texture(u_grass_sampler, fs_v_texture_0_coordinate * tiling_multiplier) * texture_blend_map.g;" +
 
     "FragColor = rock_color + path_color + grass_color;" +
+    "float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth); "+
+    "FragColor = mix(FragColor, u_fogColor, fogAmount); "+
     //"FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);" +
     "}";
 
@@ -134,6 +145,10 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
   terrain_u_blend_map_sampler[scene] = gl.getUniformLocation(terrainShaderProgramObj, "u_blend_map_sampler");
   terrain_u_path_sampler[scene] = gl.getUniformLocation(terrainShaderProgramObj, "u_path_sampler");
   terrain_u_grass_sampler[scene] = gl.getUniformLocation(terrainShaderProgramObj, "u_grass_sampler");
+  //Fog
+  terrain_u_fogColor = gl.getUniformLocation(terrainShaderProgramObj, "u_fogColor");
+  terrain_u_fogNear = gl.getUniformLocation(terrainShaderProgramObj, "u_fogNear");  
+  terrain_u_fogFar = gl.getUniformLocation(terrainShaderProgramObj, "u_fogFar");
 
   texture_rock1[scene] = gl.createTexture();
   texture_rock1[scene].image = new Image();
@@ -310,7 +325,7 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
   }
 }
 
-function RenderTerrain(terrain_data, scene) {
+function RenderTerrain(terrain_data, scene , fogColor) {
   if (!terrain_data.vao_ready)
     return;
   gl.useProgram(terrainShaderProgramObj);
@@ -351,6 +366,11 @@ function RenderTerrain(terrain_data, scene) {
   gl.activeTexture(gl.TEXTURE4); //grass
   gl.bindTexture(gl.TEXTURE_2D, texture_grass[scene]);
   gl.uniform1i(terrain_u_grass_sampler[scene], 4);
+
+  //Fog uniforms
+  gl.uniform4fv(terrain_u_fogColor, fogColor);
+  gl.uniform1f(terrain_u_fogNear, 0.01);
+  gl.uniform1f(terrain_u_fogFar, 1000);
 
   gl.bindVertexArray(terrain_data.vao);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terrain_data.vbo_idx);

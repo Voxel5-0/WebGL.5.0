@@ -38,7 +38,7 @@ function RenderSceneTwo()
   //Uniforms for point lights
   var point_lightPositions = [];
   var point_lightColors = [1, 0.776, 0.559];
-
+  let fogColor = [0.8, 0.9, 1, 1];
   /**
    * X , Y ,Z  adjustments:87.99999999999993 , 120.99999999999976 , 352.0000000000011
    */
@@ -51,13 +51,13 @@ function RenderSceneTwo()
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
   //mat4.rotateY(modelMatrix,modelMatrix,90);
   //Model : Room , index : 2
-  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,0,fogColor);
 
   mat4.translate(modelMatrix, modelMatrix, [30.0 + 90 + 7.699999999999999 , -90.0 + 130 + 1.1, -1.0 + 352 - 1.1 ])
   mat4.scale(modelMatrix,modelMatrix,[8.5 , 8.5 , 8.5]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
   //Model :Rapunzel, index : 5
-  renderAssimpModel(modelMatrix,5,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,5,0,point_lightPositions,point_lightColors,0,fogColor);
 
   // X , Y ,Z  adjustments:2.2 , 0 , -5.5
   
@@ -66,7 +66,7 @@ function RenderSceneTwo()
   mat4.scale(modelMatrix,modelMatrix,[ 5.0 , 5.0  , 5.0 ]);
   mat4.rotateY(modelMatrix, modelMatrix, [90 + (4.3 + 6.5 + 6.5 + 25.2 + 5.4 + test_scale_X)])
   //Model : Father , index : 10
-  renderAssimpModel(modelMatrix,10,0,point_lightPositions,point_lightColors);
+  renderAssimpModel(modelMatrix,10,0,point_lightPositions,point_lightColors,0,fogColor);
 
   DrawSkybox(SCENE_ZERO);
 

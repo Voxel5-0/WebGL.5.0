@@ -5,6 +5,7 @@ precision highp float;
 in vec2 Tex;
 in vec3 N;
 in vec3 P;
+in float v_fogDepth;
 
 uniform vec3 viewPos;
 
@@ -27,6 +28,11 @@ struct PointLight {
 };  
 uniform PointLight pointLights[8];
 uniform Material material;
+
+uniform bool u_isFogEnabled;
+uniform vec4 u_fogColor;
+uniform float u_fogNear;
+uniform float u_fogFar;
 
 out vec4 color;
 
@@ -60,5 +66,11 @@ void main(void) {
         specular *= attenuation;
         result += ambient + diffuse + specular;
     }
-	color =  vec4(result, 1.0);
+
+    color =  vec4(result, 1.0);
+    if(u_isFogEnabled){
+        float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth);
+        color = mix(color, u_fogColor, fogAmount);  
+    }
+	
 }

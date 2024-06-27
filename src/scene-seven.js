@@ -32,15 +32,17 @@ function RenderSceneSeven()
 
 
     var modelMatrix = mat4.create();
+    let fogColor = [0.8, 0.9, 1, 1];
     DrawSkybox(SCENE_ONE);
     if (terrain_data[SCENE_FOUR]) {
-        RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR);
+        let fogColor = [0.8, 0.9, 1, 1];
+        RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor);
     }
 
     mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2 + 639.100000000007 + test_translate_X , 0.0 + test_translate_Y , 0.0 - 5.5 + 157.29999999999959 + test_translate_Z])
     mat4.scale(modelMatrix,modelMatrix,[ 5.0 + 106 + test_scale_X, 5.0 + 106 +test_scale_X , 5.0+ 106 + test_scale_X ]);
     //mat4.rotateY(modelMatrix, modelMatrix, [test_scale_X])
-    renderAssimpModel(modelMatrix,9,0,[],[]);
+    renderAssimpModel(modelMatrix,9,0,[],[],1,fogColor);
 
     mat4.identity();
     // mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2 + test_translate_X , 0.0 + test_translate_Y , 0.0 - 5.5 + test_translate_Z])

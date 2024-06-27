@@ -9,6 +9,9 @@ var vboSkyboxPosition;
 var skyboxViewMatrixUniform;
 var skyboxModelMatrixUniform;
 var skyboxProjectionMatrixUniform;
+var skybox_u_fogColor ;
+var skybox_u_fogNear;  
+var skybox_u_fogFar;
 
 var skyboxUniform;
 var skybox_texture = new Array(SCENE_COUNT);
@@ -32,6 +35,10 @@ function InitializeSkybox()
 		"vec4 pos = u_projection_matrix * u_view_matrix * u_model_matrix  * vec4(vPosition, 1.0);" +
         "gl_Position = pos.xyww;" +
 	"}";
+
+	//	"out float v_fogDepth;"+
+	// "precision highp float;" +
+	// "v_fogDepth = -(u_view_matrix * u_model_matrix * vPosition).z;"+
 
 	skyboxVertexShaderObject = gl.createShader(gl.VERTEX_SHADER);
 	gl.shaderSource(skyboxVertexShaderObject, vertexShaderSourceCode);
@@ -58,6 +65,14 @@ function InitializeSkybox()
 	"{" +
 		"FragColor = texture(skybox, out_texCoord);" +
 	"}";
+
+	// "in float v_fogDepth;"+
+	// "uniform vec4 u_fogColor;"+
+    // "uniform float u_fogNear;"+  
+    // "uniform float u_fogFar;"+
+	//TODO : figure out how to achive fog with skybox
+	// "float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth); "+
+    // "FragColor = mix(FragColor, u_fogColor, fogAmount); "+
 
 	skyboxFragmentShaderObject = gl.createShader(gl.FRAGMENT_SHADER);
 	gl.shaderSource(skyboxFragmentShaderObject, fragmentShaderSourceCode);
@@ -97,6 +112,10 @@ function InitializeSkybox()
 	skyboxModelMatrixUniform = gl.getUniformLocation(skyboxShaderProgramObject, "u_model_matrix");
 	skyboxProjectionMatrixUniform = gl.getUniformLocation(skyboxShaderProgramObject, "u_projection_matrix");
 	skyboxUniform = gl.getUniformLocation(skyboxShaderProgramObject, "skybox");
+	 //Fog
+	skybox_u_fogColor = gl.getUniformLocation(skyboxShaderProgramObject, "u_fogColor");
+	skybox_u_fogNear = gl.getUniformLocation(skyboxShaderProgramObject, "u_fogNear");  
+	skybox_u_fogFar = gl.getUniformLocation(skyboxShaderProgramObject, "u_fogFar");
 
 	//vertices, color, shader attribs, vbo, vao, initializations
     var size_x = 4096;
@@ -270,6 +289,12 @@ function DrawSkybox(sceneNumber)
 	gl.uniformMatrix4fv(skyboxModelMatrixUniform, false, modelMatrix);
 	gl.uniformMatrix4fv(skyboxProjectionMatrixUniform, false, perspectiveProjectionMatrix);
 	
+	//Fog uniforms
+	let fogColor = [0.8, 0.9, 1, 1];
+	gl.uniform4fv(skybox_u_fogColor, fogColor);
+	gl.uniform1f(skybox_u_fogNear, 500);
+	gl.uniform1f(skybox_u_fogFar, 1000);
+
 	gl.activeTexture(gl.TEXTURE0);
 	gl.bindTexture(gl.TEXTURE_CUBE_MAP, skybox_texture[sceneNumber]);
 	gl.uniform1i(skyboxUniform, 0);

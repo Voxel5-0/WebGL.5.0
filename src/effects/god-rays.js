@@ -112,8 +112,8 @@ function initializeGodrays() {
     sphere = new Mesh();
     makeSphere(sphere, 2.0, 30, 30);
 
-    trial_data = InitializeModelRenderer("src/resources/models/ship.obj")
-	trial_data = InitializeModelRenderer("src\\resources\\models\\Rapunzel\\Rapunzel_Pose1\\Rapunzel_Pose1.obj");
+    // trial_data = InitializeModelRenderer("src/resources/models/ship.obj")
+	// trial_data = InitializeModelRenderer("src\\resources\\models\\Rapunzel\\Rapunzel_Pose1\\Rapunzel_Pose1.obj");
 
     gl.clearDepth(1.0);
     gl.enable(gl.DEPTH_TEST);

@@ -65,7 +65,7 @@ function InitializeSceneZero() {
 /*----------------------------------- Scene One Render -----------------------------------*/
 function RenderSceneZero() {
   var view_matrix = GetCameraViewMatrix();
-
+  let fogColor = [0.8, 0.9, 1, 1];
   gl.useProgram(null);
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_2D, null);
@@ -78,7 +78,7 @@ function RenderSceneZero() {
   //just castle model for reflection : index 1
 	var scene1_modelMatrix = mat4.create()
 	mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(scene1_modelMatrix,1,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors);
+  renderAssimpModel(scene1_modelMatrix,1,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors,1,fogColor);
   DrawSkybox(SCENE_ZERO);  
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -96,7 +96,7 @@ function RenderSceneZero() {
   //castle complete model : index 0
   mat4.identity(scene1_modelMatrix)
 	mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(scene1_modelMatrix,0,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors);
+  renderAssimpModel(scene1_modelMatrix,0,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors,1,fogColor);
   DrawSkybox(SCENE_ZERO);
 
   if(bool_start_ptrail_update){
