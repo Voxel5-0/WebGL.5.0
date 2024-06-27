@@ -1,15 +1,11 @@
 /*********************************************************************************
  * 
  * SCENE Description :
- * 
  * Here we need a sound effect and on screen we are able see river flowing 
- * 
  * Jhula dhanak ka dhire dhire hum jhule
  * 
- * Terrain - Done 
- * Trees - Model loading done
- * Water
- * Rainbow - Texture - blending 
+ * TIME : 2.19 to 3.11 
+ * 
  * Atmospheric scaterring 
  * Bill boarding  - field of flowers
  * 
@@ -19,7 +15,7 @@ var SCENE_FIVE = 5;
 
 var godRays_final_fbo;
 
- //Uniforms for point lights
+//Uniforms for point lights
 //  var s5_point_lightPositions = [
 //   [13.21327183125484, -67.44632010003868, -4.840837788952009], //middle
 //   [9.958236978785187, -87.20368404972493, 4.3888549228581475], //left
@@ -54,8 +50,6 @@ function InitializeSceneFive()
   InitializeTerrainRenderer();
   InitializeHeightMapTerrain(scene_five_height_map_image,scene_five_blend_map,scene_five_rock_1_image,scene_five_rock_2_image,scene_five_path_image,scene_five_snow_image,5);
   initializeGodrays();
-  
- 
 }
 
    
@@ -76,7 +70,7 @@ function RenderSceneFive()
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    DrawSkybox(SCENE_ONE);
+    DrawSkybox(SCENE_ZERO);
     //Render terrain
     if (terrain_data[SCENE_FOUR]) {
       RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE);
@@ -85,7 +79,6 @@ function RenderSceneFive()
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-    /********************************************************************************************************************************* */
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_occlusion_fbo.fbo);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -94,9 +87,10 @@ function RenderSceneFive()
     gl.useProgram(godrays_shaderProgramObject_occlusion);
     var godrays_viewMatrix = GetCameraViewMatrix();
     var godrays_modelMatrix = mat4.create();
+
     // ***** Light ******
     //perform translation for light
-    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, [1500.0, 230.0, 1850.0])
+    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, [1000.0, 350.0, 1800.0])
     mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [100.0, 100.0, 100.0])
 
     //uniform for light
@@ -118,7 +112,18 @@ function RenderSceneFive()
     renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[]);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    
+
+    v = vec4.fromValues(1000.0,350.0,1800.0, 1.0);
+    vec4.transformMat4(v, v,godrays_viewMatrix)
+    vec4.transformMat4(v, v, perspectiveProjectionMatrix)
+
+    // perspective division
+    vec4.scale(v, v, 1.0 / v[3] )
+
+    // // scale (x,y) from range [-1,+1] to range [0,+1]
+    vec4.add(v, v, [1.0, 1.0, 0.0, 0.0] )
+    vec4.scale(v, v, 0.5)
+
     godrays_display_godrays();
     
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_final_fbo.fbo);
@@ -137,8 +142,6 @@ function RenderSceneFive()
 
     // console.log("GetCameraViewMatrix() "+ GetCameraViewMatrix());
     // console.log("perspectiveProjectionMatrix "+ perspectiveProjectionMatrix);
-
-    
 }
 
 function UpdateSceneFive()

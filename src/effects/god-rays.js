@@ -48,14 +48,10 @@ var sphere = null;
 var gd_mvpMatrixUniform;
 var trial_data;
 var gd_shaderProgramObject;
-
+var v;
 
 //call this to initialize godrays
 function initializeGodrays() {
-    godRays_scene_fbo = GenerateFramebuffer(1920, 1080);
-    godRays_occlusion_fbo = GenerateFramebuffer(1920, 1080);
-    godRays_godrays_fbo = GenerateFramebuffer(1920, 1080);
-
     initializeFinalShader();
     if (godRays_scene_fbo != null) {
         initializeSceneShader();
@@ -640,7 +636,7 @@ function godrays_display_godrays() {
 	var godrays_weight = 0.587;
 	var godrays_numsamples = 100;
 
-    gl.uniform2fv(godrays_lightPositionUniform_godrays, [0.5, 0.8]);
+	gl.uniform2fv(godrays_lightPositionUniform_godrays,[v[0],v[1]] );
     gl.uniform1f(godrays_decayUniform_godrays, godrays_decay);
     gl.uniform1f(godrays_exposureUniform_godrays, godrays_exposure);
     gl.uniform1f(godrays_densityUniform_godrays, godrays_density);

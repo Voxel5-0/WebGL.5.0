@@ -13,6 +13,10 @@ var test_scale_X = 1.0;
 var test_scale_Y = 1.0 ;
 var test_scale_Z = 1.0;
 
+var temp_x = 1000.0;
+var temp_y = 300.0;
+var temp_z = 1800.0;
+
 var test_angleRotation= 0.0;
 
 var fbo_width = 1920;
@@ -166,17 +170,23 @@ function main()
 function init()
 {
 	gl = canvas.getContext("webgl2");
-
+	
 	if (gl == null)
-	{
-		console.log("failed to get the webgl rendering context");
-		return;
-	}
-
-	gl.viewportWidth = canvas.width;
-	gl.viewportHeight = canvas.height;
-
-	/*--------------------- Project Initialization ---------------------*/
+		{
+			console.log("failed to get the webgl rendering context");
+			return;
+		}
+		
+		gl.viewportWidth = canvas.width;
+		gl.viewportHeight = canvas.height;
+		
+		/*--------------------- Project Initialization ---------------------*/
+		/* Default FBOs Creation*/
+		finalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+		coloredFinalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+		godRays_scene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+		godRays_occlusion_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+		godRays_godrays_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 
 	/* -- Common Shader/Gemometries/Effects Initialzation */
 	InitializeTextureShader();
@@ -209,10 +219,7 @@ function init()
 	
 	UpdateCameraAngleX(scene_camera_anglesX[scene]);
 	cameraInitialPositionForScene[scene] = 1;
-
-	/* Default FBOs Creation*/
-	finalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
-	coloredFinalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	
 
 	/*--------------------- Project Initialization ---------------------*/
 
@@ -351,6 +358,9 @@ function resize()
 	coloredFinalScene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 	reflection_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 	refraction_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	godRays_scene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+    godRays_occlusion_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+    godRays_godrays_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
@@ -458,6 +468,24 @@ function keyDown(event)
 			break;	
 		case 'KeyR':
 			test_angleRotation+=0.01;
+			break;	
+		case "Numpad7"://7
+			temp_x += 100.0;
+			break;	
+		case "Numpad4"://4
+			temp_x -= 100.0;
+			break;	
+		case "Numpad8"://8
+			temp_y += 100.0;
+			break;	
+		case "Numpad5"://5
+			temp_y -= 100.0;
+			break;	
+		case "Numpad9"://9
+			temp_z += 100.0;
+			break;	
+		case "Numpad6"://6
+			temp_z -= 100.0;
 			break;		
 				
 	}
@@ -486,22 +514,22 @@ function keyDown(event)
 		case 90://z
 				test_translate_Z += move_sensitivity;
 			break;		
-		
-		case 49://1
-				test_translate_X -= move_sensitivity;
-			break;	
-		case 50://2
-				test_translate_Y -= move_sensitivity;
-			break;	
-		case 51://3
-				test_translate_Z -= move_sensitivity;
-			break;	
-		case 52://4
-				test_scale_X += move_sensitivity;
-			break;	
-		case 53://5
-				test_scale_X -= move_sensitivity;
-			break;			
+
+		// case 49://1
+		// 	test_translate_X -= move_sensitivity;
+		// 	break;	
+		// case 50://2
+		// 		test_translate_Y -= move_sensitivity;
+		// 	break;	
+		// case 51://3
+		// 		test_translate_Z -= move_sensitivity;
+		// 	break;	
+		// case 52://4
+		// 		test_scale_X += move_sensitivity;
+		// 	break;	
+		// case 53://5
+		// 		test_scale_X -= move_sensitivity;
+		// 	break;	
 		case 32:
 			//start - trail
 			console.log("Start particle trail "+bool_start_ptrail_update);
