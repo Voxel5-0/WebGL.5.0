@@ -1,4 +1,4 @@
-const I = 3.14159265358979323846;
+const PI = 3.14159265358979323846;
 function makeSphere(sphereMesh, fRadius, iSlices, iStacks)
 {
     drho = parseFloat(PI) / parseFloat(iStacks);

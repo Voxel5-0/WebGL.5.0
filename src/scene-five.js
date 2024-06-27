@@ -1,17 +1,23 @@
 /*********************************************************************************
  * 
  * SCENE Description :
+ * 
  * Here we need a sound effect and on screen we are able see river flowing 
+ * 
  * Jhula dhanak ka dhire dhire hum jhule
  * 
- * TIME : 2.19 to 3.11 
- * 
+ * Terrain - Done 
+ * Trees - Model loading done
+ * Water
+ * Rainbow - Texture - blending 
  * Atmospheric scaterring 
  * Bill boarding  - field of flowers
  * 
 */
 
 var SCENE_FIVE = 5;
+
+var godRays_final_fbo;
 
  //Uniforms for point lights
 //  var s5_point_lightPositions = [
@@ -30,7 +36,25 @@ var SCENE_FIVE = 5;
 // ---------------------------
 function InitializeSceneFive()
 {
+  var scene_five_height_map_image = "src/resources/textures/terrain.png";
+  var scene_five_blend_map = "src/resources/textures/BlendMap.png";
+  var scene_five_rock_1_image = "src/resources/textures/soil.jpg";
+  var scene_five_rock_2_image = "src/resources/textures/soil.jpg";
+  var scene_five_path_image = "src/resources/textures/ground.jpg";
+  var scene_five_snow_image = "src/resources/textures/soil.jpg";
 
+  var scene_four_tree_one_model_obj_file = "src\\resources\\models\\intro\\Palace_withColors.obj";
+  var scene_four_tree_two_model_obj_file = "src\\resources\\intro\\scene_one_tree_two_model.obj";
+
+  var scene_four_tree_one_model_texture_image = "src\\resources\\models\\intro\\TCom_Metal_BrassPolished_header.jpg";
+  var scene_four_tree_two_model_texture_image = "src\\resources\\models\\scene_one_tree_two_texture.png";
+
+  godRays_final_fbo = GenerateFramebuffer(1920, 1080);
+
+  InitializeTerrainRenderer();
+  InitializeHeightMapTerrain(scene_five_height_map_image,scene_five_blend_map,scene_five_rock_1_image,scene_five_rock_2_image,scene_five_path_image,scene_five_snow_image,5);
+  initializeGodrays();
+  
  
 }
 
@@ -43,15 +67,66 @@ function RenderSceneFive()
     var scene_one_tree_z = [595.0, 588, 10, 10, 10, 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
     var modelMatrixArray = [];
 
-    for(i =0 ; i<modelList[7].instanceCount;i++){
+    for(i =0 ; i<modelList[0].instanceCount;i++){
       var modelMatrix = mat4.create()
       mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i]+ test_translate_X ,scene_one_tree_y[i]+ test_translate_Y, scene_one_tree_z[i]+ test_translate_Z])
-      mat4.scale(modelMatrix,modelMatrix,[1.0 + 143 +test_scale_X,1.0 +  143 + test_scale_X,1.0+  143 +test_scale_X]);
+      mat4.scale(modelMatrix,modelMatrix,[10.0 +test_scale_X,10.0 + test_scale_X,10.0+test_scale_X]);
       modelMatrixArray.push(modelMatrix);
     }
-   
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    DrawSkybox(SCENE_ONE);
+    //Render terrain
+    if (terrain_data[SCENE_FOUR]) {
+      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE);
+    }
+    renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[]);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    /********************************************************************************************************************************* */
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_occlusion_fbo.fbo);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.useProgram(godrays_shaderProgramObject_occlusion);
+    var godrays_viewMatrix = GetCameraViewMatrix();
+    var godrays_modelMatrix = mat4.create();
+    // ***** Light ******
+    //perform translation for light
+    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, [1500.0, 230.0, 1850.0])
+    mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [100.0, 100.0, 100.0])
+
+    //uniform for light
+    gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, perspectiveProjectionMatrix);
+    gl.uniformMatrix4fv(godrays_viewMatrixUniform_occlusion, false, godrays_viewMatrix);
+    gl.uniformMatrix4fv(godrays_modelMatrixUniform_occlusion, false, godrays_modelMatrix);
+    gl.uniform1i(godrays_colorShowUniform_occlusion, 1)
+
+    //draw light source
+
+    sphere.draw();
+
+    gl.uniform1i(godrays_colorShowUniform_occlusion, 0);
+    //light source ends
+
+    gl.useProgram(null);
+
+    //Render terrain
+    renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[]);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    
+    godrays_display_godrays();
+    
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_final_fbo.fbo);
+    godrays_display_final();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    RenderWithTextureShader(godRays_final_fbo.cbo,0)
     //mat4.rotateY(modelMatrix, modelMatrix, [90])
-    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[]);
     //renderAssimpModel(modelMatrixArray[0],7,0,[],[]);
     //var view_matrix = GetCameraViewMatrix();
     // RenderWithInstanceShader(view_matrix, perspectiveProjectionMatrix, scene_one_tree_model_two_texture, 0);
@@ -63,11 +138,7 @@ function RenderSceneFive()
     // console.log("GetCameraViewMatrix() "+ GetCameraViewMatrix());
     // console.log("perspectiveProjectionMatrix "+ perspectiveProjectionMatrix);
 
-    DrawSkybox(SCENE_ONE);
-    //Render terrain
-    if (terrain_data[SCENE_FOUR]) {
-      RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR);
-    }
+    
 }
 
 function UpdateSceneFive()
