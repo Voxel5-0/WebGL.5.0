@@ -48,7 +48,7 @@ function RenderSceneTwo()
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [30.0, -30.0, -1.0])
-  mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
+  //mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
   //mat4.rotateY(modelMatrix,modelMatrix,90);
   //Model : Room , index : 2
   renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,0,fogColor);
@@ -88,14 +88,14 @@ function RenderSceneTwo()
 /*----------------------------------- Scene Two Update -----------------------------------*/
 function UpdateSceneTwo()
 {
-  if (startTime == 0) {
-    startTime = performance.now() / 1000;
-  }
-  if (scene == 2 && (startTime + 30 + 32 > performance.now()/1000)) {
-    bezierCurve(Scene2_controlPoints, performance.now() / 1000, startTime+32, 30);
-  }else{
-   scene++;
-  }
+  // if (startTime == 0) {
+  //   startTime = performance.now() / 1000;
+  // }
+  // if (scene == 2 && (startTime + 30 + 32 > performance.now()/1000)) {
+  //   bezierCurve(Scene2_controlPoints, performance.now() / 1000, startTime+32, 30);
+  // }else{
+  //  scene++;
+  // }
 }
 
 //Window Position

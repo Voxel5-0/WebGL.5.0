@@ -56,7 +56,7 @@ function RenderSceneFour()
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render terrain
   if (terrain_data[SCENE_FOUR]) {
-    let fogColor = [0.8, 0.9, 1, 1];
+    let fogColor = [0.8, 0.9, 1, 0];
     RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor);
   }
   //Render models for actual scene grayscale
@@ -65,7 +65,7 @@ function RenderSceneFour()
   mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
   let fogColor = [0.8, 0.9, 1, 1];
-  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,0,fogColor);
   //mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
   //renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors);
   //Render skybox for actual scene
@@ -144,14 +144,14 @@ function RenderSceneFour()
 
 function UpdateSceneFour()
 {
-  if (startTime == 0) {
-    startTime = performance.now() / 1000;
-  }
-  if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
-    bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
-  }else{
-    scene++;
-  }
+  // if (startTime == 0) {
+  //   startTime = performance.now() / 1000;
+  // }
+  // if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
+  //   bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
+  // }else{
+  //   scene++;
+  // }
 }
 
 function UninitializeSceneFour()

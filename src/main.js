@@ -48,13 +48,13 @@ var scene_camera_positions;
 scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721],     //scene zero camera initial position,
 							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
-							[287.0499275829001,779.0489134224825,2020.4465969962635], 	//scene two camera initial position
-							[298.5107073089176,785.1349368758114,2085.443908695071],     //scene three camera initial position
-						 	[582.603042074097,259.96511411123737,630.7985127382476],	//four
-							[313.8060977313394,-14.586146289716707,349.4001499645148],	//five
-							[313.8060977313394,-14.586146289716707,349.4001499645148], // scene six camera initial position,
-							[558.7481356908454,210.18911259491423,2025.789776715808], // scene seven camera initial position
-							[330.8626849099249,-1.6938798328507738,453.4583973867315],	//eight
+							[188.54773835466648,-105,4.046151170852721], 	//scene two camera initial position
+							[188.54773835466648,-105,4.046151170852721],     //scene three camera initial position
+						 	[188.54773835466648,-105,4.046151170852721],	//four
+							[188.54773835466648,-105,4.046151170852721],	//five
+							[188.54773835466648,-105,4.046151170852721], // scene six camera initial position,
+							[188.54773835466648,-105,4.046151170852721], // scene seven camera initial position
+							[188.54773835466648,-105,4.046151170852721],	//eight
 						];
 
 // Camera position: 1869.1399715022253,1182.981200138941,3539.959281976318
@@ -364,7 +364,7 @@ function resize()
 
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
-	mat4.perspective(perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 20000.0);
+	mat4.perspective(perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 1000.0);
 }
 
 function toggleFullScreen()
