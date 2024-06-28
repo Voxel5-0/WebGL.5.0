@@ -79,7 +79,7 @@ function RenderSceneTwo()
 
   // DrawSkybox(SCENE_ZERO);
   DrawSkybox(SCENE_TWO);
-
+  
   //mat4.identity(modelMatrix);
   //mat4.translate(modelMatrix, modelMatrix, [30.0 + 90 + test_translate_X, -90.0 + 125  + test_translate_Y, -1.0 + 352 + test_translate_Z])
   //mat4.scale(modelMatrix,modelMatrix,[1.0 + test_scale_X,1.0 + test_scale_X ,1.0 + test_scale_X]);
@@ -88,7 +88,7 @@ function RenderSceneTwo()
   pl_display();
   
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
+  
   /*----------------------------------- Post Processing on Scene -----------------------------------*/
   var model_matrix = mat4.create();
   RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
