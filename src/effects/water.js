@@ -192,7 +192,7 @@ function initializeWaterShaders()
 	    texture_color			= mix(texture_reflection, texture_refraction, 0.4);
 	    texture_color			= mix(texture_color, vec4(0.0,0.3,0.5,1.0), 0.2);
 	
-        FragColor				= texture(u_reflectTextureSampler,reflect_texcoord);
+        FragColor				= texture_color;
     }
     `;
 

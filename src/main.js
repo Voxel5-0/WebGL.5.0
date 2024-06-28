@@ -9,9 +9,9 @@ var test_translate_X = 0.0;
 var test_translate_Y = 0.0 ;
 var test_translate_Z = 0.0;
 
-var test_scale_X = 1.0;
-var test_scale_Y = 1.0 ;
-var test_scale_Z = 1.0;
+var test_scale_X = 0.0;
+var test_scale_Y = 0.0 ;
+var test_scale_Z = 0.0;
 
 var temp_x = 1000.0;
 var temp_y = 300.0;
@@ -47,7 +47,7 @@ var scene = 0;
 var scene_camera_positions;
 scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721],     //scene zero camera initial position,
-							[188.54773835466648,-105,4.046151170852721], 	//scene one camera initial position
+							[560.8545185895381,-43.895462980012326,429.54810801654077], 	//scene one camera initial position
 							[188.54773835466648,-105,4.046151170852721], 	//scene two camera initial position
 							[188.54773835466648,-105,4.046151170852721],     //scene three camera initial position
 						 	[188.54773835466648,-105,4.046151170852721],	//four
@@ -64,7 +64,7 @@ scene_camera_positions = [
 //TODO : conly camera andle y is used , Need to add Camera angle X as well for starting position
 var scene_camera_angles =  [
 								0.0, //scene zero
-								-278.0,	//scene one
+								-209.80000000000067,	//scene one
 								-170.0,	//scene two
 								-88.39999999999996,	//scene three
 								-136.60000000000002, //scene four
@@ -76,7 +76,7 @@ var scene_camera_angles =  [
 
 var scene_camera_anglesX =  [
 							0.0, //scene zero
-							0.0,	//scene one
+							-1.8222157512174018,	//scene one
 							0.0,	//scene two
 							0.0,	//scene othree
 							0.0,	//scene four
@@ -96,11 +96,12 @@ var modelList = [
 	{ name: "BridgePart", 	files:[ 'src\\resources\\models\\scene4\\bridge\\bridge_part.gltf', 'src\\resources\\models\\scene4\\bridge\\bridge_part.bin'], 								flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.gltf', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.bin'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.gltf', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.bin'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.gltf', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.bin'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.gltf', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.bin'], 	flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose4", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.gltf', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.bin'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.gltf', 'src\\resources\\models\\scene5\\MapleTree\\tree.bin'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 4 },
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "tree", 		files:[ 'src\\resources\\models\\scene5\\pine_tree\\scene.gltf', 'src\\resources\\models\\scene5\\pine_tree\\scene.bin'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 40},
 	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
 	// { name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
@@ -474,15 +475,15 @@ function keyDown(event)
 		case "Numpad7"://7
 			temp_x += 100.0;
 			break;	
-		case "Numpad4"://4
-			temp_x -= 100.0;
-			break;	
+		// case "Numpad4"://4
+		// 	temp_x -= 100.0;
+		// 	break;	
 		case "Numpad8"://8
 			temp_y += 100.0;
 			break;	
-		case "Numpad5"://5
-			temp_y -= 100.0;
-			break;	
+		// case "Numpad5"://5
+		// 	temp_y -= 100.0;
+		// 	break;	
 		case "Numpad9"://9
 			temp_z += 100.0;
 			break;	
@@ -517,21 +518,21 @@ function keyDown(event)
 				test_translate_Z += move_sensitivity;
 			break;		
 
-		// case 49://1
-		// 	test_translate_X -= move_sensitivity;
-		// 	break;	
-		// case 50://2
-		// 		test_translate_Y -= move_sensitivity;
-		// 	break;	
-		// case 51://3
-		// 		test_translate_Z -= move_sensitivity;
-		// 	break;	
-		// case 52://4
-		// 		test_scale_X += move_sensitivity;
-		// 	break;	
-		// case 53://5
-		// 		test_scale_X -= move_sensitivity;
-		// 	break;	
+		case 49://1
+			test_translate_X -= move_sensitivity;
+			break;	
+		case 50://2
+				test_translate_Y -= move_sensitivity;
+			break;	
+		case 51://3
+				test_translate_Z -= move_sensitivity;
+			break;	
+		case 52://4
+				test_scale_X += move_sensitivity;
+			break;	
+		case 53://5
+				test_scale_X -= move_sensitivity;
+			break;	
 		case 32:
 			//start - trail
 			console.log("Start particle trail "+bool_start_ptrail_update);
