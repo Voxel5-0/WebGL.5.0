@@ -1,5 +1,7 @@
 #version 300 es
 
+precision highp float;
+
 layout(location = 0)in vec4 vPos;
 layout(location = 1)in vec3 vNor;
 layout(location = 2)in vec2 vTex;
@@ -11,11 +13,12 @@ uniform mat4 vMat;
 uniform mat4 mMat[100];
 uniform mat4 bMat[100];
 uniform bool isStatic;
+uniform float u_alpha[100];
 
 out vec2 Tex;
 out vec3 N;
 out vec3 P;
-
+out float alpha;
 out float v_fogDepth;
 
 void main(void) {
@@ -41,5 +44,6 @@ void main(void) {
         Tex = vTex;
 		gl_Position = pMat * vMat * vec4(P, 1.0);
 		v_fogDepth = -(vMat * vec4(P, 1.0)).z;
+		alpha = u_alpha[gl_InstanceID];
     }
 }

@@ -6,6 +6,7 @@ in vec2 Tex;
 in vec3 N;
 in vec3 P;
 in float v_fogDepth;
+in float alpha;
 
 uniform vec3 viewPos;
 
@@ -67,10 +68,11 @@ void main(void) {
         result += ambient + diffuse + specular;
     }
 
-    color =  vec4(result, 1.0);
+    color =  vec4(result,alpha);
     if(u_isFogEnabled){
         float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth);
         color = mix(color, u_fogColor, fogAmount);  
+        color =  vec4(color.rgb,alpha);
     }
 	
 }

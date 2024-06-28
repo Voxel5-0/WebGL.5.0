@@ -16,6 +16,7 @@ var model_fog_u_isFogEnabled;
 var model_fog_u_fogColor;
 var model_fog_u_fogNear;
 var model_fog_u_fogFar;
+var model_u_alpha;
 
 var pointLightUniforms = [];
 
@@ -28,7 +29,7 @@ function initAssimpModelShader(pointLightsCount) {
 
 }
 
-function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLightsCount ,lightPositions,lightColors , isFogEnabled,fogColor){
+function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLightsCount ,lightPositions,lightColors , isFogEnabled,fogColor , alphaArray){
 	gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
@@ -62,6 +63,7 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
 			var modelMatrixForInst = mat4.create();
 			modelMatrixForInst = modelMatrixArray[i];
 			gl.uniformMatrix4fv(mMatUnifromForAssimpModel[i], false,modelMatrixForInst)
+			gl.uniform1f(model_u_alpha[i],alphaArray[i]);
 		}
 		//renderModel(models[modelNumber])
 		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
@@ -69,7 +71,7 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
     gl.useProgram(null)
 }
 
-function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors,isFogEnabled,fogColor){
+function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors,isFogEnabled,fogColor,alpha){
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
@@ -122,6 +124,7 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
 	// 	renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
 	// }else{
 		gl.uniformMatrix4fv(mMatUnifromForAssimpModel[0], false,modelMatrix)
+		gl.uniform1f(model_u_alpha[0],alpha);
 		renderModel(models[modelNumber])
 	// }
 	
@@ -144,8 +147,11 @@ function setupProgram(pointLightsCount) {
 	vMatUnifromForAssimpModel = gl.getUniformLocation(program, "vMat")
 	//mMatUnifromForAssimpModel = gl.getUniformLocation(program, "mMat")
 	mMatUnifromForAssimpModel = []
+	model_u_alpha = []
+
 	for (var i = 0; i < 100; i++) {
-		mMatUnifromForAssimpModel.push(gl.getUniformLocation(program, "mMat[" + i + "]"))
+		mMatUnifromForAssimpModel.push(gl.getUniformLocation(program, "mMat[" + i + "]"));
+		model_u_alpha.push(gl.getUniformLocation(program,"u_alpha["+i+"]"));
 	}
 
 	bMatUnifromForAssimpModel = []

@@ -65,7 +65,7 @@ function RenderSceneFour()
   mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
   let fogColor = [0.8, 0.9, 1, 1];
-  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,0,fogColor);
+  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,0,fogColor,1);
   //mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
   //renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors);
   //Render skybox for actual scene
@@ -74,7 +74,7 @@ function RenderSceneFour()
   mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
   mat4.scale(modelMatrix,modelMatrix,[8.0 , 8.0 , 8.0]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors,1,fogColor,1);
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -91,16 +91,16 @@ function RenderSceneFour()
   mat4.translate(modelMatrix, modelMatrix, [481.0,-120, 595.0])
   mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
   mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,3,0,point_lightPositions,point_lightColors,1,fogColor,1);
   mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
-  renderAssimpModel(modelMatrix,4,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,4,0,point_lightPositions,point_lightColors,1,fogColor,1);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ZERO);
   modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 + test_translate_X , -90.0 +  87.99 + test_translate_Y , -1.0 +  567.60 + 42.0 + test_translate_Z])
   mat4.scale(modelMatrix,modelMatrix,[8.0 + test_scale_X , 8.0+test_scale_X , 8.0+test_scale_X]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,6,0,point_lightPositions,point_lightColors,1,fogColor,1);
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -115,7 +115,7 @@ function RenderSceneFour()
 	var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,1,fogColor,1);
   //render skybox for reflection FBO 
   DrawSkybox(SCENE_ZERO);  
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -130,7 +130,7 @@ function RenderSceneFour()
   var modelMatrix = mat4.create()
   mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
   mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,1,fogColor);
+  renderAssimpModel(modelMatrix,2,0,point_lightPositions,point_lightColors,1,fogColor,1);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   //Render final scene with grayscale

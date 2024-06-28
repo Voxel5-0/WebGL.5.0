@@ -37,9 +37,9 @@ function RenderSceneFive()
   // mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
   //188.54773835466648,-105,4.046151170852721
 		// 481.0,-120, 595.0
-    var scene_one_tree_x = [30.0 + 126.4+ 405.00    ,  480, 480  , 450 , 548 , 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
-    var scene_one_tree_y = [ -90.0 +  87.99         , -120, -55  , -60 , -60 , -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
-    var scene_one_tree_z = [-1.0 +  567.60 + 42.0   ,  588, 10   , 10  , 10  , 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
+    var scene_one_tree_x = [480  ,  330,  400  , 500 , 548 , 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
+    var scene_one_tree_y = [-55   , -55 , -55  , -60 , -60 , -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
+    var scene_one_tree_z = [10   ,  10 , 10   , 10  , 10  , 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
     var modelMatrixArray = [];
 
     
@@ -47,7 +47,7 @@ function RenderSceneFive()
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     DrawSkybox(SCENE_ZERO);
-    let fogColor = [0.8, 0.9, 1, 1];
+    let fogColor = [0.8, 0.9, 0.1, 1];
     //Render terrain
     if (terrain_data[SCENE_FIVE]) {
       let fogColor = [0.8, 0.9, 1, 0.0];
@@ -59,7 +59,12 @@ function RenderSceneFive()
       mat4.scale(modelMatrix,modelMatrix,[10.0 +test_scale_X,10.0 + test_scale_X,10.0+test_scale_X]);
       modelMatrixArray.push(modelMatrix);
     }
-    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
+    var aplhaArray = [0.1,0.2,1.0,0.9];
+    gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,aplhaArray);
+    gl.disable(gl.BLEND);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -93,7 +98,10 @@ function RenderSceneFive()
     gl.useProgram(null);
 
     //Render terrain
-    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
+    gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,aplhaArray);
+    gl.disable(gl.BLEND);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
