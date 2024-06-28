@@ -25,8 +25,6 @@ function InitializeSceneFive()
   var scene_five_path_image = "src/resources/textures/ground.jpg";
   var scene_five_snow_image = "src/resources/textures/soil.jpg";
 
-  godRays_final_fbo = GenerateFramebuffer(1920, 1080);
-
   InitializeTerrainRenderer();
   InitializeHeightMapTerrain(scene_five_height_map_image,scene_five_blend_map,scene_five_rock_1_image,scene_five_rock_2_image,scene_five_path_image,scene_five_snow_image,5);
   initializeGodrays();
@@ -39,9 +37,9 @@ function RenderSceneFive()
   // mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
   //188.54773835466648,-105,4.046151170852721
 		// 481.0,-120, 595.0
-    var scene_one_tree_x = [30.0 + 126.4+ 405.00, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
-    var scene_one_tree_y = [ -90.0 +  87.99 ,-120, -55, -60, -60, -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
-    var scene_one_tree_z = [-1.0 +  567.60 + 42.0 , 588, 10, 10, 10, 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
+    var scene_one_tree_x = [30.0 + 126.4+ 405.00    ,  480, 480  , 450 , 548 , 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
+    var scene_one_tree_y = [ -90.0 +  87.99         , -120, -55  , -60 , -60 , -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
+    var scene_one_tree_z = [-1.0 +  567.60 + 42.0   ,  588, 10   , 10  , 10  , 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
     var modelMatrixArray = [];
 
     
@@ -55,7 +53,7 @@ function RenderSceneFive()
       let fogColor = [0.8, 0.9, 1, 0.0];
       RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor);
     }
-    for(i =0 ; i<modelList[0].instanceCount;i++){
+    for(i =0 ; i<modelList[9].instanceCount;i++){
       var modelMatrix = mat4.create()
       mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i]+ test_translate_X ,scene_one_tree_y[i]+ test_translate_Y, scene_one_tree_z[i]+ test_translate_Z])
       mat4.scale(modelMatrix,modelMatrix,[10.0 +test_scale_X,10.0 + test_scale_X,10.0+test_scale_X]);
@@ -76,8 +74,8 @@ function RenderSceneFive()
 
     // ***** Light ******
     //perform translation for light
-    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, [1000.0, 350.0, 1800.0])
-    mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [100.0, 100.0, 100.0])
+    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, [1000.0, 350.0, 180.0])
+    mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [10.0, 10.0, 10.0])
 
     //uniform for light
     gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, perspectiveProjectionMatrix);
@@ -100,7 +98,7 @@ function RenderSceneFive()
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     /***********************************Rendering for godRays final pass************************************************* */
-    v = vec4.fromValues(1000.0,350.0,1800.0, 1.0);
+    v = vec4.fromValues(100.0,35.0,180.0, 1.0);
     vec4.transformMat4(v, v,godrays_viewMatrix)
     vec4.transformMat4(v, v, perspectiveProjectionMatrix)
 
