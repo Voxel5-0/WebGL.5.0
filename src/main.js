@@ -187,6 +187,7 @@ function init()
 		godRays_scene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 		godRays_occlusion_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 		godRays_godrays_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+		godRays_final_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 
 	/* -- Common Shader/Gemometries/Effects Initialzation */
 	InitializeTextureShader();
@@ -361,6 +362,7 @@ function resize()
 	godRays_scene_fbo = GenerateFramebuffer(fbo_width, fbo_height);
     godRays_occlusion_fbo = GenerateFramebuffer(fbo_width, fbo_height);
     godRays_godrays_fbo = GenerateFramebuffer(fbo_width, fbo_height);
+	godRays_final_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);

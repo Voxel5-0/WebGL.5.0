@@ -103,7 +103,7 @@ function RenderSceneZero() {
     //One space key press- trail and AMC title
     pTrail_display(scene1_modelMatrix, perspectiveProjectionMatrix);
     mat4.identity(scene1_modelMatrix);
-    mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0 - 3.3, -10.0])
+    mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
     mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 , 0.5 + 1]);
     var view = mat4.create();
     RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_zero_AMC_title_texture, 0);
