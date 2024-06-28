@@ -28,6 +28,15 @@ const Scene2_controlPoints = [
 
 function InitializeSceneTwo()
 {
+  let scene_two_skyboxTextures = [ 
+    "src/resources/textures/skybox/Scene2/night/px.png", 
+    "src/resources/textures/skybox/Scene2/night/nx.png", 
+    "src/resources/textures/skybox/Scene2/night/py.png",
+    "src/resources/textures/skybox/Scene2/night/ny.png",
+    "src/resources/textures/skybox/Scene2/night/pz.png", 
+    "src/resources/textures/skybox/Scene2/night/nz.png"
+  ];
+  LoadSkyboxTextures(scene_two_skyboxTextures, 2);
   pl_initialize();
 }
 
@@ -68,7 +77,8 @@ function RenderSceneTwo()
   //Model : Father , index : 10
   renderAssimpModel(modelMatrix,10,0,point_lightPositions,point_lightColors,0,fogColor);
 
-  DrawSkybox(SCENE_ZERO);
+  // DrawSkybox(SCENE_ZERO);
+  DrawSkybox(SCENE_TWO);
 
   //mat4.identity(modelMatrix);
   //mat4.translate(modelMatrix, modelMatrix, [30.0 + 90 + test_translate_X, -90.0 + 125  + test_translate_Y, -1.0 + 352 + test_translate_Z])

@@ -129,6 +129,7 @@ function pl_Particle() {
     this.scale = 0;
     this.alpha = 0;
     this.wait = 0;
+    this.limit = 0;
 }
 
 function pl_initParticle(p, wait) {
@@ -146,10 +147,15 @@ function pl_initParticle(p, wait) {
 
     // Rotation angle
     p.angle = Math.random() * 360;
+
     // Size
     p.scale = Math.random() * 0.5 + 0.5;
+
     // Transparency
     p.alpha = 1;
+
+    p.limit = -(Math.random() * (500 - 5) + 5);
+    
     // In initial stage, vary a time for creation
     if (wait == true) {
         // Time to wait
@@ -207,30 +213,11 @@ function pl_display() {
     
     pl_viewMatrix = GetCameraViewMatrix();
 
-    // var eye = vec3.create();
-    // var center = vec3.create();
-    // var up = vec3.create();
-
-    // eye[0] = 0.0;
-    // eye[1] = 0.0;
-    // eye[2] = 50.0;
-
-    // center[0] = 0.0;
-    // center[1] = 0.0;
-    // center[2] = 0.0;
-
-    // up[0] = 0.0;
-    // up[1] = 1.0;
-    // up[2] = 0.0;
-
-    // mat4.lookAt(pl_viewMatrix, eye, center, up);
-
     gl.uniformMatrix4fv(pl_projectionMatrixUniform, false, perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(pl_viewMatrixUniform, false, pl_viewMatrix);
 
-    mat4.translate(pl_modelMatrix, pl_modelMatrix, [2436.731110377243 + 2067.9999999999286 + test_translate_X, 594.9758218266027 + 44.00000000000003 + test_translate_Y, 3200.0253481618674 + -29.700000000000017 + test_translate_Z]);
-    // 2067.9999999999286 , 44.00000000000003 , -29.700000000000017
-    // 2331.2856787181977,918.8790831268988,3525.0954755866146
+    mat4.translate(pl_modelMatrix, pl_modelMatrix, [989.14013063897 + 40.70000000000003 + test_translate_X, 107.66411107641261 + -412.5000000000023 + test_translate_Y, 390.70468057373 + 226.59999999999923 + test_translate_Z]);
+    // 40.70000000000003 , -412.5000000000023 , 226.59999999999923
     // Draw
     pl_drawParticle(pl_particle, pl_modelMatrix);
 
@@ -256,25 +243,18 @@ function pl_updateParticle(p) {
         }
 
         // Update a vertex coordinate
-        p[i].position[0] += p[i].velocity[0];
-        p[i].position[1] -= p[i].velocity[1];
-        p[i].position[2] += p[i].velocity[2];
+        // p[i].position[0] += p[i].velocity[0];
+        // p[i].position[1] -= p[i].velocity[1];
+        // p[i].position[2] += p[i].velocity[2];
 
+        p[i].position[0] += 0.001;
+        p[i].position[1] += 0.9;
+        p[i].position[2] += p[i].limit / 500.0;
+        
         // Decreate Y translation
         // p[i].velocity[0] -= 0.0003;
-        p[i].velocity[1] -= 0.0005;
+        // p[i].velocity[1] -= 0.0005;
         // p[i].velocity[2] -= 0.0000001;
-        
-        // Fading out
-        //p[i].alpha -= 0.005;
-
-        // if (p[i].alpha <= 0) {
-        //     pl_initParticle(p[i], false);
-        // }
-
-        // if(p[i].position[1] < -20.0){
-        //     pl_initParticle(p[i], false);
-        // }
     }
 }
 
