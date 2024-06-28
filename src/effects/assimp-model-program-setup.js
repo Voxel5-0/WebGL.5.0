@@ -13,6 +13,7 @@ var ptL_viewPosUniform;
 var ptL_materialDiffuseUniform,ptL_materialSpecularUniform,ptL_materialShininessUniform;
 
 var model_fog_u_isFogEnabled;
+var model_u_isBlendingEnabled;
 var model_fog_u_fogColor;
 var model_fog_u_fogNear;
 var model_fog_u_fogFar;
@@ -50,6 +51,7 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
 	gl.uniform1f(ptL_materialShininessUniform, 32.0);
 
 	gl.uniform1i(model_fog_u_isFogEnabled,isFogEnabled);
+
 	gl.uniform4fv(model_fog_u_fogColor, fogColor);
 	gl.uniform1f(model_fog_u_fogNear, 0.01);
 	gl.uniform1f(model_fog_u_fogFar, 1000);
@@ -63,7 +65,12 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
 			var modelMatrixForInst = mat4.create();
 			modelMatrixForInst = modelMatrixArray[i];
 			gl.uniformMatrix4fv(mMatUnifromForAssimpModel[i], false,modelMatrixForInst)
-			gl.uniform1f(model_u_alpha[i],alphaArray[i]);
+			if(alphaArray){
+				gl.uniform1i(model_u_isBlendingEnabled,1);
+				gl.uniform1f(model_u_alpha[i],alphaArray[i]);
+			}else{
+				gl.uniform1i(model_u_isBlendingEnabled,0);
+			}
 		}
 		//renderModel(models[modelNumber])
 		renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
@@ -76,6 +83,7 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
 	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
+
 	gl.uniform1i(model_fog_u_isFogEnabled,isFogEnabled);
 	gl.uniform4fv(model_fog_u_fogColor, fogColor);
 	gl.uniform1f(model_fog_u_fogNear, 0.01);
@@ -124,12 +132,12 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
 	// 	renderModelWithInstancing(models[modelNumber] , modelList[modelNumber].instanceCount)
 	// }else{
 		gl.uniformMatrix4fv(mMatUnifromForAssimpModel[0], false,modelMatrix)
+		gl.uniform1i(model_u_isBlendingEnabled,0);
 		gl.uniform1f(model_u_alpha[0],alpha);
+		
 		renderModel(models[modelNumber])
 	// }
 	
-	
-
     gl.useProgram(null)
 }
 
@@ -162,6 +170,7 @@ function setupProgram(pointLightsCount) {
 	diffuseUnifromForAssimpModel = gl.getUniformLocation(program, "diffuse")
 	isStaticUniformForAssimpModel = gl.getUniformLocation(program, "isStatic")
 
+	model_u_isBlendingEnabled = gl.getUniformLocation(program,"u_isBlendingEnabled");
 	model_fog_u_isFogEnabled = gl.getUniformLocation(program, "u_isFogEnabled");
 	model_fog_u_fogColor = gl.getUniformLocation(program, "u_fogColor");
 	model_fog_u_fogNear = gl.getUniformLocation(program, "u_fogNear");

@@ -30,6 +30,7 @@ struct PointLight {
 uniform PointLight pointLights[8];
 uniform Material material;
 
+uniform bool u_isBlendingEnabled;
 uniform bool u_isFogEnabled;
 uniform vec4 u_fogColor;
 uniform float u_fogNear;
@@ -68,11 +69,20 @@ void main(void) {
         result += ambient + diffuse + specular;
     }
 
-    color =  vec4(result,alpha);
+    if(u_isBlendingEnabled){
+        color =  vec4(result,alpha);
+    }else{
+        color =  vec4(result,1.0);
+    }
+    
     if(u_isFogEnabled){
         float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth);
-        color = mix(color, u_fogColor, fogAmount);  
-        color =  vec4(color.rgb,alpha);
+        color = mix(color, u_fogColor, fogAmount); 
+        if(u_isBlendingEnabled){
+            color =  vec4(color.rgb,alpha);
+        }else{ 
+            color =  vec4(color.rgb,1.0);
+        }
     }
 	
 }
