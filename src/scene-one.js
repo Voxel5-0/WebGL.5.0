@@ -51,6 +51,7 @@ function InitializeSceneOne() {
   initAssimpModelShader(light_count); 
   pTrail_initialize(); 
   pl_initialize();
+  fl_initialize();
   
   finalScene_fbo = GenerateFramebuffer(1920, 1080);
   reflection_fbo = GenerateFramebuffer(1920, 1080);
@@ -130,6 +131,7 @@ function RenderSceneOne() {
   pTrail_display(modelMatrix, perspectiveProjectionMatrix);
 
   pl_display();
+  fl_display();
   
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,0,0,0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -160,6 +162,7 @@ function UninitializeSceneOne() {
   // UninitializeModelRenderer(scene_one_tree_one_model);
   // UninitializeModelRenderer(scene_one_tree_two_model);
 
+  //fl_uninitialize();
   // pTrail_uninitialize();
   // uninitializeWater();
 }
