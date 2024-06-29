@@ -146,7 +146,7 @@ function initializeFinalShader() {
 		}
 	}
 	else {
-		console.log("Godrays Final Vertex Shader compiled successfully.")
+		// console.log("Godrays Final Vertex Shader compiled successfully.")
 	}
 
 	var godrays_fragmentShaderSourceCode_final = (
@@ -177,7 +177,7 @@ function initializeFinalShader() {
 		}
 	}
 	else {
-		console.log("Godrays Final Fragment Shader compiled successfully.")
+		// console.log("Godrays Final Fragment Shader compiled successfully.")
 	}
 
 	// SHADER PROGRAM
@@ -198,7 +198,7 @@ function initializeFinalShader() {
 			godrays_uninitialize();
 		}
 	} else {
-		console.log("Shader Linked successfully.");
+		// console.log("Shader Linked successfully.");
 	}
 
 	godrays_sceneSamplerUniform_final = gl.getUniformLocation(godrays_shaderProgramObject_final, "uSceneTextureSampler");
@@ -235,7 +235,7 @@ function initializeSceneShader() {
 		}
 	}
 	else {
-		console.log("Godrays scene Vertex Shader compiled successfully.")
+		// console.log("Godrays scene Vertex Shader compiled successfully.")
 	}
 
 	var godrays_fragmentShaderSourceCode_scene = (
@@ -262,7 +262,7 @@ function initializeSceneShader() {
 		}
 	}
 	else {
-		console.log("Godrays scene Fragment Shader compiled successfully.")
+		// console.log("Godrays scene Fragment Shader compiled successfully.")
 	}
 
 	// SHADER PROGRAM
@@ -283,7 +283,7 @@ function initializeSceneShader() {
 			godrays_uninitialize();
 		}
 	} else {
-		console.log("Godrays Shader scene Linked successfully.");
+		// console.log("Godrays Shader scene Linked successfully.");
 	}
 
 	godrays_viewMatrixUniform_scene = gl.getUniformLocation(godrays_shaderProgramObject_scene, "uViewMatrix");
@@ -320,7 +320,7 @@ function initializeOcclusionShader() {
 		}
 	}
 	else {
-		console.log("Godrays Occlusion Vertex Shader compiled successfully.")
+		// console.log("Godrays Occlusion Vertex Shader compiled successfully.")
 	}
 
 	var godrays_fragmentShaderSourceCode_occlusion = (
@@ -354,7 +354,7 @@ function initializeOcclusionShader() {
 		}
 	}
 	else {
-		console.log("Godrays Occlusion Frwagment Shader compiled successfully.")
+		// console.log("Godrays Occlusion Frwagment Shader compiled successfully.")
 	}
 
 	// Shader Program
@@ -374,7 +374,7 @@ function initializeOcclusionShader() {
 			godrays_uninitialize();
 		}
 	} else {
-		console.log("Godrays Shader occlusion Linked successfully.");
+		// console.log("Godrays Shader occlusion Linked successfully.");
 	}
 
 	godrays_viewMatrixUniform_occlusion = gl.getUniformLocation(godrays_shaderProgramObject_occlusion, "uViewMatrix");
@@ -409,7 +409,7 @@ function initializeGodraysShader() {
 		}
 	}
 	else {
-		console.log("Godrays godrays Vertex Shader compiled successfully.")
+		// console.log("Godrays godrays Vertex Shader compiled successfully.")
 	}
 
 	var godrays_fragmentShaderSourceCode_godrays = (
@@ -458,7 +458,7 @@ function initializeGodraysShader() {
 		}
 	}
 	else {
-		console.log("Godrays godrays Fragment Shader compiled successfully.")
+		// console.log("Godrays godrays Fragment Shader compiled successfully.")
 	}
 
 	// SHADER PROGRAM
@@ -501,7 +501,7 @@ function godrays_resize(gd_width, gd_height) {
 	gl.viewport(0.0, 0.0, gd_width, gd_height);
 
 	//set perspective projection
-	mat4.perspective(gd_perspectiveProjectionMatrix, 45.0, gd_width / gd_height, 0.1, 100.0);
+	mat4.perspective(gd_perspectiveProjectionMatrix, 45.0, gd_width / gd_height, 0.1, 20000.0);
 }
 
 function godrays_display_final()
@@ -800,7 +800,6 @@ function trial_init() {
 
 function gd_display() {
     //code
-    godrays_resize(canvas.width, canvas.height);
 	gl.clearColor(1.0,0.0,0.0,1.0)
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.useProgram(gd_shaderProgramObject);

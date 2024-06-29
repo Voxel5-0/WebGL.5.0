@@ -13,13 +13,14 @@
 var SCENE_TWO = 2;
 
 /*----------------------------------- Camera Contol Points and variables -----------------------------------*/
+//Need to reset camera paths
 const Scene2_controlPoints = [
-  [298.5107073089176,785.1349368758114,2085.443908695071,-12.090902084172717, -88.39999999999996],
-  [-199.5538184874672,692.6223169910097,2491.234708016791, -11.667704044581441, -94.59999999999997],
-  [298.79398369719587,790.6333157198022,3682.657355579923, -10.467704044581433, -94.59999999999987],
-  [1784.151260690953,1049.043325240332,3518.069790959837, -21.66770404458143, -78.39999999999988]
-  //[137.52516631157724, -81.33711919060856, -5.38612557063494, -13.042920367320477, -630.9999999999997],
-  //[179.3081591306077, -97.33037030294784, -3.89842326914559, -5.242920367320477, -630.9999999999995]
+  [94.99358310261765,74.33581786789497,210.49747779588023 , -9.248153863973856 , -92.99999999999936],
+  [10.62901167174151,95.65099812412927,244.2914614603873 , 2.364373357682116 , -97.99999999999952],
+  [208.21280150157958,72.81144436996345,345.55190974760137 , -14.635626642317867 , -94.59999999999941],
+  [219.6143804144843,88.37598001356025,350.49216348625794 , -14.635626642317867 , -94.59999999999941]
+  // [144.3809611232921,79.18538151916013,343.3457449067854 , -7.461111947191337 , -87.19999999999942],
+  // [948.199097797844,212.81782870451985,291.73360447533565 , -18.261111947191317 , -90.99999999999946]
 ];
 //  [298.79398369719587,764.6333157198022,3682.657355579923, -10.467704044581433, -94.59999999999987],
 
@@ -29,12 +30,12 @@ const Scene2_controlPoints = [
 function InitializeSceneTwo()
 {
   let scene_two_skyboxTextures = [ 
-    "src/resources/textures/skybox/Scene2/night/px.png", 
-    "src/resources/textures/skybox/Scene2/night/nx.png", 
-    "src/resources/textures/skybox/Scene2/night/py.png",
-    "src/resources/textures/skybox/Scene2/night/ny.png",
-    "src/resources/textures/skybox/Scene2/night/pz.png", 
-    "src/resources/textures/skybox/Scene2/night/nz.png"
+    "src/resources/textures/skybox/Scene2/night_2/px.png", 
+    "src/resources/textures/skybox/Scene2/night_2/nx.png", 
+    "src/resources/textures/skybox/Scene2/night_2/py.png",
+    "src/resources/textures/skybox/Scene2/night_2/ny.png",
+    "src/resources/textures/skybox/Scene2/night_2/pz.png", 
+    "src/resources/textures/skybox/Scene2/night_2/nz.png"
   ];
   LoadSkyboxTextures(scene_two_skyboxTextures, 2);
   pl_initialize();
@@ -94,18 +95,17 @@ function RenderSceneTwo()
   RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
 }
 
+var scene_two_StartTime = 105;
+var scene_two_duration = 30;
 
 /*----------------------------------- Scene Two Update -----------------------------------*/
 function UpdateSceneTwo()
 {
-  // if (startTime == 0) {
-  //   startTime = performance.now() / 1000;
-  // }
-  // if (scene == 2 && (startTime + 30 + 32 > performance.now()/1000)) {
-  //   bezierCurve(Scene2_controlPoints, performance.now() / 1000, startTime+32, 30);
-  // }else{
-  //  scene++;
-  // }
+  if (scene == 2 && (scene_two_StartTime + scene_two_duration  > performance.now()/1000)) {
+    bezierCurve(Scene2_controlPoints, performance.now() / 1000, scene_two_StartTime, scene_two_duration);
+  }else{
+   //scene++;
+  }
 }
 
 //Window Position

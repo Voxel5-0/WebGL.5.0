@@ -20,6 +20,7 @@ var terrain_u_fogFar;
 
 /* terrain variables */
 var terrain_data = new Array(SCENE_COUNT);
+var terrain_perspectiveProjectionMatrix;
 
 function InitializeTerrainRenderer() {
   var terrainVertexShaderSource =
@@ -124,6 +125,7 @@ function InitializeTerrainRenderer() {
       uninitialize();
     }
   }
+  terrain_perspectiveProjectionMatrix = mat4.create();
 }
 
 function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, rock_1_image, rock_2_image, path_image, grass_image, scene) {
@@ -325,27 +327,20 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
   }
 }
 
-function RenderTerrain(terrain_data, scene , fogColor) {
+function RenderTerrain(terrain_data, scene , fogColor ,model_matrix_terrain_1 ) {
   if (!terrain_data.vao_ready)
     return;
   gl.useProgram(terrainShaderProgramObj);
-
-  var view_matrix = mat4.create();
-  var model_matrix = mat4.create();
-
-  mat4.identity(view_matrix);
-  mat4.identity(model_matrix);
 
   /* Implement camera and supply it through view matrix */
   //mat4.lookAt(view_matrix, [450.0, -50.0, 100.0], [0.0, 0.0, 1.0], [0.0, 1.0, 0.0]);
   //mat4.translate(view_matrix, view_matrix, [-450.0, -40, -300]);
   //mat4.translate(model_matrix, model_matrix, [0.0, -100.0, -10]);
   //mat4.translate(model_matrix, model_matrix, [0.0, 0.0, -0.1]);
-  mat4.scale(model_matrix, model_matrix, [1.5, 1.8, 1.5]);
 
-  gl.uniformMatrix4fv(terrain_u_projection_matrix, false, perspectiveProjectionMatrix);
+  gl.uniformMatrix4fv(terrain_u_projection_matrix, false, terrain_perspectiveProjectionMatrix);
   gl.uniformMatrix4fv(terrain_u_view_matrix, false, GetCameraViewMatrix());
-  gl.uniformMatrix4fv(terrain_u_model_matrix, false, model_matrix);
+  gl.uniformMatrix4fv(terrain_u_model_matrix, false, model_matrix_terrain_1);
 
   gl.activeTexture(gl.TEXTURE0); //terrain color mix of 0 and 1
   gl.bindTexture(gl.TEXTURE_2D, texture_rock1[scene]);

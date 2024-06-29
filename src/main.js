@@ -43,12 +43,14 @@ var is_mouse_pressed;
 
 /* Scene Display Variables */
 var scene = 0;
+/**Demo start time */
+var startTime = 0;
 
 var scene_camera_positions;
 scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721],     //scene zero camera initial position,
-							[560.8545185895381,-43.895462980012326,429.54810801654077], 	//scene one camera initial position
-							[188.54773835466648,-105,4.046151170852721], 	//scene two camera initial position
+							[704.8648214635622,-8.562417758347571,379.39476250089234], 	//scene one camera initial position
+							[94.99358310261765,74.33581786789497,210.49747779588023 ], 	//scene two camera initial position
 							[188.54773835466648,-105,4.046151170852721],     //scene three camera initial position
 						 	[188.54773835466648,-105,4.046151170852721],	//four
 							[188.54773835466648,-105,4.046151170852721],	//five
@@ -64,8 +66,8 @@ scene_camera_positions = [
 //TODO : conly camera andle y is used , Need to add Camera angle X as well for starting position
 var scene_camera_angles =  [
 								0.0, //scene zero
-								-209.80000000000067,	//scene one
-								-170.0,	//scene two
+								-250.80000000000067,	//scene one
+								-92.99999999999936,	//scene two
 								-88.39999999999996,	//scene three
 								-136.60000000000002, //scene four
 								-139.0, //scene five
@@ -76,8 +78,8 @@ var scene_camera_angles =  [
 
 var scene_camera_anglesX =  [
 							0.0, //scene zero
-							-1.8222157512174018,	//scene one
-							0.0,	//scene two
+							-7.8222157512174018,	//scene one
+							-9.248153863973856 ,	//scene two
 							0.0,	//scene othree
 							0.0,	//scene four
 							0.0,	//scene five
@@ -102,11 +104,12 @@ var modelList = [
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "tree", 		files:[ 'src\\resources\\models\\scene5\\pine_tree\\scene.gltf', 'src\\resources\\models\\scene5\\pine_tree\\scene.bin'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 40},
-	// { name: "Bridge", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
-	// { name: "Lanturn", files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
+	{ name: "terrain", 		files:[ 'src\\resources\\models\\terrain\\terrain.gltf', 'src\\resources\\models\\terrain\\terrain.bin'], 														flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	// { name: "Bridge", 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
+	// { name: "Lanturn", 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
 	// { name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
 	// { name: "Bushes_1", 	files:[ 'src\\resources\\models\\scene7\\Bushes_1.gltf', 'src\\resources\\models\\scene7\\Bushes_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
-	// { name: "Flowers_1", 	files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
+	// { name: "Flowers_1", files:[ 'src\\resources\\models\\scene7\\Flowers_1.gltf', 'src\\resources\\models\\scene7\\Flowers_1.bin'] 													,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
 ]
 
 var grayscale = 1;
@@ -256,6 +259,12 @@ function draw(now)
 {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+	if(startTime == 0 && performance.now()/1000 >= 40.0 ){
+		startTime = performance.now()/1000;
+    	console.log("Start time initialized in scene zero :" + startTime);
+		document.getElementById('audio').play();
+		toggleFullScreen();
+	}
 	if(cameraInitialPositionForScene[scene] != 1){
 		console.log("Setting initial camera position for scene "+scene);
 		UpdateCameraPosition(scene_camera_positions[scene]);
@@ -315,6 +324,7 @@ function update(now)
 			UpdateSceneOne();
 			break;
 		case 2:
+			UpdateSceneTwo();
 			break;
 		case 3 :
 			UpdateSceneThree();
@@ -368,6 +378,11 @@ function resize()
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
 	mat4.perspective(perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 1000.0);
+	mat4.perspective(terrain_perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 21000.0);
+	mat4.perspective(model_perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 21000.0);
+
+	godrays_resize(canvas.width, canvas.height);
+
 }
 
 function toggleFullScreen()
@@ -545,13 +560,13 @@ function keyDown(event)
 		break;
 		case 70://F
 			document.getElementById('audio').play();
+			console.log("Start time :" + performance.now() )
 			toggleFullScreen();
 		break;
             
         case 80://p
-            console.log("Camera position: " + camera_position);
-            console.log("X rotation: " + x_rotation);
-            console.log("Y rotation: " + y_rotation);
+            console.log("Camera position: " + camera_position + " , " +  x_rotation+ " , " +  y_rotation);
+            console.log("current time stamp : " + performance.now());
 			console.log("X , Y ,Z  adjustments: " + test_translate_X +" , "+ test_translate_Y +" , "+test_translate_Z);
 			console.log("Scale :" + test_scale_X);
             break;

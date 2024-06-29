@@ -2,7 +2,7 @@
  * 
  * SCENE Description :
  * 
- * Time - 0.0 to 0.30 end not decides 
+ * Time - 31.0 to 1.00 end not decides 
  * 
  * Start intro to demo Scene
  * Follow structure similar to that of disney intro https://www.youtube.com/watch?v=cv6ncEYLRlk
@@ -26,7 +26,6 @@ const scene_zero_controlPoints = [
   [137.52516631157724, -81.33711919060856, -5.38612557063494, -13.042920367320477, -630.9999999999997],
   [179.3081591306077, -97.33037030294784, -3.89842326914559, -5.242920367320477, -630.9999999999995]
 ];
-var startTime = 0;
 
 /*----------------------------------- Point Light Variables and Positions -----------------------------------*/
 var scene_zero_lightPositions = [
@@ -119,14 +118,24 @@ function RenderSceneZero() {
 }
 
 
+
 /*----------------------------------- Scene One Update -----------------------------------*/
+var scene_zero_StartTime = 40.0;
+var scene_zero_duration = 30.0;
+
 function UpdateSceneZero() {
-  if (startTime == 0) {
-    startTime = performance.now() / 1000;
+  let currentTime = performance.now() / 1000;
+
+  // if (startTime == 0) {
+  //   startTime = currentTime;
+  //   console.log("Start time initialized in scene zero :" + startTime);
+  // }
+  if (scene_zero_StartTime + scene_zero_duration > currentTime) {
+    bezierCurve(scene_zero_controlPoints, currentTime, scene_zero_StartTime, scene_zero_duration);
+  } else{
+    scene++ ;
   }
-  if (startTime + 30 > performance.now() / 1000) {
-    bezierCurve(scene_zero_controlPoints, performance.now() / 1000, startTime, 30);
-  }  
+
   if(bool_start_ptrail_update){
     pTrail_update();
   }

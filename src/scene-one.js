@@ -7,6 +7,20 @@
  * Astromedicomps Voxel Group - Title
 */
 
+
+/*----------------------------------- Camera Contol Points and variables -----------------------------------*/
+const scene_one_controlPoints = [
+  [704.8648214635622,-8.562417758347571,379.39476250089234,-7.432602672844001,-250.40000000000046],
+  [558.1527762885465,5.500596646407779,438.8706648361808, -4.4326026728439984, -252.8000000000004],
+  [501.15614495595594,14.73771787835936,471.7990264518865, -9.032602672843998, -230.8000000000007],
+  [457.1417555632073,55.52811359214382,561.9410709168559, -25.83260267284397, -181.00000000000134],
+  [493.40845117307197,107.946879821468,624.4185303303168, -52.03260267284408, -38.00000000000152],
+  [522.6736636158461,162.74987233779004,577.8594525147819, -84.83260267284426, -27.40000000000148],
+  [553.609623609143,174.7564869683475,560.704923881926, -98.23260267284442, 88.79999999999858],
+  [553.609623609143,174.7564869683475,560.704923881926, -84.0326026728443, 137.5999999999985],
+  [553.609623609143,174.7564869683475,560.704923881926, -67.83260267284429, 215.19999999999828]
+];
+
 /*----------------------------------- Scene one global variables -----------------------------------*/
 
 var SCENE_ONE = 1;
@@ -51,38 +65,33 @@ function RenderSceneOne()
     RenderWithVignnetTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_one_title_texture, 0);
     // RenderWithVignnetTextureShaderMVP(modelMatrix,identityMatrix,identityMatrix,scene_one_title_texture, 0);
   }else{
-    var scene_one_tree_x = [480  ,  330,  400  , 500 , 548 , 460, 470.25, 420, 537, 430, 488, 480, 480, 450, 548, 460, 470.25, 420, 537, 430, 490.65]
-    var scene_one_tree_y = [-55   , -55 , -55  , -60 , -60 , -60, -60, -70, -70, -70, -62, -65, -65, -65, -65, -70, -65, -70, -70, -70, -65];
-    var scene_one_tree_z = [10   ,  10 , 10   , 10  , 10  , 10, 10, 13, 20, 27, 33, 40, 50, 61, 71, 80, 91, 101, 105, 120, -77];
     var modelMatrixArray = [];
     for(i =0 ; i<modelList[12].instanceCount;i++){
       var modelMatrix = mat4.create()
-      mat4.translate(modelMatrix, modelMatrix, positions[i])
-      mat4.scale(modelMatrix,modelMatrix,[0.3 +test_scale_X,0.5 + test_scale_X,0.3+test_scale_X]);
+      mat4.translate(modelMatrix, modelMatrix, [positions[i][0],positions[i][1]-test_translate_Y,positions[i][2]])
+      mat4.scale(modelMatrix,modelMatrix,[0.3 ,0.5 ,0.3]);
       modelMatrixArray.push(modelMatrix);
     }
     /***********************************Rendering for Godrays FBO************************************************* */
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     DrawSkybox(SCENE_TWO);
-    let fogColor = [0.2, 0.2, 0.2, 1.0];
     //Render terrain
     if (terrain_data[SCENE_ONE]) {
-      let fogColor = [0.2, 0.2, 0.2, 1.0];
-      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor);
+      let fogColor = [0.8, 0.9, 1, 0.5];
+      let terrain_model_matrix = mat4.create();
+      mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
+     // RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
+      mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
+      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
+
+      // let modelMatrixTerrainModel = mat4.create();
+      // mat4.translate(modelMatrixTerrainModel, modelMatrixTerrainModel, [1.0 + test_translate_X, 35.0 + test_translate_Y, 180.0 + test_translate_Z])
+      // mat4.scale(modelMatrixTerrainModel, modelMatrixTerrainModel, [1.0 + test_scale_X, 35.0 + test_scale_X, 180.0 + test_scale_X])
+      // renderAssimpModel(modelMatrixTerrainModel,13,0,[],[],0,fogColor,1.0);
     }
-    // for(i =0 ; i<modelList[9].instanceCount;i++){
-    //   var modelMatrix = mat4.create()
-    //   mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i]+ test_translate_X ,scene_one_tree_y[i]+ test_translate_Y, scene_one_tree_z[i]+ test_translate_Z])
-    //   mat4.scale(modelMatrix,modelMatrix,[10.0 +test_scale_X,10.0 + test_scale_X,10.0+test_scale_X]);
-    //   modelMatrixArray.push(modelMatrix);
-    // }
-    // var aplhaArray = [0.1,0.2,1.0,0.9];
-    // gl.enable(gl.BLEND);
-		// gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    // var modelMatrix = mat4.create()
-    // mat4.translate(modelMatrix, modelMatrix, [0.0+ test_translate_X ,0.0+ test_translate_Y, -10.0 + test_translate_Z])
-    // mat4.scale(modelMatrix,modelMatrix,[0.2 +test_scale_X,0.2 + test_scale_X,0.2+test_scale_X]);
+    
+    let fogColor = [0.2, 0.2, 0.2, 0.5];
     renderAssimpModelWithInstancing(modelMatrixArray,12,0,[],[],0,fogColor,1.0);
     // gl.disable(gl.BLEND);
 
@@ -155,11 +164,27 @@ function RenderSceneOne()
 }
 
 /*----------------------------------- Scene one Update -----------------------------------*/
-function UpdateSceneOne()
-{
-   
-}
+var scene_one_StartTime = 75;
+var scene_one_duration = 30;
 
+/*----------------------------------- Scene One Update -----------------------------------*/
+function UpdateSceneOne() {
+  let currentTime = performance.now() / 1000;
+  if (startTime == 0) {
+    //This will never call in ideal case, start time will always be initialized in scene zero
+    d = currentTime;
+  }
+  // if(scene_one_StartTime + currentTime >n)
+  if (scene == 1 && scene_one_StartTime + scene_one_duration > currentTime) {
+    scene_one_showTitle = false;
+    bezierCurve(scene_one_controlPoints,currentTime, scene_one_StartTime, scene_one_duration);
+  } 
+  else if(scene_one_StartTime + scene_one_duration <= currentTime){
+    scene++;
+  } 
+
+  cameraShake();
+}
 /*----------------------------------- Scene one Uninitialize -----------------------------------*/
 function UninitializeSceneOne()
 {

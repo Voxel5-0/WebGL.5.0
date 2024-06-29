@@ -19,7 +19,7 @@ var scene_six_texture_rainbow;
 // ---------------------------
 function InitializeSceneSix()
 {
-    scene_six_texture_rainbow = loadTexture("src\\resources\\textures\\rainbow.png", false) 
+    scene_six_texture_rainbow = loadTexture("src\\resources\\textures\\rainbow.png", true) 
 }
 
 function RenderSceneSix()

@@ -21,18 +21,21 @@ var model_u_alpha;
 
 var pointLightUniforms = [];
 
+var model_perspectiveProjectionMatrix;
+
+
 function initAssimpModelShader(pointLightsCount) {
     setupProgram(pointLightsCount);
 	gl.enable(gl.DEPTH_TEST);
     for(i = 0; i<modelList.length;i++){
         models[i] = initalizeModel(modelList[i].name,modelList,i);
     }
-
+	model_perspectiveProjectionMatrix = mat4.create();
 }
 
 function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLightsCount ,lightPositions,lightColors , isFogEnabled,fogColor , alphaArray){
 	gl.useProgram(program)
-	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
+	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, model_perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
 	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
     gl.uniform1i(isStaticUniformForAssimpModel, 0)
@@ -80,7 +83,7 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
 
 function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors,isFogEnabled,fogColor,alpha){
     gl.useProgram(program)
-	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, perspectiveProjectionMatrix)
+	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, model_perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
 	gl.uniform3fv(viewPosUnifromForAssimpModel, GetCameraPosition())
 

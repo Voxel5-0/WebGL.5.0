@@ -10,9 +10,9 @@ var SCENE_THREE = 3;
 
 const Scene3_controlPoints = [
   [298.5107073089176,785.1349368758114,2085.443908695071,-12.090902084172717, -88.39999999999996],
-  [-199.5538184874672,692.6223169910097,2491.234708016791, -11.667704044581441, -94.59999999999997],
-  [298.79398369719587,790.6333157198022,3682.657355579923, -10.467704044581433, -94.59999999999987],
-  [1784.151260690953,1049.043325240332,3518.069790959837, -21.66770404458143, -78.39999999999988]
+  [-72.62901167174151,95.65099812412927,244.2914614603873 , 2.364373357682116 , -97.99999999999952],
+  [158.21280150157958,72.81144436996345,345.55190974760137 , -14.635626642317867 , -94.59999999999941],
+  [219.6143804144843,88.37598001356025,350.49216348625794 , -14.635626642317867 , -94.59999999999941]
   //[137.52516631157724, -81.33711919060856, -5.38612557063494, -13.042920367320477, -630.9999999999997],
   //[179.3081591306077, -97.33037030294784, -3.89842326914559, -5.242920367320477, -630.9999999999995]
 ];
@@ -27,7 +27,104 @@ function InitializeSceneThree()
 
 function RenderSceneThree()
 {
+// mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
+  //188.54773835466648,-105,4.046151170852721
+		// 481.0,-120, 595.0
+    // 47
+    var scene_one_tree_x = [25.97, 12.07, 34.14, 44.04, 58.43, 60.33, 99.23, 103.18, 136.72, 116.20, 135.18, 152.61, 167.75, 175.58, 201.51, 204.13, 224.33, 247.12, 279.17, 340.85, 344.85, 350.50, 357.79, 361.62, 366.40, 389.26, 411.72, 425.94, 439.63, 467.15, 481.98, 499.24, 520.60, 546.06, 575.87, 604.17,482.64, 463.57, 446.34, 433.30, 418.23, 409.02, 399.15, 390.91, 377.85, 350.19, 318.06,291.90]
+    var scene_one_tree_y = [-138.50, -138.56, -139.41, -138.29, -139.01, -140.89, -138.55, -138.83, -142.09, -134.31, -135.12, -139.98, -141.06, -136.02, -142.16, -138.55, -140.30, -140.62, -139.03, -141.34, -135.70, -130.13, -125.17, -129.13, -120.04,-127.96, -129.93, -131.97, -134.75, -139.25, -140.86, -141.11, -141.76, -140.94, -140.84, -142.58,-140.70, -141.46, -141.71, -141.31, -140.44, -140.10, -137.48, -133.73, -130.59, -132.53, -135.95,-139.59];
+    var scene_one_tree_z = [375.70, 425.95, 435.32, 383.23, 398.27, 452.60, 428.12, 484.83, 453.81, 499.67, 500.59, 459.08, 461.23, 508.45, 464.07, 507.92, 459.57, 518.47, 473.63, 447.20,  412.29, 378.45, 353.69, 338.23, 364.33, 321.46, 295.39, 276.17, 265.39, 260.69, 264.65, 262.26, 267.20, 274.13, 281.66, 292.08,310.67, 315.22, 331.64, 351.81, 380.95, 405.50, 436.91, 466.32, 491.61, 512.42, 519.47,521];
+    var modelMatrixArray = [];
+    
+    /***********************************Rendering for Godrays FBO************************************************* */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    DrawSkybox(SCENE_ZERO);
+    let fogColor = [0.8, 0.9, 0.1, 1];
+    //Render terrain
+    if (terrain_data[SCENE_FIVE]) {
+      let fogColor = [0.8, 0.9, 1, 0.0];
+      let terrain_model_matrix = mat4.create();
+      mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
+     // RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
+      mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
 
+      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor,terrain_model_matrix);
+    }
+    for(i =0 ; i<modelList[9].instanceCount;i++){
+      var modelMatrix = mat4.create()
+      mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i] ,scene_one_tree_y[i], scene_one_tree_z[i]])
+      mat4.scale(modelMatrix,modelMatrix,[10.0 ,10.0,10.0]);
+      modelMatrixArray.push(modelMatrix);
+    }
+    var aplhaArray = [0.1,0.2,1.0,0.9];
+    gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor );
+    gl.disable(gl.BLEND);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+
+    /***********************************Rendering for godRays occlusion FBO************************************************* */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_occlusion_fbo.fbo);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.useProgram(godrays_shaderProgramObject_occlusion);
+    var godrays_viewMatrix = GetCameraViewMatrix();
+    var godrays_modelMatrix = mat4.create();
+
+    // ***** Light ******
+    //perform translation for light
+    var sunPosition = [700.0,250.0,800.0]
+    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, sunPosition)
+    mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [20.0, 20.0, 20.0])
+
+    //uniform for light
+    gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, perspectiveProjectionMatrix);
+    gl.uniformMatrix4fv(godrays_viewMatrixUniform_occlusion, false, godrays_viewMatrix);
+    gl.uniformMatrix4fv(godrays_modelMatrixUniform_occlusion, false, godrays_modelMatrix);
+    gl.uniform1i(godrays_colorShowUniform_occlusion, 1)
+
+    //draw light source
+
+    sphere.draw();
+
+    gl.uniform1i(godrays_colorShowUniform_occlusion, 0);
+    //light source ends
+
+    gl.useProgram(null);
+
+    //Render terrain
+    gl.enable(gl.BLEND);
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
+    gl.disable(gl.BLEND);
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    /***********************************Rendering for godRays final pass************************************************* */
+    v = vec4.fromValues(sunPosition[0],sunPosition[1],sunPosition[2], 1.0);
+    vec4.transformMat4(v, v,godrays_viewMatrix)
+    vec4.transformMat4(v, v, perspectiveProjectionMatrix)
+
+    // perspective division
+    vec4.scale(v, v, 1.0 / v[3] )
+
+    // // scale (x,y) from range [-1,+1] to range [0,+1]
+    vec4.add(v, v, [1.0, 1.0, 0.0, 0.0] )
+    vec4.scale(v, v, 0.5)
+
+    godrays_display_godrays();
+    
+    /***********************************Rendering for Actual scene************************************************* */
+    gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_final_fbo.fbo);
+    godrays_display_final();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    /***********************************Post Processing************************************************* */
+    RenderWithTextureShader(godRays_final_fbo.cbo,0)
  
 }
 
