@@ -385,7 +385,7 @@ function RenderWater(reflection_texture, refraction_texture, refraction_depth_te
     var viewMatrix = mat4.create();
 
     mat4.translate(modelMatrix, modelMatrix, [-700.0 + xAdjustment + test_translate_X, WATER_HEIGHT + yAdjustment + test_translate_Y, -100.0+zAdjustment + + test_translate_Z]);
-    mat4.scale(modelMatrix,modelMatrix,[1.0 + scale + test_scale_X,1.0+scale + test_scale_X,1.0+scale + test_scale_X])
+    mat4.scale(modelMatrix,modelMatrix,[1.0 + scale + 1.0,1.0+scale + 1.0,1.0+scale + 1.0])
     mat4.rotateY(modelMatrix,modelMatrix,[0.0 - 127 + test_angleRotation]);
     gl.uniformMatrix4fv(water_model_matrix_uniform, false, modelMatrix);
     gl.uniformMatrix4fv(water_view_matrix_uniform, false, GetCameraViewMatrix());
