@@ -18,8 +18,8 @@ var godRays_final_fbo;
 
 function InitializeSceneFive()
 {
-  var scene_five_height_map_image = "src/resources/textures/terrain.png";
-  var scene_five_blend_map = "src/resources/textures/BlendMap.png";
+  var scene_five_height_map_image = "src/resources/textures/terrain/Trial/trial1-modified.jpg";
+  var scene_five_blend_map = "src/resources/textures/terrain/Trial/trial1-Blendmap.png";
   var scene_five_rock_1_image = "src/resources/textures/soil.jpg";
   var scene_five_rock_2_image = "src/resources/textures/soil.jpg";
   var scene_five_path_image = "src/resources/textures/ground.jpg";
@@ -37,8 +37,12 @@ function RenderSceneFive()
   // mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
   //188.54773835466648,-105,4.046151170852721
 		// 481.0,-120, 595.0
+    // 47
+    var scene_one_tree_x = [25.97, 12.07, 34.14, 44.04, 58.43, 60.33, 99.23, 103.18, 136.72, 116.20, 135.18, 152.61, 167.75, 175.58, 201.51, 204.13, 224.33, 247.12, 279.17, 340.85, 344.85, 350.50, 357.79, 361.62, 366.40, 389.26, 411.72, 425.94, 439.63, 467.15, 481.98, 499.24, 520.60, 546.06, 575.87, 604.17,482.64, 463.57, 446.34, 433.30, 418.23, 409.02, 399.15, 390.91, 377.85, 350.19, 318.06,291.90]
+    var scene_one_tree_y = [-138.50, -138.56, -139.41, -138.29, -139.01, -140.89, -138.55, -138.83, -142.09, -134.31, -135.12, -139.98, -141.06, -136.02, -142.16, -138.55, -140.30, -140.62, -139.03, -141.34, -135.70, -130.13, -125.17, -129.13, -120.04,-127.96, -129.93, -131.97, -134.75, -139.25, -140.86, -141.11, -141.76, -140.94, -140.84, -142.58,-140.70, -141.46, -141.71, -141.31, -140.44, -140.10, -137.48, -133.73, -130.59, -132.53, -135.95,-139.59];
+    var scene_one_tree_z = [375.70, 425.95, 435.32, 383.23, 398.27, 452.60, 428.12, 484.83, 453.81, 499.67, 500.59, 459.08, 461.23, 508.45, 464.07, 507.92, 459.57, 518.47, 473.63, 447.20,  412.29, 378.45, 353.69, 338.23, 364.33, 321.46, 295.39, 276.17, 265.39, 260.69, 264.65, 262.26, 267.20, 274.13, 281.66, 292.08,310.67, 315.22, 331.64, 351.81, 380.95, 405.50, 436.91, 466.32, 491.61, 512.42, 519.47,521];
     var modelMatrixArray = [];
-
+    
     /***********************************Rendering for Godrays FBO************************************************* */
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -49,16 +53,16 @@ function RenderSceneFive()
       let fogColor = [0.8, 0.9, 1, 0.0];
       RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor);
     }
-    for(i =0 ; i<modelList[12].instanceCount;i++){
+    for(i =0 ; i<modelList[9].instanceCount;i++){
       var modelMatrix = mat4.create()
-      mat4.translate(modelMatrix, modelMatrix, positions[i])
-      mat4.scale(modelMatrix,modelMatrix,[0.2,0.4,0.2]);
+      mat4.translate(modelMatrix, modelMatrix, [scene_one_tree_x[i] ,scene_one_tree_y[i], scene_one_tree_z[i]])
+      mat4.scale(modelMatrix,modelMatrix,[10.0 ,10.0,10.0]);
       modelMatrixArray.push(modelMatrix);
     }
     var aplhaArray = [0.1,0.2,1.0,0.9];
     gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    renderAssimpModelWithInstancing(modelMatrixArray,12,0,[],[],1,fogColor);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor );
     gl.disable(gl.BLEND);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -75,8 +79,9 @@ function RenderSceneFive()
 
     // ***** Light ******
     //perform translation for light
-    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, [1000.0, 350.0, 180.0])
-    mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [10.0, 10.0, 10.0])
+    var sunPosition = [700.0,250.0,800.0]
+    mat4.translate(godrays_modelMatrix, godrays_modelMatrix, sunPosition)
+    mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [20.0, 20.0, 20.0])
 
     //uniform for light
     gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, perspectiveProjectionMatrix);
@@ -96,13 +101,13 @@ function RenderSceneFive()
     //Render terrain
     gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    renderAssimpModelWithInstancing(modelMatrixArray,12,0,[],[],1,fogColor);
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
     gl.disable(gl.BLEND);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     /***********************************Rendering for godRays final pass************************************************* */
-    v = vec4.fromValues(100.0,35.0,180.0, 1.0);
+    v = vec4.fromValues(sunPosition[0],sunPosition[1],sunPosition[2], 1.0);
     vec4.transformMat4(v, v,godrays_viewMatrix)
     vec4.transformMat4(v, v, perspectiveProjectionMatrix)
 

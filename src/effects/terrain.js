@@ -341,6 +341,7 @@ function RenderTerrain(terrain_data, scene , fogColor) {
   //mat4.translate(view_matrix, view_matrix, [-450.0, -40, -300]);
   //mat4.translate(model_matrix, model_matrix, [0.0, -100.0, -10]);
   //mat4.translate(model_matrix, model_matrix, [0.0, 0.0, -0.1]);
+  mat4.scale(model_matrix, model_matrix, [1.5, 1.8, 1.5]);
 
   gl.uniformMatrix4fv(terrain_u_projection_matrix, false, perspectiveProjectionMatrix);
   gl.uniformMatrix4fv(terrain_u_view_matrix, false, GetCameraViewMatrix());
