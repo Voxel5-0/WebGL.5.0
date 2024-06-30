@@ -5,6 +5,7 @@ var tst_vbo_position = null;
 
 var tst_fadeIn_alpha = 1.0;
 var tst_fadeOut_alpha = 0.0;
+var tst_enabled_transition = false;
 
 var tst_mvpMatrixUniform;
 var tst_alphaUniform;
@@ -17,12 +18,11 @@ function tst_initialize() {
         "#version 300 es" +
         "\n" +
         "precision highp float;" +
-        "in vec3 aPosition;" +
+        "in vec4 aPosition;" +
         "uniform mat4 uMVPMatrix;" +
-        "uniform float uAlpha;" +
         "void main(void)" +
         "{" +
-        "gl_Position = uMVPMatrix * vec4(aPosition, uAlpha);" +
+        "gl_Position = uMVPMatrix * aPosition;" +
         "}";
 
     var tst_vertexShaderObject = gl.createShader(gl.VERTEX_SHADER);
@@ -45,10 +45,11 @@ function tst_initialize() {
         "#version 300 es" +
         "\n" +
         "precision highp float;" +
+        "uniform float uAlpha;" +
         "out vec4 FragColor;" +
         "void main(void)" +
         "{" +
-        "FragColor = vec4(1.0, 1.0, 0.0, 1.0);" +
+        "FragColor = vec4(0.0, 0.0, 0.0, uAlpha);" +
         "}";
 
     var tst_fragmentShaderObject = gl.createShader(gl.FRAGMENT_SHADER);
@@ -106,21 +107,24 @@ function tst_initialize() {
     gl.bindBuffer(gl.ARRAY_BUFFER, tst_vbo_position);
     gl.bufferData(gl.ARRAY_BUFFER, tst_rectangle_position, gl.STATIC_DRAW);
     gl.vertexAttribPointer(
-        VertexAttributeEnum.AMC_ATTRIBUTE_POSITION,
+        WebGLMacros.AMC_ATTRIBUTE_VERTEX,
         3,
         gl.FLOAT,
         false,
         0,
         0
     );
-    gl.enableVertexAttribArray(VertexAttributeEnum.AMC_ATTRIBUTE_POSITION);
+    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_VERTEX);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     gl.bindVertexArray(null);
 }
 
-function tst_display(alpha) {
+function tst_display() {
     // Code
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    
     gl.useProgram(tst_shaderProgramObject);
 
     // Transformation
@@ -135,13 +139,18 @@ function tst_display(alpha) {
     mat4.multiply(modelViewProjectionMatrix, perspectiveProjectionMatrix, modelViewMatrix);
 
     gl.uniformMatrix4fv(tst_mvpMatrixUniform, false, modelViewProjectionMatrix);
-    gl.uniform1f(tst_alphaUniform, alpha);
+    if (tst_enabled_transition == true)
+        gl.uniform1f(tst_alphaUniform, tst_fadeIn_alpha);
+    else
+        gl.uniform1f(tst_alphaUniform, tst_fadeOut_alpha);
 
     gl.bindVertexArray(tst_vao);
     gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
     gl.bindVertexArray(null);
 
     gl.useProgram(null);
+
+    gl.disable(gl.BLEND);
 }
 
 function tst_update() {
@@ -182,20 +191,33 @@ function tst_uninitialize() {
 
 function fadeIn()
 {
-    tst_fadeIn_alpha = tst_fadeIn_alpha - 0.001;
+    tst_enabled_transition = true;
+    
+    tst_fadeIn_alpha = tst_fadeIn_alpha - 0.005;
+    if(tst_fadeIn_alpha < 0.0)
+        tst_fadeIn_alpha = 0.0;
 }
 
 function fadeOut()
 {
-    tst_fadeOut_alpha = tst_fadeOut_alpha + 0.001;
+    tst_enabled_transition = false;
+
+    tst_fadeOut_alpha = tst_fadeOut_alpha + 0.005;
+    if (tst_fadeOut_alpha > 1.0) {
+        tst_fadeOut_alpha = 0.0;
+        tst_fadeIn_alpha = 1.0;
+        scene++;
+    }
 }
 
 function setFadeInAlpha()
 {
     tst_fadeIn_alpha = 1.0;
+    // tst_enabled_transition = true;
 }
 
 function setFadeOutAlpha()
 {
     tst_fadeOut_alpha = 0.0;
+    // tst_enabled_transition = false;
 }

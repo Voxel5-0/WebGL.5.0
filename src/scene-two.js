@@ -95,7 +95,7 @@ function RenderSceneTwo()
   RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
 }
 
-var scene_two_StartTime = 105;
+var scene_two_StartTime = 155;
 var scene_two_duration = 30;
 
 /*----------------------------------- Scene Two Update -----------------------------------*/

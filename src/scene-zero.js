@@ -109,6 +109,10 @@ function RenderSceneZero() {
   }
   //displayGrass();
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,515.9000000000044,0,402.6000000000021,0);
+
+  tst_display();
+  // fadeOut();
+
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
@@ -120,8 +124,10 @@ function RenderSceneZero() {
 
 
 /*----------------------------------- Scene One Update -----------------------------------*/
-var scene_zero_StartTime = 40.0;
+var scene_zero_StartTime = 70.0;
 var scene_zero_duration = 30.0;
+
+var scene_tst_one = 2.0;
 
 function UpdateSceneZero() {
   let currentTime = performance.now() / 1000;
@@ -130,10 +136,18 @@ function UpdateSceneZero() {
   //   startTime = currentTime;
   //   console.log("Start time initialized in scene zero :" + startTime);
   // }
-  if (scene_zero_StartTime + scene_zero_duration > currentTime) {
+  if (scene_zero_StartTime <= currentTime && scene_zero_StartTime + scene_zero_duration > currentTime) {
     bezierCurve(scene_zero_controlPoints, currentTime, scene_zero_StartTime, scene_zero_duration);
   } else{
-    scene++ ;
+    // scene++ ;
+  }
+
+  if (scene_zero_StartTime <= currentTime) {
+    fadeIn();
+  }
+
+  if(scene_zero_StartTime + scene_zero_duration - scene_tst_one < currentTime){
+    fadeOut();
   }
 
   if(bool_start_ptrail_update){
