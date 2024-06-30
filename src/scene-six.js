@@ -79,7 +79,7 @@ function RenderSceneSix()
   //let modelMatrixRapunzal = mat4.create()
   mat4.translate(modelMatrixRapunzal, modelMatrixRapunzal, [0.0, -30.0, -1.0])
   mat4.scale(modelMatrixRapunzal,modelMatrixRapunzal,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrixRapunzal,2,0,[],[],1,fogColorModel,1);
+  //renderAssimpModel(modelMatrixRapunzal,2,0,[],[],1,fogColorModel,1);
   // gl.enable(gl.BLEND);
   // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   // renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,[],0,1);
