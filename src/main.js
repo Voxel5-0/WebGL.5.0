@@ -55,7 +55,7 @@ scene_camera_positions = [
 							[513.7053436497372,32.69167479092017,915.4535056636863],     //scene three camera initial position
 							[348.15576980888744,-20.313767120810528,253.28188216449468],     //scene four camera initial position
 							[352.3130964125702,-9.316419231329514,398.8855402980065],	//five
-							[188.54773835466648,-105,4.046151170852721], // scene six camera initial position,
+							[297.33437831362426,-27.56591026402741,144.027076485245], // scene six camera initial position,
 							[188.54773835466648,-105,4.046151170852721], // scene seven camera initial position
 							[188.54773835466648,-105,4.046151170852721],	//eight
 						];
@@ -72,7 +72,7 @@ var scene_camera_angles =  [
 								9.00000000000049,	//scene three
 								189.93921008981135,	//scene four
 								5.599999999999855, //scene five
-								-139.0, //scene six
+								-109.20000000000036, //scene six
 								-139.0, //scene seven
 								-68.0 //scene eight
 						  ];
@@ -84,7 +84,7 @@ var scene_camera_anglesX =  [
 							-370.1542669593973,	//scene three
 							-8.389596793484914,	//scene four
 							-14.199999999999232,	//scene five
-							0.0,	//scene six
+							-4.20000000000014,	//scene six
 							-7.0, // scene seven
 							0.0	//scene eight
 					];

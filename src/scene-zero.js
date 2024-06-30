@@ -104,7 +104,7 @@ function RenderSceneZero() {
     mat4.identity(scene1_modelMatrix);
     mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, -2.0, -7.0])
     mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[1.6 , 1.2 , 1.2]);
-    mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 - 2.0 , 0.5 + 1]);
+    mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1  , 0.5 + 1]);
     var view = mat4.create();
     RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_zero_AMC_title_texture, 0);
   }

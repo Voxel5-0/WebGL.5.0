@@ -64,16 +64,16 @@ function RenderSceneSeven()
     renderAssimpModel(scene1_modelMatrix,0,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors,1,fogColor,1.0,1);
     DrawSkybox(SCENE_ZERO);
   
-    if(bool_start_ptrail_update){
+    //if(bool_start_ptrail_update){
       //One space key press- trail and AMC title
-      pTrail_display(scene1_modelMatrix, perspectiveProjectionMatrix);
-      mat4.identity(scene1_modelMatrix);
-      mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, -2.0, -7.0])
-      mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[1.6 , 1.2 , 1.2]);
-      mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 - 2.0 , 0.5 + 1]);
-      var view = mat4.create();
-      RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_zero_AMC_title_texture, 0);
-    }
+    //   pTrail_display(scene1_modelMatrix, perspectiveProjectionMatrix);
+    //   mat4.identity(scene1_modelMatrix);
+    //   mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, -2.0, -7.0])
+    //   mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[1.6 , 1.2 , 1.2]);
+    //   mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 - 2.0 , 0.5 + 1]);
+    //   var view = mat4.create();
+    //   RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_zero_AMC_title_texture, 0);
+    //}
     //displayGrass();
     RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,515.9000000000044,0,402.6000000000021,0);
   
