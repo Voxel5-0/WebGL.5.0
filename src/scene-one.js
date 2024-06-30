@@ -84,11 +84,6 @@ function RenderSceneOne()
      // RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
       mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
       RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
-
-      // let modelMatrixTerrainModel = mat4.create();
-      // mat4.translate(modelMatrixTerrainModel, modelMatrixTerrainModel, [1.0 + test_translate_X, 35.0 + test_translate_Y, 180.0 + test_translate_Z])
-      // mat4.scale(modelMatrixTerrainModel, modelMatrixTerrainModel, [1.0 + test_scale_X, 35.0 + test_scale_X, 180.0 + test_scale_X])
-      // renderAssimpModel(modelMatrixTerrainModel,13,0,[],[],0,fogColor,1.0);
     }
     
     let fogColor = [0.2, 0.2, 0.2, 0.5];
@@ -113,7 +108,7 @@ function RenderSceneOne()
     mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [10.0, 10.0, 10.0])
 
     //uniform for light
-    gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, perspectiveProjectionMatrix);
+    gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, gd_perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(godrays_viewMatrixUniform_occlusion, false, godrays_viewMatrix);
     gl.uniformMatrix4fv(godrays_modelMatrixUniform_occlusion, false, godrays_modelMatrix);
     gl.uniform1i(godrays_colorShowUniform_occlusion, 1)
@@ -141,7 +136,7 @@ function RenderSceneOne()
     /***********************************Rendering for godRays final pass************************************************* */
     v = vec4.fromValues(100.0,35.0,180.0, 1.0);
     vec4.transformMat4(v, v,godrays_viewMatrix)
-    vec4.transformMat4(v, v, perspectiveProjectionMatrix)
+    vec4.transformMat4(v, v, gd_perspectiveProjectionMatrix)
 
     // perspective division
     vec4.scale(v, v, 1.0 / v[3] )
@@ -164,7 +159,7 @@ function RenderSceneOne()
 }
 
 /*----------------------------------- Scene one Update -----------------------------------*/
-var scene_one_StartTime = 75;
+var scene_one_StartTime = 105;
 var scene_one_duration = 30;
 
 /*----------------------------------- Scene One Update -----------------------------------*/
@@ -175,7 +170,7 @@ function UpdateSceneOne() {
     d = currentTime;
   }
   // if(scene_one_StartTime + currentTime >n)
-  if (scene == 1 && scene_one_StartTime + scene_one_duration > currentTime) {
+  if (scene == 1 && scene_one_StartTime < currentTime && scene_one_StartTime + scene_one_duration > currentTime) {
     scene_one_showTitle = false;
     bezierCurve(scene_one_controlPoints,currentTime, scene_one_StartTime, scene_one_duration);
   } 

@@ -20,10 +20,10 @@ function InitializeSceneFive()
 {
   var scene_five_height_map_image = "src/resources/textures/terrain/Trial/trial1-modified.jpg";
   var scene_five_blend_map = "src/resources/textures/terrain/Trial/trial1-Blendmap.png";
-  var scene_five_rock_1_image = "src/resources/textures/soil.jpg";
-  var scene_five_rock_2_image = "src/resources/textures/soil.jpg";
-  var scene_five_path_image = "src/resources/textures/ground.jpg";
-  var scene_five_snow_image = "src/resources/textures/soil.jpg";
+  var scene_five_rock_1_image = "src/resources/textures/grass.jpg";
+  var scene_five_rock_2_image = "src/resources/textures/grass.jpg";
+  var scene_five_path_image = "src/resources/textures/rock.jpg";
+  var scene_five_snow_image = "src/resources/textures/grass.jpg";
 
   InitializeTerrainRenderer();
   InitializeHeightMapTerrain(scene_five_height_map_image,scene_five_blend_map,scene_five_rock_1_image,scene_five_rock_2_image,scene_five_path_image,scene_five_snow_image,5);
@@ -62,7 +62,7 @@ function RenderSceneFive()
     var aplhaArray = [0.1,0.2,1.0,0.9];
     gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor );
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,[],0,1);
     gl.disable(gl.BLEND);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -84,7 +84,7 @@ function RenderSceneFive()
     mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [20.0, 20.0, 20.0])
 
     //uniform for light
-    gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, perspectiveProjectionMatrix);
+    gl.uniformMatrix4fv(godrays_projectionMatrixUniform_occlusion, false, gd_perspectiveProjectionMatrix);
     gl.uniformMatrix4fv(godrays_viewMatrixUniform_occlusion, false, godrays_viewMatrix);
     gl.uniformMatrix4fv(godrays_modelMatrixUniform_occlusion, false, godrays_modelMatrix);
     gl.uniform1i(godrays_colorShowUniform_occlusion, 1)
@@ -101,7 +101,9 @@ function RenderSceneFive()
     //Render terrain
     gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor);
+    
+    //function renderAssimpModelWithInstancing(modelMatrixArray: any, modelNumber: any, pointLightsCount: any, lightPositions: any, lightColors: any, isFogEnabled: any, fogColor: any, alphaArray: any, isDirectionalLightEnabled: any, isOccluded: any): void
+    renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,[],0,1);
     gl.disable(gl.BLEND);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);

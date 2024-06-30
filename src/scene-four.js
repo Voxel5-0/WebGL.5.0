@@ -56,8 +56,12 @@ function RenderSceneFour()
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render terrain
   if (terrain_data[SCENE_FOUR]) {
+    let terrain_model_matrix = mat4.create();
+      mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
+     // RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
+      mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
     let fogColor = [0.8, 0.9, 1, 0];
-    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor);
+    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor,terrain_model_matrix);
   }
   //Render models for actual scene grayscale
   var modelMatrix = mat4.create()
@@ -83,8 +87,12 @@ function RenderSceneFour()
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   //Render terrain
   if (terrain_data[SCENE_FOUR]) {
+    let terrain_model_matrix = mat4.create();
+      mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
+     // RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix);
+      mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
     let fogColor = [0.8, 0.9, 1, 1];
-    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor);
+    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor,terrain_model_matrix);
   }
   //Render models for actual scene grayscale
   var modelMatrix = mat4.create()

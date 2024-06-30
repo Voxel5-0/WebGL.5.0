@@ -501,7 +501,7 @@ function godrays_resize(gd_width, gd_height) {
 	gl.viewport(0.0, 0.0, gd_width, gd_height);
 
 	//set perspective projection
-	mat4.perspective(gd_perspectiveProjectionMatrix, 45.0, gd_width / gd_height, 0.1, 20000.0);
+	mat4.perspective(gd_perspectiveProjectionMatrix, 45.0, gd_width / gd_height, 0.1, 22000.0);
 }
 
 function godrays_display_final()
@@ -610,7 +610,7 @@ function godrays_display_scene_Occlusion() {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
-function godrays_display_godrays() {
+function godrays_display_godrays(godrayLightPositionUniform) {
     //do not include light source in this function
     gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_godrays_fbo.fbo);
 
@@ -630,14 +630,16 @@ function godrays_display_godrays() {
 
     gl.uniform1i(godrays_sceneTextureUniform_godrays, 1);
 
-    var godrays_decay = 0.968;
+    var godrays_decay = 0.968 ;
 	var godrays_exposure = 0.2;
 	var godrays_density = 0.92;
 	var godrays_weight = 0.587;
 	var godrays_numsamples = 100;
 
 	gl.uniform2fv(godrays_lightPositionUniform_godrays,[v[0],v[1]] );
-    gl.uniform1f(godrays_decayUniform_godrays, godrays_decay);
+	//gl.uniform2fv(godrays_lightPositionUniform_godrays,godrayLightPositionUniform );
+
+	gl.uniform1f(godrays_decayUniform_godrays, godrays_decay);
     gl.uniform1f(godrays_exposureUniform_godrays, godrays_exposure);
     gl.uniform1f(godrays_densityUniform_godrays, godrays_density);
     gl.uniform1f(godrays_weightUniform_godrays, godrays_weight);

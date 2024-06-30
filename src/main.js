@@ -4,6 +4,7 @@ var bFullScreen = false;
 var canvas_original_width;
 var canvas_original_height;
 var move_sensitivity = 1.1;
+var god_raytest = 0.01;
 var fadeInOutEffect = null;
 var test_translate_X = 0.0;
 var test_translate_Y = 0.0 ;
@@ -51,7 +52,7 @@ scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721],     //scene zero camera initial position,
 							[704.8648214635622,-8.562417758347571,379.39476250089234], 	//scene one camera initial position
 							[94.99358310261765,74.33581786789497,210.49747779588023 ], 	//scene two camera initial position
-							[188.54773835466648,-105,4.046151170852721],     //scene three camera initial position
+							[513.7053436497372,32.69167479092017,915.4535056636863],     //scene three camera initial position
 						 	[188.54773835466648,-105,4.046151170852721],	//four
 							[188.54773835466648,-105,4.046151170852721],	//five
 							[188.54773835466648,-105,4.046151170852721], // scene six camera initial position,
@@ -68,7 +69,7 @@ var scene_camera_angles =  [
 								0.0, //scene zero
 								-250.80000000000067,	//scene one
 								-92.99999999999936,	//scene two
-								-88.39999999999996,	//scene three
+								9.00000000000049,	//scene three
 								-136.60000000000002, //scene four
 								-139.0, //scene five
 								-139.0, //scene six
@@ -80,7 +81,7 @@ var scene_camera_anglesX =  [
 							0.0, //scene zero
 							-7.8222157512174018,	//scene one
 							-9.248153863973856 ,	//scene two
-							0.0,	//scene othree
+							-370.1542669593973,	//scene othree
 							0.0,	//scene four
 							0.0,	//scene five
 							0.0,	//scene six
@@ -99,7 +100,7 @@ var modelList = [
 	{ name: "GirlPose1", 	files:[ 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.gltf', 'src\\resources\\models\\main_character\\pose1\\Rapunzel_Pose1.bin'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose2", 	files:[ 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.gltf', 'src\\resources\\models\\main_character\\pose2\\Rapunzel_Pose2.bin'], 			flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "GirlPose3", 	files:[ 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.gltf', 'src\\resources\\models\\main_character\\pose3\\Rapunzel_NewPose_3.bin'], 	flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
-	{ name: "GirlPose4", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.gltf', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.bin'], 			flipTex:false, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	{ name: "GirlPose4", 	files:[ 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.gltf', 'src\\resources\\models\\main_character\\pose4\\Rapunzel_Pose4.bin'], 			flipTex:false, 	isStatic : true , isInstanced :true, instanceCount : 5},
 	{ name: "mapelTree", 	files:[ 'src\\resources\\models\\scene5\\MapleTree\\tree.gltf', 'src\\resources\\models\\scene5\\MapleTree\\tree.bin'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 47 },
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
@@ -259,7 +260,7 @@ function draw(now)
 {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	if(startTime == 0 && performance.now()/1000 >= 40.0 ){
+	if(startTime == 0 && performance.now()/1000 >= 70.0 ){
 		startTime = performance.now()/1000;
     	console.log("Start time initialized in scene zero :" + startTime);
 		document.getElementById('audio').play();
