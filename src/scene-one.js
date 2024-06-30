@@ -153,12 +153,12 @@ function RenderSceneOne()
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     /***********************************Reder with noise************************************************* */
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, coloredFinalScene_fbo.fbo);
-    // RenderWithFBMTextureShader(godRays_final_fbo.cbo,0);
-    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, coloredFinalScene_fbo.fbo);
+    RenderWithFBMTextureShader(godRays_final_fbo.cbo,0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     /***********************************Post Processing************************************************* */
-    RenderWithFBMTextureShader(godRays_final_fbo.cbo,0)
+    RenderWithTextureShader(coloredFinalScene_fbo.cbo,0)
   }
    
 }
