@@ -57,6 +57,7 @@ scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721], // scene six camera initial position,
 							[188.54773835466648,-105,4.046151170852721], // scene seven camera initial position
 							[188.54773835466648,-105,4.046151170852721],	//eight
+							[188.54773835466648,-105,4.046151170852721]		// nine
 						];
 
 // Camera position: 1869.1399715022253,1182.981200138941,3539.959281976318
@@ -73,7 +74,8 @@ var scene_camera_angles =  [
 								-139.0, //scene five
 								-139.0, //scene six
 								-139.0, //scene seven
-								-68.0 //scene eight
+								-68.0, //scene eight
+								0.0	// nine
 						  ];
 
 var scene_camera_anglesX =  [
@@ -85,7 +87,8 @@ var scene_camera_anglesX =  [
 							0.0,	//scene five
 							0.0,	//scene six
 							-7.0, // scene seven
-							0.0	//scene eight
+							0.0,	//scene eight
+							0.0		// nine
 					];
 
 //TODO: keeping assmip model list and loading global , not right approch , we should change it later
@@ -104,7 +107,7 @@ var modelList = [
 	{ name: "FatherPose1", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose1.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose1.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "FatherPose2", 	files:[ 'src\\resources\\models\\Character2\\Poses\\Father_pose2.gltf', 'src\\resources\\models\\Character2\\Poses\\Father_pose2.bin'], 						flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	{ name: "tree", 		files:[ 'src\\resources\\models\\scene5\\pine_tree\\scene.gltf', 'src\\resources\\models\\scene5\\pine_tree\\scene.bin'], 										flipTex:true, 	isStatic : true , isInstanced :true, instanceCount : 40},
-	{ name: "terrain", 		files:[ 'src\\resources\\models\\terrain\\terrain.gltf', 'src\\resources\\models\\terrain\\terrain.bin'], 														flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
+	//{ name: "terrain", 		files:[ 'src\\resources\\models\\terrain\\terrain.gltf', 'src\\resources\\models\\terrain\\terrain.bin'], 														flipTex:true, 	isStatic : true , isInstanced :false, instanceCount : 1},
 	// { name: "Bridge", 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'], flipTex:false , isStatic : true },
 	// { name: "Lanturn", 	files:[ 'src\\resources\\models\\intro\\CastleWithMaterials.obj', 'src\\resources\\models\\intro\\CastleWithMaterials.mtl'] ,flipTex:false , isStatic : true },
 	// { name: "RainbowTerrain", files:[ 'src\\resources\\models\\scene7\\Terrain_4.gltf', 'src\\resources\\models\\scene7\\Terrain_4.bin'] 												,flipTex:false , isStatic : true, isInstanced :false, instanceCount : 1 },
@@ -216,6 +219,7 @@ function init()
 	InitializeSceneSix();
 	InitializeSceneSeven();
 	InitializeSceneEight();
+	InitializeSceneNine();
 
 	/* Other initializers */
 	InitializeCamera();
@@ -307,6 +311,12 @@ function draw(now)
 			UninitializeSceneSeven();
 			RenderSceneEight(); 
 			break;
+		case 9:
+			UninitializeSceneEight();
+			RenderSceneNine();
+		case 10:
+			UninitializeSceneNine();
+			break;
 
 	}
     requestAnimationFrame(draw, canvas);
@@ -343,7 +353,9 @@ function update(now)
 			break;				
 		case 8:
 			UpdateSceneEight();
-			break;				
+			break;
+		case 9:
+			UpdateSceneNine();	
 	}
 }
 
