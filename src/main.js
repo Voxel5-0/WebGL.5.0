@@ -206,7 +206,9 @@ function init()
 	InitializeVignnetTextureShader();
 	initializeWater();
 	InitializeGrayScaleTextureShader();
-
+	tst_initialize();
+	pfc_initialize();
+	
 	/*Scene Specific Initialization */
 	InitializeSceneZero();
 	InitializeSceneOne();
