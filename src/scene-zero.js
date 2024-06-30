@@ -110,6 +110,8 @@ function RenderSceneZero() {
   //displayGrass();
   RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,515.9000000000044,0,402.6000000000021,0);
 
+  pfc_display();
+
   tst_display();
   // fadeOut();
 
@@ -159,4 +161,6 @@ function UpdateSceneZero() {
 /*----------------------------------- Scene One  Uninitialize -----------------------------------*/
 function UninitializeSceneZero() {
     scene_zero_init_flag = false;
+
+    // pfc_uninitialize();
 }
