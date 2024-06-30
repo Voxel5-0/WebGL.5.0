@@ -17,22 +17,101 @@ var SCENE_SIX = 6;
 var scene_six_texture_rainbow;
 
 // ---------------------------
-function InitializeSceneSix()
-{
+function InitializeSceneSix() {
 }
 
-function RenderSceneSix()
-{
+function RenderSceneSix() {
   let fogColorModel = [0.8, 0.9, 1, 0.5];
   // mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
   //188.54773835466648,-105,4.046151170852721
   // 481.0,-120, 595.0
   // 47
-  var scene_one_tree_x = [25.97, 12.07, 34.14, 44.04, 58.43, 60.33, 99.23, 103.18, 136.72, 116.20, 135.18, 152.61, 167.75, 175.58, 201.51, 204.13, 224.33, 247.12, 279.17, 340.85, 344.85, 350.50, 357.79, 361.62, 366.40, 389.26, 411.72, 425.94, 439.63, 467.15, 481.98, 499.24, 520.60, 546.06, 575.87, 604.17,482.64, 463.57, 446.34, 433.30, 418.23, 409.02, 399.15, 390.91, 377.85, 350.19, 318.06,291.90]
-  var scene_one_tree_y = [-138.50, -138.56, -139.41, -138.29, -139.01, -140.89, -138.55, -138.83, -142.09, -134.31, -135.12, -139.98, -141.06, -136.02, -142.16, -138.55, -140.30, -140.62, -139.03, -141.34, -135.70, -130.13, -125.17, -129.13, -120.04,-127.96, -129.93, -131.97, -134.75, -139.25, -140.86, -141.11, -141.76, -140.94, -140.84, -142.58,-140.70, -141.46, -141.71, -141.31, -140.44, -140.10, -137.48, -133.73, -130.59, -132.53, -135.95,-139.59];
-  var scene_one_tree_z = [375.70, 425.95, 435.32, 383.23, 398.27, 452.60, 428.12, 484.83, 453.81, 499.67, 500.59, 459.08, 461.23, 508.45, 464.07, 507.92, 459.57, 518.47, 473.63, 447.20,  412.29, 378.45, 353.69, 338.23, 364.33, 321.46, 295.39, 276.17, 265.39, 260.69, 264.65, 262.26, 267.20, 274.13, 281.66, 292.08,310.67, 315.22, 331.64, 351.81, 380.95, 405.50, 436.91, 466.32, 491.61, 512.42, 519.47,521];
+  const scene_six_lantern_position = [
+    [631.47, -55.286, 164.171],
+    [644.05, -49.995, 181.981],
+    [630.26, -45.012, 195.740],
+    [627.19, -41.617, 185.181],
+    [636.80, -36.969, 179.814],
+    [647.40, -31.664, 187.677],
+    [645.07, -34.917, 198.428],
+    [653.60, -42.116, 208.504],
+    [666.72, -47.908, 208.697],
+    [659.01, -48.591, 221.464],
+    [643.62, -49.159, 222.024],
+    [627.21, -46.740, 215.710],
+    [616.31, -42.306, 204.957],
+    [609.36, -40.967, 188.942],
+    [597.99, -37.267, 175.570],
+    [574.58, -31.606, 187.652],
+    [559.65, -21.558, 214.569],
+    [575.23, -25.501, 250.972],
+    [611.69, -24.886, 275.596],
+    [645.89, -26.368, 260.448],
+    [662.98, -26.307, 212.827],
+    [543.74, -25.427, 116.716],
+    [502.88, -26.355, 159.825],
+    [496.19, -34.025, 211.990],
+    [498.21, 3.790, 260.348],
+    [465.95, 34.213, 233.781],
+    [481.01, 73.764, 178.600],
+    [400.29, 77.689, 122.449],
+    [396.00, 69.746, 78.659],
+    [431.29, 29.656, 48.839],
+    [486.85, -23.563, 148.544],
+    [649.01, -24.115, 304.629],
+    [577.82, 13.245, 338.871],
+    [554.35, 63.491, 280.264],
+    [590.25, 59.580, 244.631],
+    [563.83, 54.574, 204.079],
+    [600.61, 55.910, 166.339],
+    [565.25, 79.040, 144.201],
+    [560.30, 96.705, 185.707],
+    [599.54, 75.628, 205.620],
+    [581.23, 57.475, 250.419],
+    [530.44, 37.590, 264.833],
+    [484.48, 6.050, 295.044],
+    [447.57, -13.328, 304.318],
+    [418.88, -23.052, 268.148],
+    [404.82, -17.295, 221.923],
+    [378.09, -36.754, 193.480],
+    [414.86, -24.685, 158.714],
+    [455.92, -43.627, 150.999],
+    [562.54, -63.646, 138.850],
+    [587.00, -25.939, 256.281],
+    [414.06, -5.134, 238.920],
+    [389.27, -56.044, 327.833],
+    [390.96, -44.017, 303.692],
+    [421.74, -29.274, 304.644],
+    [422.58, -28.063, 308.860],
+    [408.91, -21.822, 328.827],
+    [435.27, -32.161, 296.387],
+    [415.42, -44.849, 279.344],
+    [402.27, -59.021, 290.629],
+    [383.41, -51.403, 332.801],
+    [378.70, -51.839, 337.045],
+    [372.97, -49.393, 343.721],
+    [379.19, -42.012, 355.115],
+    [370.59, -33.841, 345.546],
+    [392.97, 3.009, 299.099],
+    [431.18, 16.819, 288.748],
+    [410.68, 37.183, 268.809],
+    [426.76, 63.396, 220.844],
+    [455.38, 65.039, 210.010],
+    [496.64, 64.148, 235.302],
+    [539.66, 27.643, 252.159],
+    [498.21, -16.060, 232.63]
+  ];
   var modelMatrixArray = [];
   
+  let fogColor = [0.8, 0.9, 0.1, 1];
+
+  for(i =0 ; i<modelList[0].instanceCount;i++){
+    var modelMatrix = mat4.create()
+    mat4.translate(modelMatrix, modelMatrix, [scene_six_lantern_position[i][0],scene_six_lantern_position[i][1],scene_six_lantern_position[i][2]])
+    mat4.scale(modelMatrix,modelMatrix,[1.5 ,1.5 ,1.5]);
+    modelMatrixArray.push(modelMatrix);
+  }
+
   /*----------------------------------- Rendering For Reflection FBO -----------------------------------*/
   animateWater();
   gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
@@ -41,10 +120,11 @@ function RenderSceneSix()
   //render disney castle model for reflection FBO 
   let modelMatrixRapunzal = mat4.create()
   mat4.translate(modelMatrixRapunzal, modelMatrixRapunzal, [0.0, -30.0, -1.0])
-  mat4.scale(modelMatrixRapunzal,modelMatrixRapunzal,[10.0,10.0,10.0]);
+  mat4.scale(modelMatrixRapunzal, modelMatrixRapunzal, [10.0, 10.0, 10.0]);
   //renderAssimpModel(modelMatrixRapunzal,2,0,[],[],1,fogColorModel,1);
   //render skybox for reflection FBO 
-  DrawSkybox(SCENE_ZERO);  
+  DrawSkybox(SCENE_ZERO);
+  renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[],0,fogColor,1.0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   /*----------------------------------- Rendering For Refraction FBO -----------------------------------*/
@@ -53,6 +133,7 @@ function RenderSceneSix()
   // CameraReflect();
   //render skybox for refraction FBO 
   DrawSkybox(SCENE_ZERO);
+  renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[],0,fogColor,1.0);
   //Bridge Model 
   var modelMatrix = mat4.create()
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -61,12 +142,11 @@ function RenderSceneSix()
   gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_scene_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   DrawSkybox(SCENE_ZERO);
-  let fogColor = [0.8, 0.9, 0.1, 1];
   //Render terrain
   if (terrain_data[SCENE_FIVE]) {
     let terrain_model_matrix = mat4.create();
     let fogColor = [0.8, 0.9, 1, 0.0];
-    RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix,1);
+    RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE, fogColor, terrain_model_matrix, 1);
     //RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor);
   }
   // for(i =0 ; i<modelList[9].instanceCount;i++){
@@ -78,13 +158,14 @@ function RenderSceneSix()
 
   //let modelMatrixRapunzal = mat4.create()
   mat4.translate(modelMatrixRapunzal, modelMatrixRapunzal, [0.0, -30.0, -1.0])
-  mat4.scale(modelMatrixRapunzal,modelMatrixRapunzal,[10.0,10.0,10.0]);
+  mat4.scale(modelMatrixRapunzal, modelMatrixRapunzal, [10.0, 10.0, 10.0]);
   //renderAssimpModel(modelMatrixRapunzal,2,0,[],[],1,fogColorModel,1);
   // gl.enable(gl.BLEND);
   // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
   // renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,[],0,1);
   // gl.disable(gl.BLEND);
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100 + test_translate_X ,0 + 20.900000000000002 + 22.000000000000004 + test_translate_Y,10.0 + test_translate_Z,test_scale_X);
+  RenderWater(reflection_fbo.cbo, refraction_fbo.cbo, refraction_fbo.dbo, 705.100 + test_translate_X, 0 + 20.90 + 22.000 + test_translate_Y, 10.0 + test_translate_Z, test_scale_X);
+  renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[],0,fogColor,1.0);
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -100,7 +181,7 @@ function RenderSceneSix()
 
   // ***** Light ******
   //perform translation for light
-  var sunPosition = [700.0,250.0,800.0]
+  var sunPosition = [700.0, 250.0, 800.0]
   mat4.translate(godrays_modelMatrix, godrays_modelMatrix, sunPosition)
   mat4.scale(godrays_modelMatrix, godrays_modelMatrix, [20.0, 20.0, 20.0])
 
@@ -118,22 +199,22 @@ function RenderSceneSix()
   //light source ends
 
   gl.useProgram(null);
-
+  renderAssimpModelWithInstancing(modelMatrixArray,0,0,[],[],0,fogColor,0);
   //function renderAssimpModelWithInstancing(modelMatrixArray: any, modelNumber: any, pointLightsCount: any, lightPositions: any, lightColors: any, isFogEnabled: any, fogColor: any, alphaArray: any, isDirectionalLightEnabled: any, isOccluded: any): void
   //renderAssimpModelWithInstancing(modelMatrixArray,9,0,[],[],1,fogColor,[],0,1);
 
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   /***********************************Rendering for godRays final pass************************************************* */
-  v = vec4.fromValues(sunPosition[0],sunPosition[1],sunPosition[2], 1.0);
-  vec4.transformMat4(v, v,godrays_viewMatrix)
+  v = vec4.fromValues(sunPosition[0], sunPosition[1], sunPosition[2], 1.0);
+  vec4.transformMat4(v, v, godrays_viewMatrix)
   vec4.transformMat4(v, v, perspectiveProjectionMatrix)
 
   // perspective division
-  vec4.scale(v, v, 1.0 / v[3] )
+  vec4.scale(v, v, 1.0 / v[3])
 
   // // scale (x,y) from range [-1,+1] to range [0,+1]
-  vec4.add(v, v, [1.0, 1.0, 0.0, 0.0] )
+  vec4.add(v, v, [1.0, 1.0, 0.0, 0.0])
   vec4.scale(v, v, 0.5)
 
   godrays_display_godrays();
@@ -143,26 +224,24 @@ function RenderSceneSix()
   gl.blendEquation(gl.FUNC_ADD);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
   modelMatrix = mat4.create();
-  mat4.translate(modelMatrix,modelMatrix,[0.0, 0.0, -500.0]);
+  mat4.translate(modelMatrix, modelMatrix, [0.0, 0.0, -500.0]);
   RenderWithTextureShader(scene_five_texture_rainbow, 0);
   gl.disable(gl.BLEND);
-  
+
   /***********************************Rendering for Actual scene************************************************* */
   gl.bindFramebuffer(gl.FRAMEBUFFER, godRays_final_fbo.fbo);
   godrays_display_final();
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   /***********************************Post Processing************************************************* */
-  RenderWithTextureShader(godRays_final_fbo.cbo,0)
+  RenderWithTextureShader(godRays_final_fbo.cbo, 0)
 }
 
-function UpdateSceneSix()
-{
-   
+function UpdateSceneSix() {
+
 }
 
-function UninitializeSceneSix()
-{
-    
+function UninitializeSceneSix() {
+
 }
 
