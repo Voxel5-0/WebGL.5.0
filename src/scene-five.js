@@ -51,7 +51,8 @@ function RenderSceneFive()
     //Render terrain
     if (terrain_data[SCENE_FIVE]) {
       let fogColor = [0.8, 0.9, 1, 0.0];
-      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor);
+      let modelMatrix = mat4.create();
+      RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor, modelMatrix, false);
     }
     for(i =0 ; i<modelList[9].instanceCount;i++){
       var modelMatrix = mat4.create()
