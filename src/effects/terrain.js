@@ -17,6 +17,7 @@ var terrain_u_grass_sampler = new Array(SCENE_COUNT);
 var terrain_u_fogColor;
 var terrain_u_fogNear;  
 var terrain_u_fogFar;
+var terrain_u_lightDirection;
 
 /* terrain variables */
 var terrain_data = new Array(SCENE_COUNT);
@@ -27,6 +28,7 @@ function InitializeTerrainRenderer() {
     "#version 300 es" +
     "\n" +
     "in vec4 v_position;" +
+    "in vec3 normal;"+
     "in vec2 v_texture_0_coordinate;" +
 
     "uniform mat4 u_projection_matrix;" +
@@ -34,12 +36,14 @@ function InitializeTerrainRenderer() {
     "uniform mat4 u_model_matrix;" +
     "out float v_fogDepth;"+
     "out vec2 fs_v_texture_0_coordinate;" +
+    "out vec3 v_normal;"+
 
     "void main()" +
     "{" +
     "fs_v_texture_0_coordinate = v_texture_0_coordinate;" +
     "gl_Position = u_projection_matrix * u_view_matrix * u_model_matrix * v_position;" +
     "v_fogDepth = -(u_view_matrix * u_model_matrix * v_position).z;"+
+    "v_normal = mat3(u_view_matrix * u_model_matrix) * normal;"+
     "}";
 
 
@@ -63,6 +67,7 @@ function InitializeTerrainRenderer() {
     "precision highp float;" +
     "in vec2 fs_v_texture_0_coordinate;" +
     "in float v_fogDepth;"+
+    "in vec3 v_normal;"+
 
     "uniform sampler2D u_texture_0_sampler;" + //texture unit 0
     "uniform sampler2D u_texture_1_sampler;" + //texture unit 1
@@ -74,11 +79,14 @@ function InitializeTerrainRenderer() {
     "uniform vec4 u_fogColor;"+
     "uniform float u_fogNear;"+  
     "uniform float u_fogFar;"+
+    "uniform vec3 u_lightDirection;"+
+    "uniform bool u_fogEnabled;"+
 
     "out vec4 FragColor;" +
 
     "void main()" +
     "{" +
+
     "float tiling_multiplier = 40.0f;" +
     "vec4 texture_blend_map = texture(u_blend_map_sampler, fs_v_texture_0_coordinate);" +
     "float back_texture_amount = 1.0-(texture_blend_map.r + texture_blend_map.g + texture_blend_map.b);" +
@@ -91,8 +99,15 @@ function InitializeTerrainRenderer() {
     "vec4 grass_color = texture(u_grass_sampler, fs_v_texture_0_coordinate * tiling_multiplier) * texture_blend_map.g;" +
 
     "FragColor = rock_color + path_color + grass_color;" +
-    "float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth); "+
-    "FragColor = mix(FragColor, u_fogColor, fogAmount); "+
+   
+    "vec3 lightDirection = normalize(u_lightDirection); "+
+    "float l = dot(lightDirection, normalize(vec3(0.0,1.0,0.0))) * .5 + .5;"+
+    "FragColor = vec4(vec3(FragColor.xyz) * l , 1);"+
+    "if(u_fogEnabled) "+
+    "{"+
+    "   float fogAmount = smoothstep(u_fogNear, u_fogFar, v_fogDepth); "+
+    "   FragColor = mix(FragColor, u_fogColor, fogAmount); "+
+    "}"+
     //"FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);" +
     "}";
 
@@ -115,6 +130,7 @@ function InitializeTerrainRenderer() {
   gl.attachShader(terrainShaderProgramObj, terrainFragmentShaderObj);
   gl.bindAttribLocation(terrainShaderProgramObj, WebGLMacros.AMC_ATTRIBUTE_VERTEX, "v_position");
   gl.bindAttribLocation(terrainShaderProgramObj, WebGLMacros.AMC_ATTRIBUTE_TEXTURE0, "v_texture_0_coordinate");
+  gl.bindAttribLocation(terrainShaderProgramObj, WebGLMacros.AMC_ATTRIBUTE_NORMAL, "normal");
   gl.linkProgram(terrainShaderProgramObj);
 
   if (!gl.getProgramParameter(terrainShaderProgramObj, gl.LINK_STATUS)) {
@@ -130,6 +146,7 @@ function InitializeTerrainRenderer() {
 
 function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, rock_1_image, rock_2_image, path_image, grass_image, scene) {
   var terrain_vertices_array = [];
+  var terrain_normal_array = [];
   var terrain_texture_coord_array = [];
   var terrain_index_array = [];
 
@@ -137,6 +154,7 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
   var terrain_vbo_pos;
   var terrain_vbo_idx;
   var terrain_vbo_tex;
+  var terrain_vbo_normal;
   var terrain_vao_ready = false;
 
   terrain_u_model_matrix = gl.getUniformLocation(terrainShaderProgramObj, "u_model_matrix");
@@ -151,6 +169,8 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
   terrain_u_fogColor = gl.getUniformLocation(terrainShaderProgramObj, "u_fogColor");
   terrain_u_fogNear = gl.getUniformLocation(terrainShaderProgramObj, "u_fogNear");  
   terrain_u_fogFar = gl.getUniformLocation(terrainShaderProgramObj, "u_fogFar");
+  terrain_u_lightDirection = gl.getUniformLocation(terrainShaderProgramObj,"u_lightDirection");
+  terrain_u_fogEnabled = gl.getUniformLocation(terrainShaderProgramObj,"u_fogEnabled");
 
   texture_rock1[scene] = gl.createTexture();
   texture_rock1[scene].image = new Image();
@@ -222,43 +242,43 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
   height_map_image.crossOrigin = "anonymous";
   height_map_image.src = terrain_height_map_image;
   height_map_image.onload = function() {
-    var width = height_map_image.width;
-    var height = height_map_image.height;
-    var channels = 4; //height_map_image.channels;
+    let width = height_map_image.width;
+    let height = height_map_image.height;
+    let channels = 4; //height_map_image.channels;
 
-    var scale_terrain_area = 1.0;
-    var scale_terrain_height = 80.0;
+    let scale_terrain_area = 1.0;
+    let scale_terrain_height = 80.0;
 
-    var terrain_width = (width) * scale_terrain_area;
-    var terrain_height = (height) * scale_terrain_area;
-    var max_color_value = 256 * 256 * 256;
+    let terrain_width = (width) * scale_terrain_area;
+    let terrain_height = (height) * scale_terrain_area;
+    let max_color_value = 256 * 256 * 256;
 
 
-    var canvas = document.createElement('canvas');
+    let canvas = document.createElement('canvas');
     canvas.width = width;
     canvas.height = height;
-    var context = canvas.getContext('2d');
+    let context = canvas.getContext('2d');
     context.drawImage(height_map_image, 0, 0);
-    var pixels = context.getImageData(0, 0, width, height).data;
-    var v_index = 0;
-    var s_index = 0;
+    let pixels = context.getImageData(0, 0, width, height).data;
+    let v_index = 0;
+    let s_index = 0;
 
-    for (var row = 0; row < height; row++) {
-      for (var column = 0; column < width; column++) {
-        var pixel_index = (row * width) + column;
-        var byte_location = pixel_index * channels;
+    for (let row = 0; row < height; row++) {
+      for (let column = 0; column < width; column++) {
+        let pixel_index = (row * width) + column;
+        let byte_location = pixel_index * channels;
 
-        var data_byte0 = pixels[byte_location];
-        var data_byte1 = pixels[byte_location + 1];
-        var data_byte2 = pixels[byte_location + 2];
+        let data_byte0 = pixels[byte_location];
+        let data_byte1 = pixels[byte_location + 1];
+        let data_byte2 = pixels[byte_location + 2];
 
-        var point_height = (0 << 24 | data_byte2 << 16 | data_byte1 << 8 || data_byte0) / (max_color_value);
-        var s = (column / width);
-        var t = (row / height);
+        let point_height = (0 << 24 | data_byte2 << 16 | data_byte1 << 8 || data_byte0) / (max_color_value);
+        let s = (column / width);
+        let t = (row / height);
 
-        var x = (s * terrain_width);
-        var z = (t * terrain_height);
-        var y = point_height * (-scale_terrain_height);
+        let x = (s * terrain_width);
+        let z = (t * terrain_height);
+        let y = point_height * (-scale_terrain_height);
 
         terrain_vertices_array[v_index++] = x;
         terrain_vertices_array[v_index++] = y;
@@ -283,9 +303,49 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
       }
     }
 
-    var vertices_array = new Float32Array(terrain_vertices_array);;
-    var texture_coord_array = new Float32Array(terrain_texture_coord_array);
-    var index_array = new Uint32Array(terrain_index_array);
+    //Calculate normals
+    const maxAngle = 2 * Math.PI / 180;
+     // first compute the normal of each face
+     let getNextIndex = makeIndexedIndicesFn(terrain_index_array);
+     const numFaceVerts = getNextIndex.numElements;
+     const numVerts = terrain_vertices_array.length;
+     const numFaces = numFaceVerts / 3;
+     const faceNormals = [];
+ 
+     // Compute the normal for every face.
+     // While doing that, create a new vertex for every face vertex
+     for (let i = 0; i < numFaces; ++i) {
+       const n1 = getNextIndex() * 3;
+       const n2 = getNextIndex() * 3;
+       const n3 = getNextIndex() * 3;
+ 
+       const v1 = terrain_vertices_array.slice(n1, n1 + 3);
+       const v2 = terrain_vertices_array.slice(n2, n2 + 3);
+       const v3 = terrain_vertices_array.slice(n3, n3 + 3);
+ 
+       var side1 = vec3.create();
+       var side2 = vec3.create();
+       vec3.subtract(side1, v1, v2);
+       vec3.subtract(side2, v3, v2);
+       //side1 X side2
+       let normal_cal = vec3.create();
+       vec3.cross(normal_cal, side1, side2); 
+       if (normal_cal[1] < 0) {
+        vec3.negate(normal_cal, normal_cal);
+      }
+      if(normal_cal[2] < 0){
+        normal_cal[2] = -normal_cal[2];
+      }
+      vec3.normalize(normal_cal, normal_cal);
+
+       //vec3.normalize(normal_cal);
+       faceNormals.push(normal_cal);
+     }
+
+    let vertices_array = new Float32Array(terrain_vertices_array);;
+    let texture_coord_array = new Float32Array(terrain_texture_coord_array);
+    let index_array = new Uint32Array(terrain_index_array);
+    let normal_array = new Float32Array(faceNormals);
 
     terrain_vao = gl.createVertexArray();
     gl.bindVertexArray(terrain_vao);
@@ -308,6 +368,13 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
     gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_TEXTURE0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
+    terrain_vbo_normal = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,terrain_vbo_normal);
+    gl.bufferData(gl.ARRAY_BUFFER,normal_array,gl.STATIC_DRAW);
+    gl.vertexAttribPointer(WebGLMacros.AMC_ATTRIBUTE_NORMAL,3,gl.FLOAT,false,0,0);
+    gl.enableVertexAttribArray(WebGLMacros.AMC_ATTRIBUTE_NORMAL);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
     gl.bindVertexArray(null);
 
     /* Free the dynamically allocated references of the float 32 arrays, garbage collector will clean it up */
@@ -321,13 +388,27 @@ function InitializeHeightMapTerrain(terrain_height_map_image, blend_map_imaage, 
       vbo_pos: terrain_vbo_pos,
       vbo_idx: terrain_vbo_idx,
       vbo_tex: terrain_vbo_tex,
+      vbo_normal : terrain_vbo_normal,
       index_array_length: terrain_index_array.length,
       vao_ready: terrain_vao_ready,
     }
   }
 }
 
-function RenderTerrain(terrain_data, scene , fogColor ,model_matrix_terrain_1 ) {
+function makeIndexedIndicesFn(indicesIp) {
+  const indices = indicesIp;
+  let ndx = 0;
+  const fn = function() {
+    return indices[ndx++];
+  };
+  fn.reset = function() {
+    ndx = 0;
+  };
+  fn.numElements = indices.length;
+  return fn;
+}
+
+function RenderTerrain(terrain_data, scene , fogColor ,model_matrix_terrain_1 , isFogEnabled) {
   if (!terrain_data.vao_ready)
     return;
   gl.useProgram(terrainShaderProgramObj);
@@ -364,9 +445,15 @@ function RenderTerrain(terrain_data, scene , fogColor ,model_matrix_terrain_1 ) 
   gl.uniform1i(terrain_u_grass_sampler[scene], 4);
 
   //Fog uniforms
+  if(isFogEnabled){
+    gl.uniform1i(terrain_u_fogEnabled,isFogEnabled);
+  }else{
+    gl.uniform1i(terrain_u_fogEnabled,0);
+  }
   gl.uniform4fv(terrain_u_fogColor, fogColor);
   gl.uniform1f(terrain_u_fogNear, 0.01);
   gl.uniform1f(terrain_u_fogFar, 1000);
+  gl.uniform3fv(terrain_u_lightDirection,[200 + test_translate_X, 200 + test_translate_Y , -100 + test_translate_Z]);
 
   gl.bindVertexArray(terrain_data.vao);
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, terrain_data.vbo_idx);

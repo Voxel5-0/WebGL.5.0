@@ -72,9 +72,9 @@ function RenderSceneTwo()
   // X , Y ,Z  adjustments:2.2 , 0 , -5.5
   
   //mat4.identity(modelMatrix);
-  mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2 + test_translate_X , 0.0 + test_translate_Y , 0.0 - 5.5 + test_translate_Z])
+  mat4.translate(modelMatrix, modelMatrix, [0.0 + 2.2  , 0.0  , 0.0 - 5.5 ])
   mat4.scale(modelMatrix,modelMatrix,[ 5.0 , 5.0  , 5.0 ]);
-  mat4.rotateY(modelMatrix, modelMatrix, [90 + (4.3 + 6.5 + 6.5 + 25.2 + 5.4 + test_scale_X)])
+  mat4.rotateY(modelMatrix, modelMatrix, [90 + (4.3 + 6.5 + 6.5 + 25.2 + 5.4 )])
   //Model : Father , index : 10
   renderAssimpModel(modelMatrix,10,0,point_lightPositions,point_lightColors,0,fogColor);
 
