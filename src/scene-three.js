@@ -95,10 +95,10 @@ function RenderSceneThree()
       // renderAssimpModel(modelMatrixTerrainModel,13,0,[],[],0,fogColor,1.0);
     }
     
-    let fogColor = [0.2, 0.2, 0.2, 0.0];
+    let fogColor = [0.8, 0.2, 0.2, 1.0];
     //renderAssimpModelWithInstancing(modelMatrixArray,12,0,[],[],0,fogColor,1.0);
-    renderAssimpModelWithInstancing(modelMatrixArray,12,0,[],[],0,fogColor,1.0,0,0);
-    renderAssimpModelWithInstancing(modelMatrixArrayForGirl,8,0,[],[],0,fogColor,1.0,0,0);
+    renderAssimpModelWithInstancing(modelMatrixArray,12,0,[],[],1,fogColor,1.0,0,0);
+    renderAssimpModelWithInstancing(modelMatrixArrayForGirl,8,0,[],[],1,fogColor,1.0,0,0);
     // gl.disable(gl.BLEND);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -172,8 +172,8 @@ function degToRad(degrees) {
   return (degrees * Math.PI / 180.0);
 }
 
-var scene_three_StartTime = 155;
-var scene_three_duration = 60;
+var scene_three_StartTime = 185;
+var scene_three_duration = 36;
 
 function UpdateSceneThree()
 {

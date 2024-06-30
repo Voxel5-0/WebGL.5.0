@@ -152,8 +152,13 @@ function RenderSceneOne()
     godrays_display_final();
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+    /***********************************Reder with noise************************************************* */
+    // gl.bindFramebuffer(gl.FRAMEBUFFER, coloredFinalScene_fbo.fbo);
+    // RenderWithFBMTextureShader(godRays_final_fbo.cbo,0);
+    // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
     /***********************************Post Processing************************************************* */
-    RenderWithGrayScaleTextureShader(godRays_final_fbo.cbo,0)
+    RenderWithFBMTextureShader(godRays_final_fbo.cbo,0)
   }
    
 }
@@ -174,11 +179,17 @@ function UpdateSceneOne() {
     scene_one_showTitle = false;
     bezierCurve(scene_one_controlPoints,currentTime, scene_one_StartTime, scene_one_duration);
   } 
+  else (scene == 1)
+  {
+    cameraShake();
+  }
+  if(scene_one_StartTime + scene_one_duration - scene_tst_one < currentTime){
+    scene++;
+  }
   else if(scene_one_StartTime + scene_one_duration <= currentTime){
     scene++;
   } 
 
-  cameraShake();
 }
 /*----------------------------------- Scene one Uninitialize -----------------------------------*/
 function UninitializeSceneOne()

@@ -102,7 +102,8 @@ function RenderSceneZero() {
     //One space key press- trail and AMC title
     pTrail_display(scene1_modelMatrix, perspectiveProjectionMatrix);
     mat4.identity(scene1_modelMatrix);
-    mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
+    mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, -2.0, -7.0])
+    mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[1.6 , 1.2 , 1.2]);
     mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 - 2.0 , 0.5 + 1]);
     var view = mat4.create();
     RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_zero_AMC_title_texture, 0);
@@ -119,8 +120,8 @@ function RenderSceneZero() {
 
 
   /*----------------------------------- Post Processing on Scene -----------------------------------*/
-  RenderWithGrayScaleTextureShader(finalScene_fbo.cbo, 0);
-  // RenderWithTextureShader(finalScene_fbo.cbo, 0);
+  //RenderWithFBMTextureShader(finalScene_fbo.cbo, 0);
+   RenderWithTextureShader(finalScene_fbo.cbo, 0);
 }
 
 
@@ -134,10 +135,10 @@ var scene_tst_one = 2.0;
 function UpdateSceneZero() {
   let currentTime = performance.now() / 1000;
 
-  // if (startTime == 0) {
-  //   startTime = currentTime;
-  //   console.log("Start time initialized in scene zero :" + startTime);
-  // }
+  if (startTime == 0) {
+    startTime = currentTime;
+    console.log("Start time initialized in scene zero :" + startTime);
+  }
   if (scene_zero_StartTime <= currentTime && scene_zero_StartTime + scene_zero_duration > currentTime) {
     bezierCurve(scene_zero_controlPoints, currentTime, scene_zero_StartTime, scene_zero_duration);
   } else{
@@ -155,7 +156,6 @@ function UpdateSceneZero() {
   if(bool_start_ptrail_update){
     pTrail_update();
   }
-  cameraShake();
 }
 
 /*----------------------------------- Scene One  Uninitialize -----------------------------------*/

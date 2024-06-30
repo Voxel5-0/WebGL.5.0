@@ -32,10 +32,10 @@ function InitializeSceneFour()
 {
   var scene_four_height_map_image = "src/resources/textures/terrain.png";
   var scene_four_blend_map        = "src/resources/textures/BlendMap.png";
-  var scene_four_rock_1_image     = "src/resources/textures/ground.jpg";
-  var scene_four_rock_2_image     = "src/resources/textures/soil.jpg";
-  var scene_four_path_image       = "src/resources/textures/ground.jpg";
-  var scene_four_snow_image       = "src/resources/textures/soil.jpg";
+  var scene_four_rock_1_image     = "src/resources/textures/grass.jpg";
+  var scene_four_rock_2_image     = "src/resources/textures/grass.jpg";
+  var scene_four_path_image       = "src/resources/textures/grass.jpg";
+  var scene_four_snow_image       = "src/resources/textures/grass.jpg";
 
   InitializeHeightMapTerrain(scene_four_height_map_image,scene_four_blend_map,scene_four_rock_1_image,scene_four_rock_2_image,scene_four_path_image,scene_four_snow_image,4);  
 }
@@ -46,33 +46,31 @@ function RenderSceneFour()
 
   let fogColorModel = [0.8, 0.9, 1, 0.5];
   /*----------------------------------- Rendering For Reflection FBO -----------------------------------*/
-  // animateWater();
-  // gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
-  // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  // // CameraReflect();
-  // //render disney castle model for reflection FBO 
-	// var modelMatrix = mat4.create()
-  // mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
-  // mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  // renderAssimpModel(modelMatrix,2,0,[],[],1,fogColorModel,1);
-  // //render skybox for reflection FBO 
-  // DrawSkybox(SCENE_ZERO);  
-  // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  animateWater();
+  gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // CameraReflect();
+  //render disney castle model for reflection FBO 
+	var modelMatrix = mat4.create()
+  mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
+  mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
+  renderAssimpModel(modelMatrix,2,0,[],[],1,fogColorModel,1);
+  //render skybox for reflection FBO 
+  DrawSkybox(SCENE_ZERO);  
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   /*----------------------------------- Rendering For Refraction FBO -----------------------------------*/
-  // gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
-	// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  // // CameraReflect();
-  // //render skybox for refraction FBO 
-  // DrawSkybox(SCENE_ZERO);
-  // //Bridge Model 
-  // var modelMatrix = mat4.create()
-  // mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
-  // mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  // renderAssimpModel(modelMatrix,3,0,[],[],1,fogColorModel,1);
-  // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-
-
+  gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // CameraReflect();
+  //render skybox for refraction FBO 
+  DrawSkybox(SCENE_ZERO);
+  //Bridge Model 
+  var modelMatrix = mat4.create()
+  mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
+  mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
+  renderAssimpModel(modelMatrix,3,0,[],[],1,fogColorModel,1);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   /*----------------------------------- Actual Scene One -----------------------------------*/
   //Render final scene in final buffer grayscale
@@ -84,26 +82,26 @@ function RenderSceneFour()
     let fogColor = [0.8, 0.9, 1, 0.5];
     let terrain_model_matrix = mat4.create();
     //mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
-    //mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
-    RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix,0);
+    mat4.translate(terrain_model_matrix,terrain_model_matrix,[0.0  , -35.0 - 20.900000000000002 , 0.0]);
+    RenderTerrain(terrain_data[SCENE_FOUR], SCENE_FOUR,fogColor ,terrain_model_matrix,1);
   }
   //Render models for actual scene grayscale
-  var modelMatrix = mat4.create()
-  mat4.translate(modelMatrix, modelMatrix, [481.0,-120, 595.0])
-  mat4.scale(modelMatrix,modelMatrix,[18.0,18.0,18.0]);
-  mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,3,0,[],[],0,fogColorModel,1,1);
-  mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
-  renderAssimpModel(modelMatrix,10,0,[],[],0,fogColor);
-  renderAssimpModel(modelMatrix,4,0,[],[],1,fogColorModel,1,1);
+  let modelMatrixBridge = mat4.create()
+  mat4.translate(modelMatrixBridge, modelMatrixBridge, [481.0,-120 -35.0 - 20.900000000000002, 595.0])
+  mat4.scale(modelMatrixBridge,modelMatrixBridge,[18.0,18.0,18.0]);
+  mat4.rotateY(modelMatrixBridge, modelMatrixBridge, [90])
+  renderAssimpModel(modelMatrixBridge,3,0,[],[],1,fogColorModel,1,1);
+  mat4.translate(modelMatrixBridge, modelMatrixBridge, [0.0,0.0, 2.2])
+  renderAssimpModel(modelMatrixBridge,10,0,[],[],0,fogColor);
+  renderAssimpModel(modelMatrixBridge,4,0,[],[],1,fogColorModel,1,1);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ZERO);
-  modelMatrix = mat4.create()
-  mat4.translate(modelMatrix, modelMatrix, [30.0 + 126.4+ 405.00 , -90.0 +  87.99  , -1.0 +  567.60 + 42.0 ])
-  mat4.scale(modelMatrix,modelMatrix,[8.0 , 8.0 , 8.0]);
+  let modelMatrixGirl = mat4.create()
+  mat4.translate(modelMatrixGirl, modelMatrixGirl, [30.0 + 126.4+ 405.00 , -90.0 +  87.99 -35.00 - 20.900000000000002  + test_translate_Y  , -1.0 +  567.60 + 42.0 ])
+  mat4.scale(modelMatrixGirl,modelMatrixGirl,[8.0 , 8.0 , 8.0]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
-  renderAssimpModel(modelMatrix,6,0,[],[],1,fogColorModel,1,1);
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,0,10.0);
+  renderAssimpModel(modelMatrixGirl,6,0,[],[],1,fogColorModel,1,1);
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100 + test_translate_X ,0 + 20.900000000000002 + test_translate_Y,10.0 + test_translate_Z,test_scale_X);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   
   /*----------------------------------- Post Processing on Scene -----------------------------------*/

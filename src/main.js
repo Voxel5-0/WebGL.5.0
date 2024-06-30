@@ -53,8 +53,8 @@ scene_camera_positions = [
 							[704.8648214635622,-8.562417758347571,379.39476250089234], 	//scene one camera initial position
 							[85.54966728431751,76.87253131406523,215.2747400203303 ], 	//scene two camera initial position
 							[513.7053436497372,32.69167479092017,915.4535056636863],     //scene three camera initial position
-							[513.7053436497372,32.69167479092017,915.4535056636863],     //scene three camera initial position
-							[188.54773835466648,-105,4.046151170852721],	//five
+							[348.15576980888744,-20.313767120810528,253.28188216449468],     //scene four camera initial position
+							[352.3130964125702,-9.316419231329514,398.8855402980065],	//five
 							[188.54773835466648,-105,4.046151170852721], // scene six camera initial position,
 							[188.54773835466648,-105,4.046151170852721], // scene seven camera initial position
 							[188.54773835466648,-105,4.046151170852721],	//eight
@@ -70,8 +70,8 @@ var scene_camera_angles =  [
 								-250.80000000000067,	//scene one
 								-93.99999999999936,	//scene two
 								9.00000000000049,	//scene three
-								9.00000000000049,	//scene three
-								-139.0, //scene five
+								189.93921008981135,	//scene four
+								5.599999999999855, //scene five
 								-139.0, //scene six
 								-139.0, //scene seven
 								-68.0 //scene eight
@@ -81,9 +81,9 @@ var scene_camera_anglesX =  [
 							0.0, //scene zero
 							-7.8222157512174018,	//scene one
 							-7.248153863973856 ,	//scene two
-							-370.1542669593973,	//scene othree
-							-370.1542669593973,	//scene othree
-							0.0,	//scene five
+							-370.1542669593973,	//scene three
+							-8.389596793484914,	//scene four
+							-14.199999999999232,	//scene five
 							0.0,	//scene six
 							-7.0, // scene seven
 							0.0	//scene eight
@@ -194,6 +194,9 @@ function init()
 		godRays_godrays_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 		godRays_final_fbo = GenerateFramebuffer(fbo_width, fbo_height);
 
+	//TODO : remove later	
+	var scene_zero_light_count = 8;
+
 	/* -- Common Shader/Gemometries/Effects Initialzation */
 	InitializeTextureShader();
 	InitializeInstanceShader();
@@ -208,6 +211,7 @@ function init()
 	InitializeGrayScaleTextureShader();
 	tst_initialize();
 	pfc_initialize();
+	InitializeFBMTextureShader();
 
 	/*Scene Specific Initialization */
 	InitializeSceneZero();
@@ -262,12 +266,12 @@ function draw(now)
 {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-	if(startTime == 0 && performance.now()/1000 >= 70.0 ){
-		startTime = performance.now()/1000;
-    	console.log("Start time initialized in scene zero :" + startTime);
-		document.getElementById('audio').play();
-		toggleFullScreen();
-	}
+	// if(startTime == 0 && performance.now()/1000 >= 70.0 ){
+	// 	startTime = performance.now()/1000;
+    // 	console.log("Start time initialized in scene zero :" + startTime);
+	// 	document.getElementById('audio').play();
+	// 	toggleFullScreen();
+	// }
 	if(cameraInitialPositionForScene[scene] != 1){
 		console.log("Setting initial camera position for scene "+scene);
 		UpdateCameraPosition(scene_camera_positions[scene]);
@@ -313,7 +317,7 @@ function draw(now)
 
 	}
     requestAnimationFrame(draw, canvas);
-    update(now);
+    //update(now);
 }
 
 function update(now)
