@@ -95,7 +95,7 @@ function RenderSceneZero() {
   //castle complete model : index 0
   mat4.identity(scene1_modelMatrix)
 	mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
-  renderAssimpModel(scene1_modelMatrix,0,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors,1,fogColor,1.0);
+  renderAssimpModel(scene1_modelMatrix,0,scene_zero_light_count,scene_zero_lightPositions,scene_zero_lightColors,1,fogColor,1.0,1);
   DrawSkybox(SCENE_ZERO);
 
   if(bool_start_ptrail_update){
@@ -103,7 +103,7 @@ function RenderSceneZero() {
     pTrail_display(scene1_modelMatrix, perspectiveProjectionMatrix);
     mat4.identity(scene1_modelMatrix);
     mat4.translate(scene1_modelMatrix, scene1_modelMatrix, [0.0, 0.0, -10.0])
-    mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 , 0.5 + 1]);
+    mat4.scale(scene1_modelMatrix, scene1_modelMatrix,[0.5 + 1.5 , 0.5 + 1 - 2.0 , 0.5 + 1]);
     var view = mat4.create();
     RenderWithTextureShaderMVP(scene1_modelMatrix,view,perspectiveProjectionMatrix,scene_zero_AMC_title_texture, 0);
   }

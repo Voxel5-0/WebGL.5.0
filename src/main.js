@@ -51,9 +51,9 @@ var scene_camera_positions;
 scene_camera_positions = [
 							[188.54773835466648,-105,4.046151170852721],     //scene zero camera initial position,
 							[704.8648214635622,-8.562417758347571,379.39476250089234], 	//scene one camera initial position
-							[94.99358310261765,74.33581786789497,210.49747779588023 ], 	//scene two camera initial position
+							[85.54966728431751,76.87253131406523,215.2747400203303 ], 	//scene two camera initial position
 							[513.7053436497372,32.69167479092017,915.4535056636863],     //scene three camera initial position
-						 	[188.54773835466648,-105,4.046151170852721],	//four
+							[513.7053436497372,32.69167479092017,915.4535056636863],     //scene three camera initial position
 							[188.54773835466648,-105,4.046151170852721],	//five
 							[188.54773835466648,-105,4.046151170852721], // scene six camera initial position,
 							[188.54773835466648,-105,4.046151170852721], // scene seven camera initial position
@@ -68,9 +68,9 @@ scene_camera_positions = [
 var scene_camera_angles =  [
 								0.0, //scene zero
 								-250.80000000000067,	//scene one
-								-92.99999999999936,	//scene two
+								-93.99999999999936,	//scene two
 								9.00000000000049,	//scene three
-								-136.60000000000002, //scene four
+								9.00000000000049,	//scene three
 								-139.0, //scene five
 								-139.0, //scene six
 								-139.0, //scene seven
@@ -80,9 +80,9 @@ var scene_camera_angles =  [
 var scene_camera_anglesX =  [
 							0.0, //scene zero
 							-7.8222157512174018,	//scene one
-							-9.248153863973856 ,	//scene two
+							-7.248153863973856 ,	//scene two
 							-370.1542669593973,	//scene othree
-							0.0,	//scene four
+							-370.1542669593973,	//scene othree
 							0.0,	//scene five
 							0.0,	//scene six
 							-7.0, // scene seven
@@ -208,7 +208,7 @@ function init()
 	InitializeGrayScaleTextureShader();
 	tst_initialize();
 	pfc_initialize();
-	
+
 	/*Scene Specific Initialization */
 	InitializeSceneZero();
 	InitializeSceneOne();
@@ -380,7 +380,7 @@ function resize()
 
 	//console.log("Resize: canvas width=" + canvas.width + " canvas height = " + canvas.height);
 	gl.viewport(0, 0, canvas.width, canvas.height);
-	mat4.perspective(perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 1000.0);
+	mat4.perspective(perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 21000.0);
 	mat4.perspective(terrain_perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 21000.0);
 	mat4.perspective(model_perspectiveProjectionMatrix, 45.0, canvas.width/canvas.height, 0.1, 21000.0);
 

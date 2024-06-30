@@ -9,6 +9,13 @@
  * 
 */
 
+//camera position to see bridge
+//1570.2434640288338,-93.22419543218302,3530.6151734854398 , 2.245201098695191 , -54.999999999997975
+
+
+//bridge position
+//2778.607833344282,-284.1836686699762,2523.7304319691375 , 10.845201098695203 , -37.79999999999799
+
 var SCENE_FOUR = 4;
 /*----------------------------------- Camera Contol Points and variables -----------------------------------*/
 const Scene4_controlPoints = [
@@ -39,31 +46,31 @@ function RenderSceneFour()
 
   let fogColorModel = [0.8, 0.9, 1, 0.5];
   /*----------------------------------- Rendering For Reflection FBO -----------------------------------*/
-  animateWater();
-  gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  // CameraReflect();
-  //render disney castle model for reflection FBO 
-	var modelMatrix = mat4.create()
-  mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
-  mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrix,2,0,[],[],1,fogColorModel,1);
-  //render skybox for reflection FBO 
-  DrawSkybox(SCENE_ZERO);  
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  // animateWater();
+  // gl.bindFramebuffer(gl.FRAMEBUFFER, reflection_fbo.fbo);
+  // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // // CameraReflect();
+  // //render disney castle model for reflection FBO 
+	// var modelMatrix = mat4.create()
+  // mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
+  // mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
+  // renderAssimpModel(modelMatrix,2,0,[],[],1,fogColorModel,1);
+  // //render skybox for reflection FBO 
+  // DrawSkybox(SCENE_ZERO);  
+  // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
   /*----------------------------------- Rendering For Refraction FBO -----------------------------------*/
-  gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  // CameraReflect();
-  //render skybox for refraction FBO 
-  DrawSkybox(SCENE_ZERO);
-  //render disney castle model for refraction FBO 
-  var modelMatrix = mat4.create()
-  mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
-  mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
-  renderAssimpModel(modelMatrix,2,0,[],[],1,fogColorModel,1);
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  // gl.bindFramebuffer(gl.FRAMEBUFFER, refraction_fbo.fbo);
+	// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // // CameraReflect();
+  // //render skybox for refraction FBO 
+  // DrawSkybox(SCENE_ZERO);
+  // //Bridge Model 
+  // var modelMatrix = mat4.create()
+  // mat4.translate(modelMatrix, modelMatrix, [0.0, -30.0, -1.0])
+  // mat4.scale(modelMatrix,modelMatrix,[10.0,10.0,10.0]);
+  // renderAssimpModel(modelMatrix,3,0,[],[],1,fogColorModel,1);
+  // gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 
 
@@ -71,12 +78,13 @@ function RenderSceneFour()
   //Render final scene in final buffer grayscale
   gl.bindFramebuffer(gl.FRAMEBUFFER, finalScene_fbo.fbo);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  let fogColor = [0.8, 0.9, 1, 0.5];
   //Render terrain
   if (terrain_data[SCENE_FOUR]) {
     let fogColor = [0.8, 0.9, 1, 0.5];
     let terrain_model_matrix = mat4.create();
-    mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
-    mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
+    //mat4.scale(terrain_model_matrix,terrain_model_matrix,[10.3  , 11.5 , 10.3]);
+    //mat4.translate(terrain_model_matrix,terrain_model_matrix,[10.3  , 10.5 , 10.3]);
     RenderTerrain(terrain_data[SCENE_FIVE], SCENE_FIVE,fogColor ,terrain_model_matrix,0);
   }
   //Render models for actual scene grayscale
@@ -86,6 +94,7 @@ function RenderSceneFour()
   mat4.rotateY(modelMatrix, modelMatrix, [90])
   renderAssimpModel(modelMatrix,3,0,[],[],0,fogColorModel,1,1);
   mat4.translate(modelMatrix, modelMatrix, [0.0,0.0, 2.2])
+  renderAssimpModel(modelMatrix,10,0,[],[],0,fogColor);
   renderAssimpModel(modelMatrix,4,0,[],[],1,fogColorModel,1,1);
   //Render skybox for actual scene
   DrawSkybox(SCENE_ZERO);
@@ -94,7 +103,7 @@ function RenderSceneFour()
   mat4.scale(modelMatrix,modelMatrix,[8.0 , 8.0 , 8.0]);
   //mat4.rotateY(modelMatrix, modelMatrix, [90])
   renderAssimpModel(modelMatrix,6,0,[],[],1,fogColorModel,1,1);
-  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,70.899,10.0);
+  RenderWater(reflection_fbo.cbo,refraction_fbo.cbo,refraction_fbo.dbo,705.100,0,10.0);
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
   
   /*----------------------------------- Post Processing on Scene -----------------------------------*/
@@ -104,16 +113,19 @@ function RenderSceneFour()
   
 }
 
+var scene_four_StartTime = 155;
+var scene_four_duration = 30;
+
 function UpdateSceneFour()
 {
-  // if (startTime == 0) {
-  //   startTime = performance.now() / 1000;
-  // }
-  // if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
-  //   bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
-  // }else{
-  //   scene++;
-  // }
+  if (startTime == 0) {
+    startTime = performance.now() / 1000;
+  }
+  if (scene == 4 && (startTime + 30 + 32 + 32 > performance.now()/1000)) {
+    bezierCurve(Scene4_controlPoints, performance.now() / 1000, startTime+64, 30);
+  }else{
+    scene++;
+  }
 }
 
 function UninitializeSceneFour()

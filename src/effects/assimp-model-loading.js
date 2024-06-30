@@ -457,6 +457,7 @@ function renderModel(model) {
 		gl.bindTexture(gl.TEXTURE_2D, model.meshArray[i].diffuseTextures[0])
 		gl.bindVertexArray(model.meshArray[i].vao)
 		gl.drawElements(gl.TRIANGLES, model.meshArray[i].count, gl.UNSIGNED_SHORT, 0)
+		gl.bindTexture(gl.TEXTURE_2D, null)
 	}
 	
 }
@@ -471,6 +472,7 @@ function renderModelWithInstancing(model, num_instances) {
 		gl.bindTexture(gl.TEXTURE_2D, model.meshArray[i].diffuseTextures[0])
 		gl.bindVertexArray(model.meshArray[i].vao)
 		gl.drawElementsInstanced(gl.TRIANGLES, model.meshArray[i].count, gl.UNSIGNED_SHORT, 0, num_instances)
+		gl.bindTexture(gl.TEXTURE_2D, null)
 	}
 	
 }

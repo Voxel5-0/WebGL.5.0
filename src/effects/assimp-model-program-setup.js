@@ -92,7 +92,7 @@ function renderAssimpModelWithInstancing(modelMatrixArray,modelNumber, pointLigh
     gl.useProgram(null)
 }
 
-function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors,isFogEnabled,fogColor,alpha,isDirectionalLightEnabled){
+function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPositions,lightColors,isFogEnabled,fogColor,alpha,isDirectionalLightEnabled,isOccluded){
     gl.useProgram(program)
 	gl.uniformMatrix4fv(pMatUnifromForAssimpModel, false, model_perspectiveProjectionMatrix)
 	gl.uniformMatrix4fv(vMatUnifromForAssimpModel, false, GetCameraViewMatrix())
@@ -117,7 +117,11 @@ function renderAssimpModel(modelMatrix,modelNumber, pointLightsCount ,lightPosit
     gl.uniform1i(isStaticUniformForAssimpModel, 0)
 	//gl.uniform1i(isInstancedUniformForAssimpModel,modelList[modelNumber].isInstanced);
     //renderModel(vampire)
-	
+	if(isOccluded){
+		gl.uniform1i(model_u_isOccluded,isOccluded)
+	}else{
+		gl.uniform1i(model_u_isOccluded,0)
+	}
     // }
 	//console.log("rendered model "+modelNumber);
 	for (let i = 0; i < pointLightsCount; i++) {
